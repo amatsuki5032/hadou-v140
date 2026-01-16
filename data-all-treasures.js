@@ -420,7 +420,9 @@ const EMBEDDED_TREASURES_DATA = [
     "category": "文物",
     "weapon_type": null,
     "related": "華佗",
-    "factions": []
+    "factions": [
+      "袁紹"
+    ]
   },
   {
     "id": 46,
@@ -628,7 +630,9 @@ const EMBEDDED_TREASURES_DATA = [
     "category": "防具",
     "weapon_type": null,
     "related": "袁紹",
-    "factions": []
+    "factions": [
+      "袁紹"
+    ]
   },
   {
     "id": 68,
@@ -666,7 +670,9 @@ const EMBEDDED_TREASURES_DATA = [
     "category": "武器",
     "weapon_type": "馬",
     "related": "顔良",
-    "factions": []
+    "factions": [
+      "袁紹"
+    ]
   },
   {
     "id": 72,
@@ -674,7 +680,9 @@ const EMBEDDED_TREASURES_DATA = [
     "category": "防具",
     "weapon_type": null,
     "related": "文醜",
-    "factions": []
+    "factions": [
+      "袁紹"
+    ]
   },
   {
     "id": 73,
@@ -828,7 +836,9 @@ const EMBEDDED_TREASURES_DATA = [
     "category": "武器",
     "weapon_type": "槍",
     "related": "袁紹",
-    "factions": []
+    "factions": [
+      "袁紹"
+    ]
   },
   {
     "id": 89,
