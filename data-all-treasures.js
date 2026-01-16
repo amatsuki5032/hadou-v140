@@ -1464,6 +1464,20 @@ const EMBEDDED_TREASURES_DATA = [
     "category": "文物",
     "weapon_type": null,
     "related": "コラボ"
+  },
+    {
+    "id": 206,
+    "name": "冷艶鋸",
+    "category": "武器",
+    "weapon_type": "馬",
+    "related": "関羽"
+  },
+  {
+    "id": 207,
+    "name": "龍紋護臂甲",
+    "category": "防具",
+    "weapon_type": null,
+    "related": "関羽"
   }
 ];
 
