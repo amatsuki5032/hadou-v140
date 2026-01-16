@@ -128,16 +128,16 @@ function canPlaceAttendant(formationType, generalSlot, attendantPosition) {
     const [generalRow, generalCol] = generalCoords;
     const offsetsList = getAttendantPositionOffsets(attendantPosition);
     
+    // 少なくとも1つの方向で配置可能ならtrue
     for (const [rowOffset, colOffset] of offsetsList) {
         const attendantRow = generalRow + rowOffset;
         const attendantCol = generalCol + colOffset;
-        if (attendantRow < 0 || attendantRow >= 3 || attendantCol < 0 || attendantCol >= 3) {
-            return false;
-        }
-        // 侍従は配置不可マス（0）に配置される
-        if (formationData.positions[attendantRow][attendantCol] !== 0) {
-            return false;
+        if (attendantRow >= 0 && attendantRow < 3 && attendantCol >= 0 && attendantCol < 3) {
+            // 侍従は配置不可マス（0）に配置される
+            if (formationData.positions[attendantRow][attendantCol] === 0) {
+                return true;  // 1つでも配置可能ならtrue
+            }
         }
     }
-    return true;
+    return false;  // 全部ダメならfalse
 }
