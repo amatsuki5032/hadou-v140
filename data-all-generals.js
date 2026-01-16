@@ -3785,6 +3785,32 @@ const LR_GENERALS_DATA = [
       }
     },
     "tenpu": 1400
+  }  ,
+  {
+    "id": 89,
+    "rarity": "LR",
+    "name": "周倉", // TODO: ステータス未入力
+    "unit_type": "歩兵",
+    "leadership": 0,
+    "attack": 0,
+    "intelligence": 0,
+    "affinity": 25,
+    "attendant_position": "上/左",
+    "skills": {},
+    "tenpu": 1300
+  },
+  {
+    "id": 90,
+    "rarity": "LR",
+    "name": "諸葛恪", // TODO: ステータス未入力
+    "unit_type": "弓兵",
+    "leadership": 0,
+    "attack": 0,
+    "intelligence": 0,
+    "affinity": 126,
+    "attendant_position": "上",
+    "skills": {},
+    "tenpu": 1300
   }
 ];
 
