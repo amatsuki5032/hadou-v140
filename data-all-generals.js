@@ -3798,7 +3798,7 @@ const LR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 25,
+    "affinity": 75,
     "attendant_position": "上/左",
     "skills": {},
     "tenpu": 1300
