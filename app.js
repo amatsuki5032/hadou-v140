@@ -49,7 +49,7 @@ const { useState, useEffect } = React;
                                 if (!coordinateMap[coordKey] || coordinateMap[coordKey].priority > priority) {
                                     coordinateMap[coordKey] = { slot: slotName, priority, coords };
                                 }
-                                break;
+                                // 2方向侍従の場合、両方の座標を処理するためbreakしない
                             }
                         }
                     }
