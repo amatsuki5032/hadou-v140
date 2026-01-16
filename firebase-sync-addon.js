@@ -1,9 +1,10 @@
 // ============================================
-// Firebase同期機能（無限ループ修正版）
+// Firebase同期機能（自己更新検知回避版）
 // ============================================
 
 let isSyncing = false; // 同期中フラグ
 let lastSyncTime = Date.now();
+let sessionId = 'session_' + Date.now() + '_' + Math.random(); // このセッション固有のID
 
 // LocalStorageの保存関数を拡張してFirebaseにも保存
 const originalSetItem = localStorage.setItem.bind(localStorage);
@@ -25,6 +26,9 @@ localStorage.setItem = function(key, value) {
                 allData[k] = localStorage.getItem(k);
             }
             
+            // セッションIDを追加
+            allData._sessionId = sessionId;
+            
             FirebaseSync.saveData(allData).catch(err => {
                 console.error('Firebase保存エラー:', err);
             });
@@ -35,6 +39,7 @@ localStorage.setItem = function(key, value) {
 // アプリ起動時にFirebaseからデータを読み込み
 window.addEventListener('DOMContentLoaded', async () => {
     console.log('🔥 Firebase同期を初期化中...');
+    console.log('🆔 セッションID:', sessionId);
     
     if (typeof FirebaseSync !== 'undefined') {
         try {
@@ -45,39 +50,52 @@ window.addEventListener('DOMContentLoaded', async () => {
             if (firebaseData) {
                 console.log('✅ Firebaseからデータを読み込みました');
                 
-                // Firebaseのデータの方が新しければ、LocalStorageを更新
-                const localTimestamp = localStorage.getItem('lastUpdated');
-                const firebaseTimestamp = firebaseData.lastUpdated;
-                
-                if (!localTimestamp || (firebaseTimestamp && firebaseTimestamp.seconds * 1000 > new Date(localTimestamp).getTime())) {
-                    console.log('🔄 Firebaseのデータの方が新しいので更新します');
+                // 自分自身のセッションの場合はスキップ
+                if (firebaseData._sessionId === sessionId) {
+                    console.log('ℹ️ 自分のセッションのデータなのでスキップ');
+                    isSyncing = false;
+                } else {
+                    // Firebaseのデータの方が新しければ、LocalStorageを更新
+                    const localTimestamp = localStorage.getItem('lastUpdated');
+                    const firebaseTimestamp = firebaseData.lastUpdated;
                     
-                    // LocalStorageを更新
-                    Object.keys(firebaseData).forEach(key => {
-                        if (key !== 'lastUpdated') {
-                            originalSetItem(key, firebaseData[key]);
-                        }
-                    });
-                    
-                    // 最終更新時刻を記録
-                    originalSetItem('lastUpdated', new Date().toISOString());
-                    
-                    isSyncing = false; // 同期終了
-                    
-                    // ページをリロードして新しいデータを反映
-                    window.location.reload();
-                    return;
+                    if (!localTimestamp || (firebaseTimestamp && firebaseTimestamp.seconds * 1000 > new Date(localTimestamp).getTime())) {
+                        console.log('🔄 Firebaseのデータの方が新しいので更新します');
+                        
+                        // LocalStorageを更新
+                        Object.keys(firebaseData).forEach(key => {
+                            if (key !== 'lastUpdated' && key !== '_sessionId') {
+                                originalSetItem(key, firebaseData[key]);
+                            }
+                        });
+                        
+                        // 最終更新時刻を記録
+                        originalSetItem('lastUpdated', new Date().toISOString());
+                        
+                        isSyncing = false; // 同期終了
+                        
+                        // ページをリロードして新しいデータを反映
+                        window.location.reload();
+                        return;
+                    } else {
+                        isSyncing = false;
+                    }
                 }
             } else {
                 console.log('ℹ️ Firebaseにデータがありません（初回起動）');
+                isSyncing = false;
             }
-            
-            isSyncing = false; // 同期終了
             
             // リアルタイム同期を開始（デバウンス付き）
             let updateTimeout = null;
             
             FirebaseSync.watchChanges((data) => {
+                // 自分自身のセッションの場合は無視
+                if (data._sessionId === sessionId) {
+                    console.log('🔇 自分の更新なので通知しない');
+                    return;
+                }
+                
                 // 既存のタイムアウトをクリア
                 if (updateTimeout) {
                     clearTimeout(updateTimeout);
@@ -86,6 +104,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 // 1秒待ってから更新確認
                 updateTimeout = setTimeout(() => {
                     console.log('🔄 他のデバイスからの更新を検出');
+                    console.log('📱 更新元セッションID:', data._sessionId);
                     
                     const firebaseTimestamp = data.lastUpdated;
                     const localTimestamp = localStorage.getItem('lastUpdated');
@@ -97,7 +116,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                             isSyncing = true;
                             
                             Object.keys(data).forEach(key => {
-                                if (key !== 'lastUpdated') {
+                                if (key !== 'lastUpdated' && key !== '_sessionId') {
                                     originalSetItem(key, data[key]);
                                 }
                             });
