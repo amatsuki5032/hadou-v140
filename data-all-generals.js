@@ -3794,7 +3794,7 @@ const LR_GENERALS_DATA = [
     "id": 89,
     "rarity": "LR",
     "name": "周倉", // TODO: ステータス未入力
-    "unit_type": "歩兵",
+    "unit_type": "槍",
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
@@ -3807,7 +3807,7 @@ const LR_GENERALS_DATA = [
     "id": 90,
     "rarity": "LR",
     "name": "諸葛恪", // TODO: ステータス未入力
-    "unit_type": "弓兵",
+    "unit_type": "弓",
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
