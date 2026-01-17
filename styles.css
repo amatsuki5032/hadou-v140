@@ -986,3 +986,19 @@
             flex-shrink: 0;
             border-radius: 2px;
         }
+/* テーマ切り替えボタン */
+.theme-toggle {
+    padding: 8px 16px;
+    background: var(--bg-quaternary);
+    border: 2px solid var(--border-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent-gold);
+    background: var(--bg-tertiary);
+}
