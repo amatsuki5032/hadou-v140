@@ -5,11 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.documentElement.setAttribute('data-theme', savedTheme);
     
     // トグルボタンを作成
-    const header = document.querySelector('.header');
+    const header = document.querySelector('.app-header');
     if (header) {
         const themeToggle = document.createElement('button');
         themeToggle.className = 'theme-toggle';
-        themeToggle.textContent = savedTheme === 'light' ? '🌙 ダークモード' : '☀️ ライトモード';
+        themeToggle.style.marginLeft = 'auto'; // 右寄せ
+        themeToggle.textContent = savedTheme === 'light' ? '🌙 ダーク' : '☀️ ライト';
         
         themeToggle.addEventListener('click', function() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'light' ? '🌙 ダークモード' : '☀️ ライトモード';
+            themeToggle.textContent = newTheme === 'light' ? '🌙 ダーク' : '☀️ ライト';
         });
         
         header.appendChild(themeToggle);
