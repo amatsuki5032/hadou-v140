@@ -1,11 +1,9 @@
 // テーマ切り替え機能
 (function() {
     function initTheme() {
-        // 保存されたテーマを読み込む
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
         
-        // トグルボタンを作成
         const header = document.querySelector('.app-header');
         if (header) {
             const themeToggle = document.createElement('button');
@@ -23,12 +21,18 @@
             });
             
             header.appendChild(themeToggle);
+        } else {
+            // headerがまだない場合は少し待ってリトライ
+            setTimeout(initTheme, 100);
         }
     }
     
+    // ページ読み込み後に実行
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initTheme);
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initTheme, 500); // 500ms待ってから実行
+        });
     } else {
-        initTheme();
+        setTimeout(initTheme, 500);
     }
 })();
