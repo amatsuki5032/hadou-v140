@@ -1,25 +1,81 @@
+/* === テーマ変数（色のみ） === */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #12161f;
+            --bg-tertiary: #1a1f2e;
+            --bg-quaternary: #242938;
+            --bg-gradient-start: #1a1f2e;
+            --bg-gradient-end: #2d1810;
+            --bg-modal: #0f1419;
+            --bg-modal-dark: #0a0e14;
+            --text-primary: #e8e6e3;
+            --text-white: #ffffff;
+            --text-secondary: #888;
+            --text-tertiary: #999;
+            --text-quaternary: #ccc;
+            --text-muted: #555;
+            --border-primary: #2a2a2a;
+            --border-secondary: #3a3a3a;
+            --border-tertiary: #555;
+            --accent-gold: #d4af37;
+            --accent-red: #8b0000;
+            --accent-red-hover: #a52a2a;
+            --accent-green: #2d5016;
+            --accent-green-hover: #4a7c2e;
+            --scrollbar-track: #0a0e1a;
+            --scrollbar-thumb: #3a3a3a;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f8f8;
+            --bg-tertiary: #f0f0f0;
+            --bg-quaternary: #e8e8e8;
+            --bg-gradient-start: #f0f0f0;
+            --bg-gradient-end: #f8f8f8;
+            --bg-modal: #fafafa;
+            --bg-modal-dark: #f5f5f5;
+            --text-primary: #2a2a2a;
+            --text-white: #2a2a2a;
+            --text-secondary: #666666;
+            --text-tertiary: #555555;
+            --text-quaternary: #444444;
+            --text-muted: #999999;
+            --border-primary: #d0d0d0;
+            --border-secondary: #c0c0c0;
+            --border-tertiary: #aaaaaa;
+            --accent-gold: #d4af37;
+            --accent-red: #c41e3a;
+            --accent-red-hover: #a01729;
+            --accent-green: #4a7c2e;
+            --accent-green-hover: #6ba83e;
+            --scrollbar-track: #f5f5f5;
+            --scrollbar-thumb: #c0c0c0;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            background: #0a0e1a;
-            color: #e8e6e3;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow-x: auto;
             min-width: 1200px;
+            transition: background 0.3s, color 0.3s;
         }
         
         .app-container { 
             display: flex; 
             flex-direction: column; 
-            min-height: 100vh; /* 画面全体のスクロールを可能に */
+            min-height: 100vh;
             min-width: 1200px;
         }
         
         .app-header {
-            background: linear-gradient(135deg, #1a1f2e 0%, #2d1810 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             padding: 15px 30px;
-            border-bottom: 3px solid #d4af37;
+            border-bottom: 3px solid var(--accent-gold);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -29,17 +85,35 @@
             font-family: 'Cinzel', serif;
             font-size: 24px;
             font-weight: 900;
-            color: #d4af37;
+            color: var(--accent-gold);
             text-align: center;
             text-shadow: 2px 2px 8px rgba(212, 175, 55, 0.4);
+        }
+        
+        /* テーマ切り替えボタン */
+        .theme-toggle {
+            padding: 8px 16px;
+            background: var(--bg-quaternary);
+            border: 2px solid var(--border-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.3s;
+            margin-left: auto;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-gold);
+            background: var(--bg-tertiary);
         }
         
         .tab-navigation {
             display: flex;
             gap: 8px;
             padding: 12px 30px;
-            background: #12161f;
-            border-bottom: 2px solid #2a2a2a;
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--border-primary);
             align-items: center;
         }
         
@@ -50,8 +124,8 @@
         
         .reset-button {
             padding: 10px 20px;
-            background: #8b0000;
-            border: 2px solid #a52a2a;
+            background: var(--accent-red);
+            border: 2px solid var(--accent-red-hover);
             color: #fff;
             cursor: pointer;
             font-size: 13px;
@@ -60,23 +134,7 @@
         }
         
         .reset-button:hover {
-            background: #a52a2a;
-            border-color: #ff6347;
-        }
-        
-        .reset-button {
-            padding: 10px 20px;
-            background: #8b0000;
-            border: 2px solid #a52a2a;
-            color: #fff;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 700;
-            transition: all 0.3s;
-        }
-        
-        .reset-button:hover {
-            background: #a52a2a;
+            background: var(--accent-red-hover);
             border-color: #ff6347;
         }
         
@@ -85,8 +143,8 @@
             top: 100%;
             right: 0;
             margin-top: 4px;
-            background: #1a1f2e;
-            border: 2px solid #3a3a3a;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-secondary);
             min-width: 250px;
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -94,9 +152,9 @@
         
         .reset-dropdown-item {
             padding: 12px 16px;
-            border-bottom: 1px solid #2a2a2a;
+            border-bottom: 1px solid var(--border-primary);
             cursor: pointer;
-            color: #ccc;
+            color: var(--text-quaternary);
             font-size: 12px;
             transition: all 0.2s;
             text-align: left;
@@ -112,7 +170,7 @@
         }
         
         .reset-dropdown-item:hover {
-            background: #242938;
+            background: var(--bg-quaternary);
             color: #fff;
         }
         
@@ -121,21 +179,21 @@
         }
         
         .reset-dropdown-item.danger:hover {
-            background: #8b0000;
+            background: var(--accent-red);
             color: #fff;
         }
         
         .reset-dropdown-separator {
             height: 1px;
-            background: #d4af37;
+            background: var(--accent-gold);
             margin: 4px 0;
         }
         
         .tab-button {
             padding: 14px 28px;
             background: transparent;
-            border: 2px solid #3a3a3a;
-            color: #999;
+            border: 2px solid var(--border-secondary);
+            color: var(--text-tertiary);
             cursor: pointer;
             font-size: 15px;
             font-weight: 700;
@@ -143,10 +201,10 @@
             min-height: 48px;
         }
         
-        .tab-button:hover { border-color: #d4af37; color: #d4af37; }
+        .tab-button:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
         .tab-button.active {
-            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
-            border-color: #d4af37;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f4d03f 100%);
+            border-color: var(--accent-gold);
             color: #0a0e1a;
             font-weight: 900;
         }
@@ -155,22 +213,22 @@
             display: flex;
             gap: 0;
             flex: 1;
-            min-height: 0; /* Flexboxでの高さ制限 */
-            max-height: calc(100vh - 80px); /* ヘッダー分を引いた高さ */
+            min-height: 0;
+            max-height: calc(100vh - 80px);
         }
         
         .formations-area {
             width: 900px;
             flex-shrink: 0;
-            background: #0a0e1a;
+            background: var(--bg-primary);
             overflow-y: auto;
             padding: 20px;
-            border-right: 2px solid #2a2a2a;
+            border-right: 2px solid var(--border-primary);
         }
         
         .formation-card {
-            background: linear-gradient(135deg, #12161f 0%, #1a1f2e 100%);
-            border: 2px solid #2a2a2a;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 2px solid var(--border-primary);
             padding: 10px;
             margin-bottom: 10px;
         }
@@ -181,20 +239,20 @@
             align-items: center;
             margin-bottom: 10px;
             padding-bottom: 8px;
-            border-bottom: 2px solid #d4af37;
+            border-bottom: 2px solid var(--accent-gold);
         }
         
         .formation-number {
             font-size: 14px;
             font-weight: 900;
-            color: #d4af37;
+            color: var(--accent-gold);
         }
         
         .formation-select {
             padding: 5px 10px;
-            background: #1a1f2e;
-            border: 1px solid #3a3a3a;
-            color: #e8e6e3;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
@@ -212,7 +270,7 @@
         .slot-label {
             font-size: 11px;
             font-weight: 700;
-            color: #d4af37;
+            color: var(--accent-gold);
             text-align: right;
             display: flex;
             align-items: center;
@@ -221,30 +279,29 @@
         
         .slot-drop-zone {
             min-height: 40px;
-            background: #0a0e1a;
-            border: 2px dashed #3a3a3a;
+            background: var(--bg-primary);
+            border: 2px dashed var(--border-secondary);
             padding: 5px;
             transition: all 0.3s;
         }
         
         .slot-drop-zone.drag-over {
             background: rgba(212, 175, 55, 0.1);
-            border-color: #d4af37;
+            border-color: var(--accent-gold);
             border-style: solid;
         }
         
         .slot-drop-zone.filled {
-            background: linear-gradient(135deg, #1a1f2e 0%, #242938 100%);
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-quaternary) 100%);
             border-style: solid;
-            border-color: #d4af37;
+            border-color: var(--accent-gold);
             position: relative;
         }
         
-        /* 配置済み武将の相性による色分け（8段階グラデーション） */
-        .slot-drop-zone.filled[data-affinity-group="董卓"] { border-left: 4px solid #7f8c8d; } /* グレー */
-        .slot-drop-zone.filled[data-affinity-group="曹操"] { border-left: 4px solid #3498db; } /* 青 */
-        .slot-drop-zone.filled[data-affinity-group="劉表"] { border-left: 4px solid #00d4ff; } /* 水色 */
-        /* レア度による枠線 - 主将・副将・補佐 */
+        .slot-drop-zone.filled[data-affinity-group="董卓"] { border-left: 4px solid #7f8c8d; }
+        .slot-drop-zone.filled[data-affinity-group="曹操"] { border-left: 4px solid #3498db; }
+        .slot-drop-zone.filled[data-affinity-group="劉表"] { border-left: 4px solid #00d4ff; }
+        
         .slot-drop-zone.filled[data-rarity="LR"] { 
             border: 2px solid #a8d8ea;
         }
@@ -253,7 +310,6 @@
             border: 2px solid #ff6b6b;
         }
         
-        /* レア度による枠線 - 侍従武将 */
         .attendant-zone.filled[data-rarity="LR"] { 
             border: 2px solid #a8d8ea;
         }
@@ -270,8 +326,8 @@
             width: 100%;
         }
         
-        .slot-general-name { font-size: 14px; font-weight: 700; color: #e8e6e3; }
-        .slot-general-details { font-size: 11px; color: #888; }
+        .slot-general-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .slot-general-details { font-size: 11px; color: var(--text-secondary); }
         
         .slot-remove {
             background: rgba(255, 100, 100, 0.2);
@@ -285,7 +341,6 @@
         
         .slot-remove:hover { background: rgba(255, 100, 100, 0.4); }
         
-        /* 小さな×ボタン（ホバー時のみ表示） */
         .mini-remove-btn {
             position: absolute;
             top: 1px;
@@ -307,19 +362,19 @@
         
         .slot-empty {
             text-align: center;
-            color: #555;
+            color: var(--text-muted);
             font-size: 10px;
         }
         
         .attendant-zone {
             height: 60px;
             position: relative;
-            background: #0a0e1a;
-            border: 2px dashed #3a3a3a;
+            background: var(--bg-primary);
+            border: 2px dashed var(--border-secondary);
             padding: 3px;
             font-size: 9px;
             text-align: center;
-            color: #555;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -327,11 +382,10 @@
         }
         
         .attendant-zone.filled {
-            border: 2px solid #d4af37;
-            background: #1a1f2e;
+            border: 2px solid var(--accent-gold);
+            background: var(--bg-tertiary);
         }
         
-        /* 参軍ドロップゾーン */
         .advisor-drop-zone {
             transition: all 0.2s;
         }
@@ -349,12 +403,12 @@
         
         .treasure-mini-slot {
             min-height: 35px;
-            background: #0a0e1a;
-            border: 1px dashed #3a3a3a;
+            background: var(--bg-primary);
+            border: 1px dashed var(--border-secondary);
             padding: 2px;
             font-size: 10px;
             text-align: center;
-            color: #555;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -364,7 +418,7 @@
         }
         
         .treasure-mini-slot:hover {
-            border-color: #d4af37;
+            border-color: var(--accent-gold);
         }
         
         .treasure-mini-ur-badge {
@@ -401,26 +455,25 @@
         
         .treasure-name-mini {
             font-size: 10px;
-            color: #e8e6e3;
+            color: var(--text-primary);
             font-weight: 700;
             word-break: break-all;
             line-height: 1.2;
         }
         
         .treasure-mini-slot.filled {
-            border-color: #d4af37;
+            border-color: var(--accent-gold);
             border-style: solid;
             background: rgba(212, 175, 55, 0.1);
-            color: #e8e6e3;
+            color: var(--text-primary);
         }
         
-        /* 武将パネル（右1） */
         .generals-panel {
             flex: 1;
             min-width: 280px;
             max-width: 400px;
-            background: #0f1419;
-            border-right: 2px solid #2a2a2a;
+            background: var(--bg-modal);
+            border-right: 2px solid var(--border-primary);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -442,8 +495,8 @@
         
         .panel-header {
             padding: 15px;
-            background: linear-gradient(135deg, #1a1f2e 0%, #0f1419 100%);
-            border-bottom: 2px solid #d4af37;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-modal) 100%);
+            border-bottom: 2px solid var(--accent-gold);
             flex-shrink: 0;
             display: flex;
             justify-content: space-between;
@@ -462,7 +515,7 @@
             margin: 0;
         }
         
-        .panel-title { font-size: 14px; font-weight: 900; color: #d4af37; margin-bottom: 10px; }
+        .panel-title { font-size: 14px; font-weight: 900; color: var(--accent-gold); margin-bottom: 10px; }
         
         .panel-toggle {
             display: flex;
@@ -475,66 +528,66 @@
         }
         
         .panel-toggle input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
-        .panel-toggle label { font-size: 11px; font-weight: 700; color: #d4af37; cursor: pointer; }
+        .panel-toggle label { font-size: 11px; font-weight: 700; color: var(--accent-gold); cursor: pointer; }
         
         .filter-section { display: flex; flex-direction: column; gap: 8px; flex-basis: 100%; }
         .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
         
         .filter-chip {
             padding: 4px 10px;
-            background: #1a1f2e;
-            border: 1px solid #3a3a3a;
-            color: #999;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-tertiary);
             font-size: 11px;
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 700;
         }
         
-        .filter-chip:hover { border-color: #d4af37; color: #d4af37; }
-        .filter-chip.active { background: #d4af37; border-color: #d4af37; color: #0a0e1a; }
+        .filter-chip:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+        .filter-chip.active { background: var(--accent-gold); border-color: var(--accent-gold); color: #0a0e1a; }
         
         .search-box {
             width: 100%;
             padding: 8px 10px;
-            background: #1a1f2e;
-            border: 1px solid #3a3a3a;
-            color: #e8e6e3;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
             font-size: 11px;
         }
         
-        .search-box:focus { outline: none; border-color: #d4af37; }
+        .search-box:focus { outline: none; border-color: var(--accent-gold); }
         
         .generals-list, .treasures-list { 
             flex: 1; 
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* 全体のスクロールを無効化 */
-            padding: 0; /* paddingを削除 */
+            overflow: hidden;
+            padding: 0;
         }
         
         .generals-tabs {
             display: flex;
             gap: 4px;
-            margin: 10px 10px 10px 10px; /* 上下左右にマージン */
-            border-bottom: 1px solid #3a3a3a;
-            flex-shrink: 0; /* タブは固定 */
+            margin: 10px 10px 10px 10px;
+            border-bottom: 1px solid var(--border-secondary);
+            flex-shrink: 0;
         }
         
         .generals-content-wrapper {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            min-height: 0; /* Flexboxでのスクロール有効化 */
-            padding: 0 10px 10px 10px; /* 左右下にpadding */
+            min-height: 0;
+            padding: 0 10px 10px 10px;
         }
         
         .treasures-content-wrapper {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            min-height: 0; /* Flexboxでのスクロール有効化 */
-            padding: 0 10px 10px 10px; /* 左右下にpadding */
+            min-height: 0;
+            padding: 0 10px 10px 10px;
         }
         
         .generals-tab {
@@ -542,7 +595,7 @@
             background: transparent;
             border: none;
             border-bottom: 2px solid transparent;
-            color: #888;
+            color: var(--text-secondary);
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
@@ -550,12 +603,12 @@
         }
         
         .generals-tab:hover {
-            color: #d4af37;
+            color: var(--accent-gold);
         }
         
         .generals-tab.active {
-            color: #d4af37;
-            border-bottom-color: #d4af37;
+            color: var(--accent-gold);
+            border-bottom-color: var(--accent-gold);
         }
         
         .general-item-wrapper {
@@ -568,7 +621,7 @@
             right: 2px;
             background: rgba(212, 175, 55, 0.2);
             border: none;
-            color: #d4af37;
+            color: var(--accent-gold);
             font-size: 10px;
             padding: 2px 4px;
             cursor: pointer;
@@ -590,11 +643,11 @@
         .unit-type-title {
             font-size: 11px;
             font-weight: 900;
-            color: #d4af37;
+            color: var(--accent-gold);
             margin-bottom: 6px;
             padding: 4px 6px;
-            background: #1a1f2e;
-            border-left: 3px solid #d4af37;
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent-gold);
         }
         
         .generals-grid-display {
@@ -607,8 +660,8 @@
         
         .general-item {
             padding: 4px;
-            background: #1a1f2e;
-            border: 1px solid #2a2a2a;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
             cursor: grab;
             transition: all 0.2s;
             font-size: 10px;
@@ -643,7 +696,6 @@
             color: #ff6b6b;
         }
         
-        /* レア度による枠線と文字色 */
         .general-item[data-rarity="LR"] {
             border: 2px solid #a8d8ea;
         }
@@ -662,33 +714,33 @@
         
         .general-item:active { cursor: grabbing; }
         .general-item:hover {
-            background: #242938;
-            border-color: #d4af37;
+            background: var(--bg-quaternary);
+            border-color: var(--accent-gold);
             transform: translateY(-2px);
         }
         
         .general-item.used { 
             opacity: 0.35; 
             cursor: not-allowed; 
-            background: #0a0e14 !important;
+            background: var(--bg-modal-dark) !important;
             filter: grayscale(0.3);
         }
         .general-item.used:hover { 
             transform: none; 
-            border-color: #2a2a2a; 
-            background: #0a0e14 !important;
+            border-color: var(--border-primary); 
+            background: var(--bg-modal-dark) !important;
         }
         
         .general-name { 
             font-size: 11px; 
             font-weight: 700; 
-            color: #ffffff; 
+            color: var(--text-white); 
             margin-bottom: 2px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .general-info { font-size: 9px; color: #888; }
+        .general-info { font-size: 9px; color: var(--text-secondary); }
         
         .star-rank {
             display: inline-block;
@@ -721,7 +773,6 @@
             color: #ff6b6b;
         }
         
-        /* インライン鍛錬マーク（名宝リスト用） */
         .treasure-forge-inline {
             font-size: 9px;
             font-weight: bold;
@@ -735,19 +786,18 @@
             color: #ff6b6b;
         }
         
-        .general-rarity { color: #d4af37; font-weight: 700; }
+        .general-rarity { color: var(--accent-gold); font-weight: 700; }
         
-        /* 名宝パネル（右2） */
         .treasures-panel {
             flex: 1;
             min-width: 280px;
             max-width: 400px;
-            background: #0f1419;
+            background: var(--bg-modal);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transition: all 0.3s ease;
-            border-left: 2px solid #2a2a2a;
+            border-left: 2px solid var(--border-primary);
         }
         
         .treasures-panel.collapsed {
@@ -764,9 +814,9 @@
         .treasures-tabs {
             display: flex;
             gap: 4px;
-            margin: 10px 10px 10px 10px; /* 上下左右にマージン */
-            border-bottom: 1px solid #3a3a3a;
-            flex-shrink: 0; /* タブは固定 */
+            margin: 10px 10px 10px 10px;
+            border-bottom: 1px solid var(--border-secondary);
+            flex-shrink: 0;
         }
         
         .treasures-tab {
@@ -774,7 +824,7 @@
             background: transparent;
             border: none;
             border-bottom: 2px solid transparent;
-            color: #888;
+            color: var(--text-secondary);
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
@@ -782,12 +832,12 @@
         }
         
         .treasures-tab:hover {
-            color: #d4af37;
+            color: var(--accent-gold);
         }
         
         .treasures-tab.active {
-            color: #d4af37;
-            border-bottom-color: #d4af37;
+            color: var(--accent-gold);
+            border-bottom-color: var(--accent-gold);
         }
         
         .treasure-item-wrapper {
@@ -800,7 +850,7 @@
             right: 2px;
             background: rgba(212, 175, 55, 0.2);
             border: none;
-            color: #d4af37;
+            color: var(--accent-gold);
             font-size: 10px;
             padding: 2px 4px;
             cursor: pointer;
@@ -820,11 +870,11 @@
         .treasure-category-title {
             font-size: 11px;
             font-weight: 900;
-            color: #d4af37;
+            color: var(--accent-gold);
             margin-bottom: 6px;
             padding: 4px 6px;
-            background: #1a1f2e;
-            border-left: 3px solid #d4af37;
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent-gold);
         }
         
         .treasures-grid-display {
@@ -837,8 +887,8 @@
         
         .treasure-item {
             padding: 4px;
-            background: #1a1f2e;
-            border: 1px solid #2a2a2a;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
             cursor: pointer;
             transition: all 0.2s;
             font-size: 10px;
@@ -867,8 +917,8 @@
             bottom: 2px;
             right: 2px;
             background: rgba(100, 100, 100, 0.3);
-            border: 1px solid #555;
-            color: #999;
+            border: 1px solid var(--border-tertiary);
+            color: var(--text-tertiary);
             font-size: 8px;
             padding: 2px 4px;
             cursor: pointer;
@@ -889,34 +939,33 @@
         }
         
         .treasure-item:hover {
-            background: #242938;
-            border-color: #d4af37;
+            background: var(--bg-quaternary);
+            border-color: var(--accent-gold);
             transform: translateY(-2px);
         }
         
         .treasure-item.used { opacity: 0.3; cursor: not-allowed; }
-        .treasure-item.used:hover { transform: none; border-color: #2a2a2a; }
+        .treasure-item.used:hover { transform: none; border-color: var(--border-primary); }
         .treasure-name { 
             font-weight: 700; 
-            color: #ffffff; 
+            color: var(--text-white); 
             font-size: 10px; 
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .treasure-type { font-size: 8px; color: #888; margin-top: 2px; }
+        .treasure-type { font-size: 8px; color: var(--text-secondary); margin-top: 2px; }
         
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0e1a; }
-        ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-gold); }
     
-        /* 画像設定ボタン */
         .image-settings-button {
             padding: 8px 16px;
-            background: #2d3748;
-            border: 2px solid #4a5568;
-            color: #d4af37;
+            background: var(--bg-quaternary);
+            border: 2px solid var(--border-secondary);
+            color: var(--accent-gold);
             cursor: pointer;
             font-size: 12px;
             font-weight: 700;
@@ -925,11 +974,10 @@
         }
         
         .image-settings-button:hover {
-            background: #4a5568;
-            border-color: #d4af37;
+            background: var(--bg-tertiary);
+            border-color: var(--accent-gold);
         }
         
-        /* 画像設定モーダル */
         .image-modal-overlay {
             position: fixed;
             top: 0;
@@ -944,8 +992,8 @@
         }
         
         .image-modal-content {
-            background: #1a1f2e;
-            border: 3px solid #d4af37;
+            background: var(--bg-tertiary);
+            border: 3px solid var(--accent-gold);
             padding: 30px;
             max-width: 900px;
             width: 90%;
@@ -956,7 +1004,7 @@
         .image-modal-title {
             font-size: 20px;
             font-weight: 900;
-            color: #d4af37;
+            color: var(--accent-gold);
             margin-bottom: 20px;
             text-align: center;
         }
@@ -969,7 +1017,7 @@
             display: block;
             font-size: 13px;
             font-weight: 700;
-            color: #d4af37;
+            color: var(--accent-gold);
             margin-bottom: 8px;
         }
         
@@ -977,9 +1025,9 @@
             width: 100%;
             min-height: 200px;
             padding: 12px;
-            background: #0f1419;
-            border: 2px solid #3a3a3a;
-            color: #e8e6e3;
+            background: var(--bg-modal);
+            border: 2px solid var(--border-secondary);
+            color: var(--text-primary);
             font-size: 11px;
             font-family: 'Courier New', monospace;
             resize: vertical;
@@ -988,21 +1036,21 @@
         
         .image-url-input-group textarea:focus {
             outline: none;
-            border-color: #d4af37;
+            border-color: var(--accent-gold);
         }
         
         .image-url-help {
             font-size: 11px;
-            color: #888;
+            color: var(--text-secondary);
             margin-top: 8px;
             line-height: 1.7;
-            background: #0a0e14;
+            background: var(--bg-modal-dark);
             padding: 12px;
-            border-left: 3px solid #4a5568;
+            border-left: 3px solid var(--border-secondary);
         }
         
         .image-url-help strong {
-            color: #d4af37;
+            color: var(--accent-gold);
         }
         
         .image-modal-buttons {
@@ -1022,35 +1070,33 @@
         }
         
         .image-modal-button-save {
-            background: #2d5016;
-            border-color: #4a7c2e;
+            background: var(--accent-green);
+            border-color: var(--accent-green-hover);
             color: #fff;
         }
         
         .image-modal-button-save:hover {
-            background: #4a7c2e;
+            background: var(--accent-green-hover);
             border-color: #6ba83e;
         }
         
         .image-modal-button-cancel {
-            background: #8b0000;
-            border-color: #a52a2a;
+            background: var(--accent-red);
+            border-color: var(--accent-red-hover);
             color: #fff;
         }
         
         .image-modal-button-cancel:hover {
-            background: #a52a2a;
+            background: var(--accent-red-hover);
             border-color: #ff6347;
         }
         
-        /* 武将・名宝アイテムの画像表示 */
         .general-item-with-image, .treasure-item-with-image {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
         
-        /* 名宝アイテムのコンパクト横並びレイアウト */
         .treasure-item-compact {
             display: flex;
             flex-direction: row;
@@ -1068,7 +1114,6 @@
             height: 40px;
         }
         
-        /* 名宝アイテムの画像なしレイアウト */
         .treasure-item-compact-no-image {
             display: flex;
             flex-direction: column;
@@ -1079,7 +1124,6 @@
             min-width: 0;
         }
         
-        /* 画像がない場合は通常の縦並びレイアウト */
         .general-item-with-image:empty + .item-text-content,
         .treasure-item-with-image:empty + .item-text-content {
             margin-top: 0;
@@ -1102,19 +1146,19 @@
         }
         
         .treasure-item .item-image {
-            border: 1px solid #d4af37;
+            border: 1px solid var(--accent-gold);
         }
         
         .item-image-placeholder {
             width: 100%;
             height: 40px;
-            background: #0a0e14;
-            border: 1px dashed #3a3a3a;
+            background: var(--bg-modal-dark);
+            border: 1px dashed var(--border-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 8px;
-            color: #555;
+            color: var(--text-muted);
             flex-shrink: 0;
             border-radius: 4px;
         }
@@ -1125,7 +1169,6 @@
             overflow: hidden;
         }
         
-        /* スロット内の画像表示 */
         .slot-content-with-image {
             display: flex;
             align-items: center;
@@ -1141,19 +1184,18 @@
         }
         
         .slot-general-image {
-            border: 1px solid #3a3a3a;
+            border: 1px solid var(--border-secondary);
         }
         
         .slot-treasure-image {
-            border: 1px solid #d4af37;
+            border: 1px solid var(--accent-gold);
         }
         
         .slot-image-placeholder {
             width: 28px;
             height: 28px;
-            background: #0a0e14;
-            border: 1px dashed #2a2a2a;
+            background: var(--bg-modal-dark);
+            border: 1px dashed var(--border-primary);
             flex-shrink: 0;
             border-radius: 2px;
         }
-
