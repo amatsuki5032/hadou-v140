@@ -155,10 +155,10 @@ function canPlaceAttendant(formationType, generalSlot, attendantPosition) {
  */
 function getGeneralIconPath(general) {
     if (!general || !general.rarity || !general.name) {
-        return '/icons/placeholder.png';
+        return './icons/placeholder.png';
     }
     // ファイル名形式: LR張角.png（レアリティ+武将名）
-    return `/icons/generals/${general.rarity}/${general.rarity}${general.name}.png`;
+    return `./icons/generals/${general.rarity}/${general.rarity}${general.name}.png`;
 }
 
 /**
@@ -170,16 +170,16 @@ function getGeneralIconPath(general) {
  */
 function getTreasureIconPath(treasure) {
     if (!treasure || !treasure.name) {
-        return '/icons/placeholder.png';
+        return './icons/placeholder.png';
     }
     
-    // UR化された名宝
+    // UR化された名宝（ファイル名: UR赤兎馬.png）
     if (treasure.isUR) {
-        return `/icons/treasures/UR/${treasure.name}.png`;
+        return `./icons/treasures/UR/UR${treasure.name}.png`;
     }
     
-    // 通常の名宝
-    return `/icons/treasures/normal/${treasure.name}.png`;
+    // 通常の名宝（ファイル名: 赤兎馬.png）
+    return `./icons/treasures/normal/${treasure.name}.png`;
 }
 
 /**
