@@ -3919,7 +3919,7 @@ const { useState, useEffect } = React;
                                             </div>
                                             <div style={{
                                                 display: 'grid',
-                                                gridTemplateColumns: 'auto 1fr',
+                                                gridTemplateColumns: '50px 1fr',
                                                 gap: '6px',
                                                 alignItems: 'center'
                                             }}>
@@ -3963,9 +3963,10 @@ const { useState, useEffect } = React;
                                                                     background: advisorGeneral ? 'rgba(52, 152, 219, 0.1)' : '#0a0e14',
                                                                     border: `1px solid ${advisorGeneral ? advisor.color : '#333'}`,
                                                                     borderRadius: '3px',
-                                                                    minHeight: '56px',
+                                                                    minHeight: '52px',
                                                                     display: 'flex',
                                                                     alignItems: 'center',
+                                                                    justifyContent: 'center',
                                                                     cursor: advisorGeneral ? 'grab' : 'default',
                                                                     position: 'relative'
                                                                 }}
