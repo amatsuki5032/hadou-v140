@@ -335,7 +335,7 @@ const { useState, useEffect } = React;
             const [imageUrls, setImageUrls] = useState({});
             const [showImages, setShowImages] = useState(() => {
                 const saved = localStorage.getItem('showImages');
-                return saved !== null ? JSON.parse(saved) : false; // デフォルトはOFF
+                return saved !== null ? JSON.parse(saved) : true; // デフォルトはON
             });
 
             const [contextHelpType, setContextHelpType] = useState(null); // 'general', 'treasure', 'pattern', 'template'
@@ -4363,7 +4363,6 @@ const { useState, useEffect } = React;
                                                         className="general-item" 
                                                         data-affinity-group={getAffinityGroup(general.affinity)}
                                                         style={{
-                                                            opacity: 0.5,
                                                             backgroundColor: `${getAffinityColor(general.affinity)}60`
                                                         }}
                                                     >
@@ -4695,7 +4694,12 @@ const { useState, useEffect } = React;
                                                                         }
                                                                     }}
                                                                 >
-                                                                    <div className="treasure-item-compact-no-image">
+                                                                    <div className="treasure-item-with-image">
+                                                                        <ItemImage 
+                                                                            src={getImageUrl('treasure', treasure.id, null, treasure.name)}
+                                                                            alt={treasure.name}
+                                                                            rarity={isTreasureUR(treasure.id) ? 'UR' : 'normal'}
+                                                                        />
                                                                         <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1}}>
                                                                             <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
                                                                                 {getTreasureForgeRank(treasure.id) >= 0 && (
@@ -4758,13 +4762,17 @@ const { useState, useEffect } = React;
                                                     className="treasure-item-wrapper"
                                                 >
                                                     <div 
-                                                        className="treasure-item" 
-                                                        style={{opacity: 0.5}}
+                                                        className="treasure-item"
                                                     >
                                                         {isTreasureUR(treasure.id) && (
                                                             <div className="treasure-ur-badge">UR</div>
                                                         )}
-                                                        <div className="treasure-item-compact-no-image">
+                                                        <div className="treasure-item-with-image">
+                                                            <ItemImage 
+                                                                src={getImageUrl('treasure', treasure.id, null, treasure.name)}
+                                                                alt={treasure.name}
+                                                                rarity={isTreasureUR(treasure.id) ? 'UR' : 'normal'}
+                                                            />
                                                             <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1}}>
                                                                 <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
                                                                     {getTreasureForgeRank(treasure.id) >= 0 && (
