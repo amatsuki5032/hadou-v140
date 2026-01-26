@@ -3792,17 +3792,17 @@ const { useState, useEffect } = React;
                                                             >
                                                                 ×
                                                             </button>
-                                                            <div style={{display: 'flex', alignItems: 'center', gap: '4px', width: '100%'}}>
+                                                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', width: '100%'}}>
                                                                 <ItemImage 
                                                                     src={getImageUrl('general', data.attendants[slotName].id, data.attendants[slotName].rarity, data.attendants[slotName].name)}
                                                                     alt={data.attendants[slotName].name}
                                                                     rarity={data.attendants[slotName].rarity}
                                                                 />
-                                                                <div style={{flex: 1, minWidth: 0}}>
-                                                                    <div className="slot-general-name" style={{fontSize: '12px', color: '#ffffff'}}>
+                                                                <div style={{flex: 1, minWidth: 0, overflow: 'hidden'}}>
+                                                                    <div style={{fontSize: '11px', color: '#ffffff', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                                                                         {data.attendants[slotName].name}
                                                                     </div>
-                                                                    <div className="slot-general-details" style={{fontSize: '9px'}}>
+                                                                    <div style={{fontSize: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                                                                 <span style={{color: getRarityColor(data.attendants[slotName].rarity), fontWeight: 'bold'}}>
                                                                     {data.attendants[slotName].rarity}
                                                                 </span>
@@ -3985,7 +3985,7 @@ const { useState, useEffect } = React;
                                                                         <div style={{
                                                                             display: 'flex',
                                                                             alignItems: 'center',
-                                                                            gap: '6px',
+                                                                            gap: '4px',
                                                                             fontSize: '10px',
                                                                             width: '100%'
                                                                         }}>
