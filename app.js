@@ -3615,18 +3615,15 @@ const { useState, useEffect } = React;
                                                                             rarity={general.rarity}
                                                                         />
                                                                     ) : hasAttendantSlot ? (
-                                                                        <>
-                                                                            <div style={{fontSize: '7px', color: '#888'}}>侍</div>
-                                                                            {attendant ? (
-                                                                                <ItemImage 
-                                                                                    src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
-                                                                                    alt={attendant.name}
-                                                                                    rarity={attendant.rarity}
-                                                                                />
-                                                                            ) : (
-                                                                                <div>空</div>
-                                                                            )}
-                                                                        </>
+                                                                        attendant ? (
+                                                                            <ItemImage 
+                                                                                src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
+                                                                                alt={attendant.name}
+                                                                                rarity={attendant.rarity}
+                                                                            />
+                                                                        ) : (
+                                                                            <div style={{fontSize: '9px', color: '#6495ed'}}>侍従</div>
+                                                                        )
                                                                     ) : (
                                                                         slotName || ''
                                                                     )}
@@ -3946,11 +3943,11 @@ const { useState, useEffect } = React;
                                                                     handleAdvisorDrop(e, key, advisor.key);
                                                                 }}
                                                                 style={{
-                                                                    padding: '6px',
+                                                                    padding: '4px',
                                                                     background: advisorGeneral ? 'rgba(52, 152, 219, 0.1)' : '#0a0e14',
                                                                     border: `1px solid ${advisorGeneral ? advisor.color : '#333'}`,
                                                                     borderRadius: '3px',
-                                                                    minHeight: '36px',
+                                                                    minHeight: '56px',
                                                                     display: 'flex',
                                                                     alignItems: 'center',
                                                                     cursor: advisorGeneral ? 'grab' : 'default',
@@ -3992,26 +3989,40 @@ const { useState, useEffect } = React;
                                                                             fontSize: '10px',
                                                                             width: '100%'
                                                                         }}>
-                                                                            <span style={{
-                                                                                color: getRarityColor(advisorGeneral.rarity),
-                                                                                fontWeight: 'bold',
-                                                                                fontSize: '9px'
-                                                                            }}>
-                                                                                {advisorGeneral.rarity}
-                                                                            </span>
-                                                                            <span style={{
-                                                                                color: '#ffffff',
-                                                                                fontWeight: 'bold',
-                                                                                flex: 1
-                                                                            }}>
-                                                                                {advisorGeneral.name}
-                                                                            </span>
-                                                                            <span style={{
-                                                                                color: getAffinityColor(advisorGeneral.affinity),
-                                                                                fontSize: '8px'
-                                                                            }}>
-                                                                                相性{advisorGeneral.affinity}
-                                                                            </span>
+                                                                            <ItemImage 
+                                                                                src={getImageUrl('general', advisorGeneral.id, advisorGeneral.rarity, advisorGeneral.name)}
+                                                                                alt={advisorGeneral.name}
+                                                                                rarity={advisorGeneral.rarity}
+                                                                            />
+                                                                            <div style={{flex: 1, minWidth: 0}}>
+                                                                                <div style={{
+                                                                                    color: '#ffffff',
+                                                                                    fontWeight: 'bold',
+                                                                                    fontSize: '11px',
+                                                                                    whiteSpace: 'nowrap',
+                                                                                    overflow: 'hidden',
+                                                                                    textOverflow: 'ellipsis'
+                                                                                }}>
+                                                                                    {advisorGeneral.name}
+                                                                                </div>
+                                                                                <div style={{
+                                                                                    display: 'flex',
+                                                                                    gap: '6px',
+                                                                                    fontSize: '9px'
+                                                                                }}>
+                                                                                    <span style={{
+                                                                                        color: getRarityColor(advisorGeneral.rarity),
+                                                                                        fontWeight: 'bold'
+                                                                                    }}>
+                                                                                        {advisorGeneral.rarity}
+                                                                                    </span>
+                                                                                    <span style={{
+                                                                                        color: getAffinityColor(advisorGeneral.affinity)
+                                                                                    }}>
+                                                                                        相性{advisorGeneral.affinity}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </>
                                                                 ) : (
