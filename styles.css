@@ -371,14 +371,14 @@
             position: relative;
             background: var(--bg-primary);
             border: 2px dashed var(--border-secondary);
-            padding: 3px;
+            padding: 2px;
             font-size: 9px;
             text-align: center;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: visible;
         }
         
         .attendant-zone.filled {
