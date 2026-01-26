@@ -202,16 +202,17 @@ const { useState, useEffect } = React;
                 }
                 
                 if (!src || error) {
-                    return <div className="item-image-placeholder">画像なし</div>;
+                    return <div className="item-icon-placeholder">画像なし</div>;
                 }
                 
                 return (
                     <img
                         src={src}
                         alt={alt}
-                        className="item-image"
-                        onError={() => setError(true)}
+                        className="item-icon"
+                        onError={handleImageError}
                         loading="lazy"
+                        data-rarity={alt}
                     />
                 );
             };
@@ -767,20 +768,14 @@ const { useState, useEffect } = React;
             // 画像URL取得
             const getImageUrl = (type, id, rarity, name) => {
                 // type: 'general' or 'treasure'
-                const keys = [
-                    `${type}_${rarity}_${id}`,
-                    `${type}_${rarity}_${name}`,
-                    `${type}_${id}`,
-                    `${type}_${name}`,
-                    `${type}_${name.replace(/[\s・]/g, '')}`  // スペース・中黒を除去
-                ];
-                
-                for (const key of keys) {
-                    if (imageUrls[key]) {
-                        return imageUrls[key];
-                    }
+                if (type === 'general') {
+                    return getGeneralIconPath({ rarity, name });
+                } else if (type === 'treasure') {
+                    // 名宝の場合、UR化状態をチェック
+                    const isUR = isTreasureUR(id);
+                    return getTreasureIconPath({ name, isUR });
                 }
-                return null;
+                return '/icons/placeholder.png';
             };
             
             // 画像URL一括設定
