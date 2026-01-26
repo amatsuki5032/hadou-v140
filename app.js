@@ -3609,18 +3609,33 @@ const { useState, useEffect } = React;
                                                                     }}
                                                                 >
                                                                     {general ? (
-                                                                        <ItemImage 
-                                                                            src={getImageUrl('general', general.id, general.rarity, general.name)}
-                                                                            alt={general.name}
-                                                                            rarity={general.rarity}
-                                                                        />
+                                                                        showImages ? (
+                                                                            <ItemImage 
+                                                                                src={getImageUrl('general', general.id, general.rarity, general.name)}
+                                                                                alt={general.name}
+                                                                                rarity={general.rarity}
+                                                                            />
+                                                                        ) : (
+                                                                            <>
+                                                                                <div style={{fontSize: '7px', color: rarityColor, opacity: 0.8}}>{general.rarity}</div>
+                                                                                <div>{general.name.substring(0, 2)}</div>
+                                                                            </>
+                                                                        )
                                                                     ) : hasAttendantSlot ? (
                                                                         attendant ? (
-                                                                            <ItemImage 
-                                                                                src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
-                                                                                alt={attendant.name}
-                                                                                rarity={attendant.rarity}
-                                                                            />
+                                                                            showImages ? (
+                                                                                <ItemImage 
+                                                                                    src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
+                                                                                    alt={attendant.name}
+                                                                                    rarity={attendant.rarity}
+                                                                                />
+                                                                            ) : (
+                                                                                <>
+                                                                                    <div style={{fontSize: '7px', color: '#888'}}>侍</div>
+                                                                                    <div style={{fontSize: '6px', color: rarityColor, opacity: 0.8}}>{attendant.rarity}</div>
+                                                                                    <div style={{color: affinityColor}}>{attendant.name.substring(0, 2)}</div>
+                                                                                </>
+                                                                            )
                                                                         ) : (
                                                                             <div style={{fontSize: '9px', color: '#6495ed'}}>侍従</div>
                                                                         )
@@ -3792,30 +3807,31 @@ const { useState, useEffect } = React;
                                                             >
                                                                 ×
                                                             </button>
-                                                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', width: '100%'}}>
+                                                            {showImages ? (
                                                                 <ItemImage 
                                                                     src={getImageUrl('general', data.attendants[slotName].id, data.attendants[slotName].rarity, data.attendants[slotName].name)}
                                                                     alt={data.attendants[slotName].name}
                                                                     rarity={data.attendants[slotName].rarity}
                                                                 />
-                                                                <div style={{flex: 1, minWidth: 0, overflow: 'hidden'}}>
+                                                            ) : (
+                                                                <div style={{width: '100%'}}>
                                                                     <div style={{fontSize: '11px', color: '#ffffff', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                                                                         {data.attendants[slotName].name}
                                                                     </div>
                                                                     <div style={{fontSize: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                                                <span style={{color: getRarityColor(data.attendants[slotName].rarity), fontWeight: 'bold'}}>
-                                                                    {data.attendants[slotName].rarity}
-                                                                </span>
-                                                                {' '}
-                                                                <span style={{
-                                                                    color: getAffinityColor(data.attendants[slotName].affinity),
-                                                                    fontWeight: 'bold'
-                                                                }}>
-                                                                    相性{data.attendants[slotName].affinity}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                                        <span style={{color: getRarityColor(data.attendants[slotName].rarity), fontWeight: 'bold'}}>
+                                                                            {data.attendants[slotName].rarity}
+                                                                        </span>
+                                                                        {' '}
+                                                                        <span style={{
+                                                                            color: getAffinityColor(data.attendants[slotName].affinity),
+                                                                            fontWeight: 'bold'
+                                                                        }}>
+                                                                            相性{data.attendants[slotName].affinity}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     ) : (
                                                         '侍従'
@@ -3982,19 +3998,14 @@ const { useState, useEffect } = React;
                                                                         >
                                                                             ×
                                                                         </button>
-                                                                        <div style={{
-                                                                            display: 'flex',
-                                                                            alignItems: 'center',
-                                                                            gap: '4px',
-                                                                            fontSize: '10px',
-                                                                            width: '100%'
-                                                                        }}>
+                                                                        {showImages ? (
                                                                             <ItemImage 
                                                                                 src={getImageUrl('general', advisorGeneral.id, advisorGeneral.rarity, advisorGeneral.name)}
                                                                                 alt={advisorGeneral.name}
                                                                                 rarity={advisorGeneral.rarity}
                                                                             />
-                                                                            <div style={{flex: 1, minWidth: 0}}>
+                                                                        ) : (
+                                                                            <div style={{width: '100%', fontSize: '10px'}}>
                                                                                 <div style={{
                                                                                     color: '#ffffff',
                                                                                     fontWeight: 'bold',
@@ -4023,7 +4034,7 @@ const { useState, useEffect } = React;
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
+                                                                        )}
                                                                     </>
                                                                 ) : (
                                                                     <div style={{
