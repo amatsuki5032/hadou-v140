@@ -3609,18 +3609,20 @@ const { useState, useEffect } = React;
                                                                     }}
                                                                 >
                                                                     {general ? (
-                                                                        <>
-                                                                            <div style={{fontSize: '7px', color: rarityColor, opacity: 0.8}}>{general.rarity}</div>
-                                                                            <div>{general.name.substring(0, 2)}</div>
-                                                                        </>
+                                                                        <ItemImage 
+                                                                            src={getImageUrl('general', general.id, general.rarity, general.name)}
+                                                                            alt={general.name}
+                                                                            rarity={general.rarity}
+                                                                        />
                                                                     ) : hasAttendantSlot ? (
                                                                         <>
                                                                             <div style={{fontSize: '7px', color: '#888'}}>侍</div>
                                                                             {attendant ? (
-                                                                                <>
-                                                                                    <div style={{fontSize: '6px', color: rarityColor, opacity: 0.8}}>{attendant.rarity}</div>
-                                                                                    <div style={{color: affinityColor}}>{attendant.name.substring(0, 2)}</div>
-                                                                                </>
+                                                                                <ItemImage 
+                                                                                    src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
+                                                                                    alt={attendant.name}
+                                                                                    rarity={attendant.rarity}
+                                                                                />
                                                                             ) : (
                                                                                 <div>空</div>
                                                                             )}
