@@ -5487,12 +5487,19 @@ const { useState, useEffect } = React;
                                                         gap: '12px'
                                                     }}
                                                 >
-                                                    <div>
-                                                        <div style={{color: '#fff', fontWeight: 'bold'}}>
-                                                            {general.name}
-                                                        </div>
-                                                        <div style={{color: '#888', fontSize: '12px'}}>
-                                                            {general.rarity} - {getUnitTypeName(general.unit_type)}
+                                                    <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                                                        <ItemImage 
+                                                            src={getImageUrl('general', general.id, general.rarity, general.name)}
+                                                            alt={general.name}
+                                                            rarity={general.rarity}
+                                                        />
+                                                        <div>
+                                                            <div style={{color: '#fff', fontWeight: 'bold'}}>
+                                                                {general.name}
+                                                            </div>
+                                                            <div style={{color: '#888', fontSize: '12px'}}>
+                                                                {general.rarity} - {getUnitTypeName(general.unit_type)}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div style={{display: 'flex', gap: '4px'}}>
@@ -5781,12 +5788,19 @@ const { useState, useEffect } = React;
                                                     gap: '12px'
                                                 }}
                                             >
-                                                <div>
-                                                    <div style={{color: '#fff', fontWeight: 'bold'}}>
-                                                        {treasure.name}
-                                                    </div>
-                                                    <div style={{color: '#888', fontSize: '12px'}}>
-                                                        {treasure.category} {isUR && <span style={{color: '#ff6b6b'}}>[UR]</span>}
+                                                <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                                                    <ItemImage 
+                                                        src={getImageUrl('treasure', treasure.id, null, treasure.name)}
+                                                        alt={treasure.name}
+                                                        rarity={isUR ? 'UR' : 'normal'}
+                                                    />
+                                                    <div>
+                                                        <div style={{color: '#fff', fontWeight: 'bold'}}>
+                                                            {treasure.name}
+                                                        </div>
+                                                        <div style={{color: '#888', fontSize: '12px'}}>
+                                                            {treasure.category} {isUR && <span style={{color: '#ff6b6b'}}>[UR]</span>}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div style={{display: 'flex', gap: '4px'}}>
