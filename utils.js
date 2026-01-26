@@ -157,7 +157,8 @@ function getGeneralIconPath(general) {
     if (!general || !general.rarity || !general.name) {
         return '/icons/placeholder.png';
     }
-    return `/icons/generals/${general.rarity}/${general.name}.png`;
+    // ファイル名形式: LR張角.png（レアリティ+武将名）
+    return `/icons/generals/${general.rarity}/${general.rarity}${general.name}.png`;
 }
 
 /**
