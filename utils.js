@@ -141,3 +141,51 @@ function canPlaceAttendant(formationType, generalSlot, attendantPosition) {
     }
     return false;  // 全部ダメならfalse
 }
+
+// ========================================
+// 画像パス生成ユーティリティ
+// ========================================
+
+/**
+ * 武将のアイコン画像パスを取得
+ * @param {Object} general - 武将データ
+ * @param {string} general.rarity - レアリティ (LR, UR, SSR, SR, R, N)
+ * @param {string} general.name - 武将名
+ * @returns {string} 画像パス
+ */
+function getGeneralIconPath(general) {
+    if (!general || !general.rarity || !general.name) {
+        return '/icons/placeholder.png';
+    }
+    return `/icons/generals/${general.rarity}/${general.name}.png`;
+}
+
+/**
+ * 名宝のアイコン画像パスを取得
+ * @param {Object} treasure - 名宝データ
+ * @param {string} treasure.name - 名宝名
+ * @param {boolean} treasure.isUR - UR化しているか
+ * @returns {string} 画像パス
+ */
+function getTreasureIconPath(treasure) {
+    if (!treasure || !treasure.name) {
+        return '/icons/placeholder.png';
+    }
+    
+    // UR化された名宝
+    if (treasure.isUR) {
+        return `/icons/treasures/UR/${treasure.name}.png`;
+    }
+    
+    // 通常の名宝
+    return `/icons/treasures/normal/${treasure.name}.png`;
+}
+
+/**
+ * 画像読み込みエラー時の処理
+ * @param {Event} event - エラーイベント
+ */
+function handleImageError(event) {
+    event.target.src = '/icons/placeholder.png';
+    event.target.onerror = null; // 無限ループ防止
+}
