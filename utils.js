@@ -81,11 +81,12 @@ function getAffinityColor(affinity) {
 // レア度ごとの色を取得
 function getRarityColor(rarity) {
     const colors = {
-        'LR': '#a8d8ea',
-        'UR': '#ff6b6b',
-        'SSR': '#ffd93d',
-        'SR': '#c8e6c9',
-        'R': '#e0e0e0'
+        'LR': '#a8d8ea',  // 青い銀色
+        'UR': '#ff6b6b',  // 赤
+        'SSR': '#ffd93d', // 黄色
+        'SR': '#a29bfe',  // 紫
+        'R': '#74b9ff',   // 青
+        'N': '#55efc4'    // 緑
     };
     return colors[rarity] || '#f5f5f5';
 }
