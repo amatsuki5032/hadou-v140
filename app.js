@@ -3604,10 +3604,11 @@ const { useState, useEffect } = React;
                                                                         fontSize: '10px',
                                                                         color: general ? affinityColor : (hasAttendantSlot ? '#6495ed' : '#555'),
                                                                         fontWeight: general || attendant ? 'bold' : 'normal',
-                                                                        padding: '2px',
+                                                                        padding: '8px',
                                                                         textAlign: 'center',
                                                                         flexDirection: 'column',
-                                                                        gap: '1px'
+                                                                        gap: '1px',
+                                                                        overflow: 'hidden'
                                                                     }}
                                                                 >
                                                                     {general ? (
@@ -3615,6 +3616,7 @@ const { useState, useEffect } = React;
                                                                             src={getImageUrl('general', general.id, general.rarity, general.name)}
                                                                             alt={general.name}
                                                                             rarity={general.rarity}
+                                                                            size="small"
                                                                         />
                                                                     ) : hasAttendantSlot ? (
                                                                         attendant ? (
@@ -3622,6 +3624,7 @@ const { useState, useEffect } = React;
                                                                                 src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
                                                                                 alt={attendant.name}
                                                                                 rarity={attendant.rarity}
+                                                                                size="small"
                                                                             />
                                                                         ) : (
                                                                             <div style={{fontSize: '9px', color: '#6495ed'}}>侍従</div>
