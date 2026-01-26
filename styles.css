@@ -218,7 +218,7 @@
         }
         
         .formations-area {
-            width: 900px;
+            width: 1000px;
             flex-shrink: 0;
             background: var(--bg-primary);
             overflow-y: auto;
