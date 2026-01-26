@@ -3594,7 +3594,7 @@ const { useState, useEffect } = React;
                                                                 <div
                                                                     key={`${rowIndex}-${colIndex}`}
                                                                     style={{
-                                                                        border: cell === 1 ? `2px solid ${affinityColor || '#d4af37'}` : (hasAttendantSlot ? '2px solid #6495ed' : '1px solid #333'),
+                                                                        border: cell === 1 ? '2px solid #d4af37' : (hasAttendantSlot ? '2px solid #6495ed' : '1px solid #333'),
                                                                         background: cell === 1 ? '#1a1f2e' : (hasAttendantSlot ? '#1a1a2e' : '#0a0e14'),
                                                                         display: 'flex',
                                                                         alignItems: 'center',
