@@ -193,26 +193,36 @@ const { useState, useEffect } = React;
             
             
             // 画像表示コンポーネント
-            const ItemImage = ({ src, alt }) => {
+            const ItemImage = ({ src, alt, rarity }) => {
                 const [error, setError] = useState(false);
+                const [imgSrc, setImgSrc] = useState(src);
+                
+                // srcが変わったらリセット
+                React.useEffect(() => {
+                    setImgSrc(src);
+                    setError(false);
+                }, [src]);
                 
                 // 画像表示がOFFの場合は何も表示しない
                 if (!showImages) {
                     return null;
                 }
                 
-                if (!src || error) {
-                    return <div className="item-icon-placeholder">画像なし</div>;
-                }
+                // エラー時はplaceholder.pngを表示
+                const handleError = () => {
+                    if (imgSrc !== '/icons/placeholder.png') {
+                        setImgSrc('/icons/placeholder.png');
+                    }
+                };
                 
                 return (
                     <img
-                        src={src}
+                        src={imgSrc}
                         alt={alt}
                         className="item-icon"
-                        onError={handleImageError}
+                        onError={handleError}
                         loading="lazy"
-                        data-rarity={alt}
+                        data-rarity={rarity}
                     />
                 );
             };
@@ -4302,6 +4312,7 @@ const { useState, useEffect } = React;
                                                                         <ItemImage 
                                                                             src={getImageUrl('general', general.id, general.rarity, general.name)}
                                                                             alt={general.name}
+                                                                            rarity={general.rarity}
                                                                         />
                                                                         <div className="item-text-content">
                                                                             <div style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px'}}>
@@ -4360,6 +4371,7 @@ const { useState, useEffect } = React;
                                                             <ItemImage 
                                                                 src={getImageUrl('general', general.id, general.rarity, general.name)}
                                                                 alt={general.name}
+                                                                rarity={general.rarity}
                                                             />
                                                             <div className="item-text-content">
                                                                 <div style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px'}}>
