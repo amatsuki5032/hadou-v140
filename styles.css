@@ -1211,8 +1211,9 @@
             object-fit: cover;
             border-radius: 4px;
             flex-shrink: 0;
-            background: var(--bg-modal-dark);
+            background: #2a2a2a;
             border: 1px solid var(--border-secondary);
+            opacity: 1 !important;
         }
         
         /* 画像がない場合のプレースホルダー */
