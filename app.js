@@ -3730,11 +3730,17 @@ const { useState, useEffect } = React;
                                                             >
                                                                 ×
                                                             </button>
-                                                            <div className="slot-general-info">
-                                                                <div className="slot-general-name" style={{color: '#ffffff'}}>
-                                                                    {data.slots[slotName].name}
-                                                                </div>
-                                                                <div className="slot-general-details">
+                                                            <div className="slot-general-info" style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                                                <ItemImage 
+                                                                    src={getImageUrl('general', data.slots[slotName].id, data.slots[slotName].rarity, data.slots[slotName].name)}
+                                                                    alt={data.slots[slotName].name}
+                                                                    rarity={data.slots[slotName].rarity}
+                                                                />
+                                                                <div style={{flex: 1}}>
+                                                                    <div className="slot-general-name" style={{color: '#ffffff'}}>
+                                                                        {data.slots[slotName].name}
+                                                                    </div>
+                                                                    <div className="slot-general-details">
                                                                     <span style={{color: getRarityColor(data.slots[slotName].rarity), fontWeight: 'bold'}}>
                                                                         {data.slots[slotName].rarity}
                                                                     </span>
@@ -3754,6 +3760,7 @@ const { useState, useEffect } = React;
                                                                         })()}
                                                                     </span>
                                                                 </div>
+                                                            </div>
                                                             </div>
                                                         </div>
                                                     ) : (
@@ -3786,10 +3793,17 @@ const { useState, useEffect } = React;
                                                             >
                                                                 ×
                                                             </button>
-                                                            <div className="slot-general-name" style={{fontSize: '12px', color: '#ffffff'}}>
-                                                                {data.attendants[slotName].name}
-                                                            </div>
-                                                            <div className="slot-general-details" style={{fontSize: '9px'}}>
+                                                            <div style={{display: 'flex', alignItems: 'center', gap: '4px', width: '100%'}}>
+                                                                <ItemImage 
+                                                                    src={getImageUrl('general', data.attendants[slotName].id, data.attendants[slotName].rarity, data.attendants[slotName].name)}
+                                                                    alt={data.attendants[slotName].name}
+                                                                    rarity={data.attendants[slotName].rarity}
+                                                                />
+                                                                <div style={{flex: 1, minWidth: 0}}>
+                                                                    <div className="slot-general-name" style={{fontSize: '12px', color: '#ffffff'}}>
+                                                                        {data.attendants[slotName].name}
+                                                                    </div>
+                                                                    <div className="slot-general-details" style={{fontSize: '9px'}}>
                                                                 <span style={{color: getRarityColor(data.attendants[slotName].rarity), fontWeight: 'bold'}}>
                                                                     {data.attendants[slotName].rarity}
                                                                 </span>
@@ -3801,6 +3815,8 @@ const { useState, useEffect } = React;
                                                                     相性{data.attendants[slotName].affinity}
                                                                 </span>
                                                             </div>
+                                                        </div>
+                                                    </div>
                                                         </div>
                                                     ) : (
                                                         '侍従'
@@ -3842,10 +3858,16 @@ const { useState, useEffect } = React;
                                                                                 {isTreasureUR(equippedTreasure.id) ? '★' : '☆'}{getTreasureForgeRank(equippedTreasure.id)}
                                                                             </div>
                                                                         )}
+                                                                        <ItemImage 
+                                                                            src={getImageUrl('treasure', equippedTreasure.id, null, equippedTreasure.name)}
+                                                                            alt={equippedTreasure.name}
+                                                                            rarity={isTreasureUR(equippedTreasure.id) ? 'UR' : 'normal'}
+                                                                        />
                                                                         <div 
                                                                             className="treasure-name-mini"
                                                                             style={{
-                                                                                color: isTreasureUR(equippedTreasure.id) ? '#ff6b6b' : '#e8e6e3'
+                                                                                color: isTreasureUR(equippedTreasure.id) ? '#ff6b6b' : '#e8e6e3',
+                                                                                marginTop: '2px'
                                                                             }}
                                                                         >
                                                                             {equippedTreasure.name}{isTreasureUR(equippedTreasure.id) ? '(UR)' : ''}
