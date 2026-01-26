@@ -1214,6 +1214,7 @@
             background: #4a4a4a;
             border: 1px solid var(--border-secondary);
             opacity: 1 !important;
+            pointer-events: none;
         }
         
         [data-theme="light"] .item-icon {
