@@ -1199,3 +1199,80 @@
             flex-shrink: 0;
             border-radius: 2px;
         }
+
+        /* ========================================
+           画像表示用スタイル
+           ======================================== */
+        
+        /* 武将・名宝アイテムのアイコン画像 */
+        .item-icon {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+            background: var(--bg-modal-dark);
+            border: 1px solid var(--border-secondary);
+        }
+        
+        /* 画像がない場合のプレースホルダー */
+        .item-icon-placeholder {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-modal-dark);
+            border: 1px dashed var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+        
+        /* 武将アイテムに画像を追加 */
+        .general-item-with-image {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        /* 名宝アイテムに画像を追加 */
+        .treasure-item-with-image {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        /* レアリティ別の枠色 */
+        .item-icon[data-rarity="LR"] {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
+        }
+        
+        .item-icon[data-rarity="UR"] {
+            border-color: #ffd93d;
+            box-shadow: 0 0 8px rgba(255, 217, 61, 0.3);
+        }
+        
+        .item-icon[data-rarity="SSR"] {
+            border-color: #a29bfe;
+            box-shadow: 0 0 8px rgba(162, 155, 254, 0.3);
+        }
+        
+        .item-icon[data-rarity="SR"] {
+            border-color: #74b9ff;
+        }
+        
+        .item-icon[data-rarity="R"] {
+            border-color: #55efc4;
+        }
+        
+        .item-icon[data-rarity="N"] {
+            border-color: #b2bec3;
+        }
+        
+        /* 遅延読み込み中の表示 */
+        .item-icon[loading] {
+            opacity: 0.5;
+        }
