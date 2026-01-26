@@ -1211,9 +1211,13 @@
             object-fit: cover;
             border-radius: 4px;
             flex-shrink: 0;
-            background: #2a2a2a;
+            background: #4a4a4a;
             border: 1px solid var(--border-secondary);
             opacity: 1 !important;
+        }
+        
+        [data-theme="light"] .item-icon {
+            background: #f5f5f5;
         }
         
         /* 画像がない場合のプレースホルダー */
@@ -1247,25 +1251,30 @@
         
         /* レアリティ別の枠色 */
         .item-icon[data-rarity="LR"] {
-            border-color: #ff6b6b;
-            box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
+            border-color: #a8d8ea;
+            box-shadow: 0 0 8px rgba(168, 216, 234, 0.5);
         }
         
         .item-icon[data-rarity="UR"] {
-            border-color: #ffd93d;
-            box-shadow: 0 0 8px rgba(255, 217, 61, 0.3);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
         }
         
         .item-icon[data-rarity="SSR"] {
-            border-color: #a29bfe;
-            box-shadow: 0 0 8px rgba(162, 155, 254, 0.3);
+            border-color: #ffd93d;
+            box-shadow: 0 0 8px rgba(255, 217, 61, 0.5);
         }
         
         .item-icon[data-rarity="SR"] {
-            border-color: #74b9ff;
+            border-color: #a29bfe;
+            box-shadow: 0 0 8px rgba(162, 155, 254, 0.5);
         }
         
         .item-icon[data-rarity="R"] {
+            border-color: #74b9ff;
+        }
+        
+        .item-icon[data-rarity="N"] {
             border-color: #55efc4;
         }
         
