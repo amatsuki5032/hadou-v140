@@ -210,8 +210,8 @@ const { useState, useEffect } = React;
                 
                 // エラー時はplaceholder.pngを表示
                 const handleError = () => {
-                    if (imgSrc !== '/icons/placeholder.png') {
-                        setImgSrc('/icons/placeholder.png');
+                    if (imgSrc !== './icons/placeholder.png') {
+                        setImgSrc('./icons/placeholder.png');
                     }
                 };
                 
