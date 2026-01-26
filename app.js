@@ -193,7 +193,7 @@ const { useState, useEffect } = React;
             
             
             // 画像表示コンポーネント
-            const ItemImage = ({ src, alt, rarity, size = 'normal' }) => {
+            const ItemImage = ({ src, alt, rarity }) => {
                 const [error, setError] = useState(false);
                 const [imgSrc, setImgSrc] = useState(src);
                 
@@ -215,13 +215,11 @@ const { useState, useEffect } = React;
                     }
                 };
                 
-                const className = size === 'small' ? 'item-icon-small' : 'item-icon';
-                
                 return (
                     <img
                         src={imgSrc}
                         alt={alt}
-                        className={className}
+                        className="item-icon"
                         onError={handleError}
                         loading="lazy"
                         data-rarity={rarity}
@@ -3604,11 +3602,10 @@ const { useState, useEffect } = React;
                                                                         fontSize: '10px',
                                                                         color: general ? affinityColor : (hasAttendantSlot ? '#6495ed' : '#555'),
                                                                         fontWeight: general || attendant ? 'bold' : 'normal',
-                                                                        padding: '8px',
+                                                                        padding: '2px',
                                                                         textAlign: 'center',
                                                                         flexDirection: 'column',
-                                                                        gap: '1px',
-                                                                        overflow: 'hidden'
+                                                                        gap: '1px'
                                                                     }}
                                                                 >
                                                                     {general ? (
@@ -3616,7 +3613,6 @@ const { useState, useEffect } = React;
                                                                             src={getImageUrl('general', general.id, general.rarity, general.name)}
                                                                             alt={general.name}
                                                                             rarity={general.rarity}
-                                                                            size="small"
                                                                         />
                                                                     ) : hasAttendantSlot ? (
                                                                         attendant ? (
@@ -3624,7 +3620,6 @@ const { useState, useEffect } = React;
                                                                                 src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
                                                                                 alt={attendant.name}
                                                                                 rarity={attendant.rarity}
-                                                                                size="small"
                                                                             />
                                                                         ) : (
                                                                             <div style={{fontSize: '9px', color: '#6495ed'}}>侍従</div>
@@ -3785,7 +3780,7 @@ const { useState, useEffect } = React;
                                                             draggable={true}
                                                             onDragStart={(e) => handleAttendantDragStart(e, data.attendants[slotName], key, slotName)}
                                                             onDoubleClick={() => handleRemoveAttendant(key, slotName)}
-                                                            style={{cursor: 'grab', width: '100%', height: '100%', padding: '2px', position: 'relative', display: 'flex', alignItems: 'center'}}
+                                                            style={{cursor: 'grab', width: '100%', height: '100%', padding: '4px', position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
                                                             title="ドラッグで移動、ダブルクリックで削除"
                                                         >
                                                             <button
@@ -3797,28 +3792,30 @@ const { useState, useEffect } = React;
                                                             >
                                                                 ×
                                                             </button>
-                                                            <ItemImage 
-                                                                src={getImageUrl('general', data.attendants[slotName].id, data.attendants[slotName].rarity, data.attendants[slotName].name)}
-                                                                alt={data.attendants[slotName].name}
-                                                                rarity={data.attendants[slotName].rarity}
-                                                            />
-                                                            <div style={{flex: 1, minWidth: 0, overflow: 'hidden'}}>
-                                                                <div style={{fontSize: '10px', color: '#ffffff', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                                                    {data.attendants[slotName].name}
-                                                                </div>
-                                                                <div style={{fontSize: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                                                    <span style={{color: getRarityColor(data.attendants[slotName].rarity), fontWeight: 'bold'}}>
-                                                                        {data.attendants[slotName].rarity}
-                                                                    </span>
-                                                                    {' '}
-                                                                    <span style={{
-                                                                        color: getAffinityColor(data.attendants[slotName].affinity),
-                                                                        fontWeight: 'bold'
-                                                                    }}>
-                                                                        相性{data.attendants[slotName].affinity}
-                                                                    </span>
-                                                                </div>
+                                                            <div style={{display: 'flex', alignItems: 'center', gap: '4px', width: '100%'}}>
+                                                                <ItemImage 
+                                                                    src={getImageUrl('general', data.attendants[slotName].id, data.attendants[slotName].rarity, data.attendants[slotName].name)}
+                                                                    alt={data.attendants[slotName].name}
+                                                                    rarity={data.attendants[slotName].rarity}
+                                                                />
+                                                                <div style={{flex: 1, minWidth: 0}}>
+                                                                    <div className="slot-general-name" style={{fontSize: '12px', color: '#ffffff'}}>
+                                                                        {data.attendants[slotName].name}
+                                                                    </div>
+                                                                    <div className="slot-general-details" style={{fontSize: '9px'}}>
+                                                                <span style={{color: getRarityColor(data.attendants[slotName].rarity), fontWeight: 'bold'}}>
+                                                                    {data.attendants[slotName].rarity}
+                                                                </span>
+                                                                {' '}
+                                                                <span style={{
+                                                                    color: getAffinityColor(data.attendants[slotName].affinity),
+                                                                    fontWeight: 'bold'
+                                                                }}>
+                                                                    相性{data.attendants[slotName].affinity}
+                                                                </span>
                                                             </div>
+                                                        </div>
+                                                    </div>
                                                         </div>
                                                     ) : (
                                                         '侍従'
@@ -3950,7 +3947,7 @@ const { useState, useEffect } = React;
                                                                     background: advisorGeneral ? 'rgba(52, 152, 219, 0.1)' : '#0a0e14',
                                                                     border: `1px solid ${advisorGeneral ? advisor.color : '#333'}`,
                                                                     borderRadius: '3px',
-                                                                    minHeight: '48px',
+                                                                    minHeight: '56px',
                                                                     display: 'flex',
                                                                     alignItems: 'center',
                                                                     cursor: advisorGeneral ? 'grab' : 'default',
@@ -3996,7 +3993,6 @@ const { useState, useEffect } = React;
                                                                                 src={getImageUrl('general', advisorGeneral.id, advisorGeneral.rarity, advisorGeneral.name)}
                                                                                 alt={advisorGeneral.name}
                                                                                 rarity={advisorGeneral.rarity}
-                                                                                size="small"
                                                                             />
                                                                             <div style={{flex: 1, minWidth: 0}}>
                                                                                 <div style={{
