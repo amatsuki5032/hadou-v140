@@ -949,7 +949,7 @@ const LR_GENERALS_DATA = [
   {
     "id": 23,
     "rarity": "LR",
-    "name": "ﾗｲﾝﾊﾙﾄ",
+    "name": "ラインハルト",
     "unit_type": "槍",
     "leadership": 0,
     "attack": 0,
@@ -2841,7 +2841,7 @@ const LR_GENERALS_DATA = [
   {
     "id": 67,
     "rarity": "LR",
-    "name": "李逍遙",
+    "name": "李逍遥",
     "unit_type": "馬",
     "leadership": 0,
     "attack": 0,
