@@ -2024,7 +2024,7 @@ const LR_GENERALS_DATA = [
   {
     "id": 48,
     "rarity": "LR",
-    "name": "関銀屛",
+    "name": "関銀屏",
     "unit_type": "馬",
     "leadership": 0,
     "attack": 0,
