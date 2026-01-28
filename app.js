@@ -1055,10 +1055,28 @@ const { useState, useEffect } = React;
             
             // 部隊テンプレートを保存
             const saveFormationTemplate = (formationKey) => {
-                // デフォルト名を自動生成（「編制1」など）
-                const defaultName = formationKey;
+                const formationData = formations[formationKey];
+                
+                // 主将の名前を取得
+                const mainGeneral = formationData?.slots?.['主将'];
+                let baseName = formationKey; // デフォルトは「編制1」など
+                
+                if (mainGeneral) {
+                    // 主将がいる場合は「LR関羽」形式
+                    baseName = `${mainGeneral.rarity}${mainGeneral.name}`;
+                }
+                
+                // 重複チェック：同じ名前が既にあれば番号を追加
+                let templateName = baseName;
+                let counter = 0;
+                
+                while (formationTemplates[templateName]) {
+                    templateName = `${baseName}-${counter}`;
+                    counter++;
+                }
+                
                 setShowTemplateSaveDialog(formationKey);
-                setTemplateName(defaultName);
+                setTemplateName(templateName);
             };
             
             // テンプレート保存を実行
