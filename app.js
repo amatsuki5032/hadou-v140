@@ -2874,7 +2874,7 @@ const { useState, useEffect } = React;
                         
                         // データをインポート
                         if (data.formationPatterns) {
-                            // マイグレーション: 5個から10個に拡張
+                            // マイグレーション: 5個から10個に拡張 & 古いデータ形式の変換
                             const defaultPattern = { name: "", formations: {}, collapsedFormations: {}, allowDuplicates: false };
                             
                             for (let i = 0; i < 10; i++) {
@@ -2884,9 +2884,37 @@ const { useState, useEffect } = React;
                                         ...defaultPattern,
                                         name: `編制${i + 1}`
                                     };
-                                } else if (!data.formationPatterns[i].hasOwnProperty('allowDuplicates')) {
+                                } else {
                                     // allowDuplicatesがない場合は追加
-                                    data.formationPatterns[i].allowDuplicates = false;
+                                    if (!data.formationPatterns[i].hasOwnProperty('allowDuplicates')) {
+                                        data.formationPatterns[i].allowDuplicates = false;
+                                    }
+                                    
+                                    // 古いデータ形式を変換（type → formationType）
+                                    if (data.formationPatterns[i].formations) {
+                                        Object.keys(data.formationPatterns[i].formations).forEach(formationKey => {
+                                            const formation = data.formationPatterns[i].formations[formationKey];
+                                            if (formation && formation.type) {
+                                                // type → formationType に変換
+                                                formation.formationType = formation.type;
+                                                delete formation.type;
+                                            }
+                                            // formationTypeがない場合はデフォルト値
+                                            if (formation && !formation.formationType) {
+                                                formation.formationType = '基本陣形';
+                                            }
+                                            // attendants, treasures, advisorsが存在しない場合は初期化
+                                            if (formation && !formation.attendants) {
+                                                formation.attendants = {};
+                                            }
+                                            if (formation && !formation.treasures) {
+                                                formation.treasures = {};
+                                            }
+                                            if (formation && !formation.advisors) {
+                                                formation.advisors = {};
+                                            }
+                                        });
+                                    }
                                 }
                             }
                             
