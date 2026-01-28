@@ -118,11 +118,14 @@ const { useState, useEffect } = React;
             // 編制パターン（10パターン）
             const [formationPatterns, setFormationPatterns] = useState(() => {
                 const saved = localStorage.getItem('formationPatterns');
+                let migratedData = null;
+                
                 if (saved) {
                     const parsedData = JSON.parse(saved);
                     
                     // マイグレーション: 5個から10個に拡張
                     const defaultPattern = { name: "", formations: {}, collapsedFormations: {}, allowDuplicates: false };
+                    let needsMigration = false;
                     
                     for (let i = 0; i < 10; i++) {
                         if (!parsedData[i]) {
@@ -131,10 +134,17 @@ const { useState, useEffect } = React;
                                 ...defaultPattern,
                                 name: `編制${i + 1}`
                             };
+                            needsMigration = true;
                         } else if (!parsedData[i].hasOwnProperty('allowDuplicates')) {
                             // allowDuplicatesがない場合は追加
                             parsedData[i].allowDuplicates = false;
+                            needsMigration = true;
                         }
+                    }
+                    
+                    // マイグレーションした場合は即座に保存
+                    if (needsMigration) {
+                        localStorage.setItem('formationPatterns', JSON.stringify(parsedData));
                     }
                     
                     return parsedData;
