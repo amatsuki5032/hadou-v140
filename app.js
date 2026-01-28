@@ -2939,10 +2939,19 @@ const { useState, useEffect } = React;
             const currentTab = TABS.find(t => t.id === activeTab);
             const currentFormations = [];
             for (let i = 0; i < currentTab.count; i++) {
+                const key = `${activeTab}-${i}`;
+                // データがない場合は空のオブジェクトで初期化
+                const data = formations[key] || {
+                    formationType: '基本陣形',
+                    slots: {},
+                    attendants: {},
+                    treasures: {},
+                    advisors: {}
+                };
                 currentFormations.push({
-                    key: `${activeTab}-${i}`,
+                    key: key,
                     number: i + 1,
-                    data: formations[`${activeTab}-${i}`]
+                    data: data
                 });
             }
             
