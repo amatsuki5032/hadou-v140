@@ -1887,27 +1887,52 @@ const { useState, useEffect } = React;
                     return;
                 }
                 
+                // 移動先のキー
+                const targetTreasureKey = `${slotName}-${treasureSlot}`;
+                
                 // 移動元がある場合（配置済み名宝の移動）
                 if (draggedTreasure.sourceFormation && draggedTreasure.sourceSlot && draggedTreasure.sourceTreasureSlot) {
                     setFormations(prev => {
                         const newFormations = { ...prev };
                         
-                        // 移動元から削除
-                        const sourceTreasureKey = `${draggedTreasure.sourceSlot}-${draggedTreasure.sourceTreasureSlot}`;
-                        newFormations[draggedTreasure.sourceFormation] = {
-                            ...newFormations[draggedTreasure.sourceFormation],
-                            treasures: {
-                                ...newFormations[draggedTreasure.sourceFormation].treasures,
-                                [sourceTreasureKey]: null
-                            }
-                        };
+                        // 移動先に既に名宝があるかチェック
+                        const targetTreasure = newFormations[formationKey]?.treasures?.[targetTreasureKey];
                         
-                        // 移動先に配置
+                        // 移動元のキー
+                        const sourceTreasureKey = `${draggedTreasure.sourceSlot}-${draggedTreasure.sourceTreasureSlot}`;
+                        
+                        if (targetTreasure) {
+                            // 入れ替え処理
+                            // 移動元に移動先の名宝を配置
+                            newFormations[draggedTreasure.sourceFormation] = {
+                                ...newFormations[draggedTreasure.sourceFormation],
+                                treasures: {
+                                    ...newFormations[draggedTreasure.sourceFormation].treasures,
+                                    [sourceTreasureKey]: {
+                                        id: targetTreasure.id,
+                                        name: targetTreasure.name,
+                                        category: targetTreasure.category,
+                                        weapon_type: targetTreasure.weapon_type
+                                    }
+                                }
+                            };
+                        } else {
+                            // 移動先が空の場合は移動元を削除
+                            newFormations[draggedTreasure.sourceFormation] = {
+                                ...newFormations[draggedTreasure.sourceFormation],
+                                treasures: {
+                                    ...newFormations[draggedTreasure.sourceFormation].treasures,
+                                    [sourceTreasureKey]: null
+                                }
+                            };
+                        }
+                        
+                        // 移動先に移動元の名宝を配置
                         newFormations[formationKey] = {
                             ...newFormations[formationKey],
                             treasures: {
                                 ...newFormations[formationKey].treasures,
-                                [`${slotName}-${treasureSlot}`]: {
+                                [targetTreasureKey]: {
                                     id: draggedTreasure.id,
                                     name: draggedTreasure.name,
                                     category: draggedTreasure.category,
@@ -1926,7 +1951,7 @@ const { useState, useEffect } = React;
                             ...prev[formationKey],
                             treasures: {
                                 ...prev[formationKey].treasures,
-                                [`${slotName}-${treasureSlot}`]: draggedTreasure
+                                [targetTreasureKey]: draggedTreasure
                             }
                         }
                     }));
