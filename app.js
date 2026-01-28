@@ -2873,7 +2873,25 @@ const { useState, useEffect } = React;
                         }
                         
                         // データをインポート
-                        if (data.formationPatterns) setFormationPatterns(data.formationPatterns);
+                        if (data.formationPatterns) {
+                            // マイグレーション: 5個から10個に拡張
+                            const defaultPattern = { name: "", formations: {}, collapsedFormations: {}, allowDuplicates: false };
+                            
+                            for (let i = 0; i < 10; i++) {
+                                if (!data.formationPatterns[i]) {
+                                    // 存在しない編制パターンを追加
+                                    data.formationPatterns[i] = {
+                                        ...defaultPattern,
+                                        name: `編制${i + 1}`
+                                    };
+                                } else if (!data.formationPatterns[i].hasOwnProperty('allowDuplicates')) {
+                                    // allowDuplicatesがない場合は追加
+                                    data.formationPatterns[i].allowDuplicates = false;
+                                }
+                            }
+                            
+                            setFormationPatterns(data.formationPatterns);
+                        }
                         if (data.activePattern !== undefined) setActivePattern(data.activePattern);
                         if (data.profileData) setProfileData(data.profileData);
                         if (data.profileNames) setProfileNames(data.profileNames);
