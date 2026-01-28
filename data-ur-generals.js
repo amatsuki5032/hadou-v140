@@ -2847,7 +2847,7 @@ const UR_GENERALS_DATA = [
   {
     "id": 1080,
     "rarity": "UR",
-    "name": "ｷﾙﾋｱｲｽ",
+    "name": "キルヒアイス",
     "unit_type": "槍",
     "leadership": 0,
     "attack": 0,
@@ -2883,7 +2883,7 @@ const UR_GENERALS_DATA = [
   {
     "id": 1081,
     "rarity": "UR",
-    "name": "ﾌﾚﾃﾞﾘｶ",
+    "name": "フレデリカ",
     "unit_type": "弓",
     "leadership": 0,
     "attack": 0,
