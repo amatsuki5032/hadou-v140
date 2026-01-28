@@ -1077,7 +1077,7 @@ const { useState, useEffect } = React;
                 console.log('保存する部隊データ:', formationData);
                 
                 // treasuresをオブジェクトから配列に変換
-                let treasuresArray = Array(6).fill(null);
+                let treasuresArray = Array(15).fill(null); // 5人 × 3個 = 15個
                 if (formationData.treasures) {
                     if (Array.isArray(formationData.treasures)) {
                         // 既に配列の場合
@@ -1090,6 +1090,9 @@ const { useState, useEffect } = React;
                                 // キーから位置を特定
                                 // 主将-weapon → 0, 主将-armor → 1, 主将-artifact → 2
                                 // 副将1-weapon → 3, 副将1-armor → 4, 副将1-artifact → 5
+                                // 副将2-weapon → 6, 副将2-armor → 7, 副将2-artifact → 8
+                                // 補佐1-weapon → 9, 補佐1-armor → 10, 補佐1-artifact → 11
+                                // 補佐2-weapon → 12, 補佐2-armor → 13, 補佐2-artifact → 14
                                 let index = -1;
                                 if (key.startsWith('主将-weapon')) index = 0;
                                 else if (key.startsWith('主将-armor')) index = 1;
@@ -1097,6 +1100,15 @@ const { useState, useEffect } = React;
                                 else if (key.startsWith('副将1-weapon')) index = 3;
                                 else if (key.startsWith('副将1-armor')) index = 4;
                                 else if (key.startsWith('副将1-artifact')) index = 5;
+                                else if (key.startsWith('副将2-weapon')) index = 6;
+                                else if (key.startsWith('副将2-armor')) index = 7;
+                                else if (key.startsWith('副将2-artifact')) index = 8;
+                                else if (key.startsWith('補佐1-weapon')) index = 9;
+                                else if (key.startsWith('補佐1-armor')) index = 10;
+                                else if (key.startsWith('補佐1-artifact')) index = 11;
+                                else if (key.startsWith('補佐2-weapon')) index = 12;
+                                else if (key.startsWith('補佐2-armor')) index = 13;
+                                else if (key.startsWith('補佐2-artifact')) index = 14;
                                 
                                 if (index >= 0) {
                                     treasuresArray[index] = JSON.parse(JSON.stringify(treasure));
@@ -1202,7 +1214,10 @@ const { useState, useEffect } = React;
                         if (template.treasures && Array.isArray(template.treasures)) {
                             const keyMapping = [
                                 '主将-weapon', '主将-armor', '主将-artifact',
-                                '副将1-weapon', '副将1-armor', '副将1-artifact'
+                                '副将1-weapon', '副将1-armor', '副将1-artifact',
+                                '副将2-weapon', '副将2-armor', '副将2-artifact',
+                                '補佐1-weapon', '補佐1-armor', '補佐1-artifact',
+                                '補佐2-weapon', '補佐2-armor', '補佐2-artifact'
                             ];
                             
                             template.treasures.forEach((treasure, index) => {
