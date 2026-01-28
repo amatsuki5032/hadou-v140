@@ -3058,7 +3058,7 @@ const { useState, useEffect } = React;
                             <div style={{padding: '12px 30px', background: '#1a1f2e', borderBottom: '1px solid #2a2a2a'}}>
                                 <div style={{display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'space-between'}}>
                                     <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
-                                        {[0, 1, 2, 3, 4].map(patternIndex => (
+                                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(patternIndex => (
                                             <div key={patternIndex} style={{position: 'relative'}}>
                                                 <button
                                                     onClick={() => setActivePattern(patternIndex)}
