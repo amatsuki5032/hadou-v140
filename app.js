@@ -115,19 +115,24 @@ const { useState, useEffect } = React;
             const [generals, setGenerals] = useState([]);
             const [treasures, setTreasures] = useState([]);
             
-            // 編制パターン（5パターン）
+            // 編制パターン（10パターン）
             const [formationPatterns, setFormationPatterns] = useState(() => {
                 const saved = localStorage.getItem('formationPatterns');
                 if (saved) {
                     return JSON.parse(saved);
                 }
-                // デフォルト: 5つの空パターン
+                // デフォルト: 10個の空パターン
                 return {
                     0: { name: "編制1", formations: {}, collapsedFormations: {} },
                     1: { name: "編制2", formations: {}, collapsedFormations: {} },
                     2: { name: "編制3", formations: {}, collapsedFormations: {} },
                     3: { name: "編制4", formations: {}, collapsedFormations: {} },
-                    4: { name: "編制5", formations: {}, collapsedFormations: {} }
+                    4: { name: "編制5", formations: {}, collapsedFormations: {} },
+                    5: { name: "編制6", formations: {}, collapsedFormations: {} },
+                    6: { name: "編制7", formations: {}, collapsedFormations: {} },
+                    7: { name: "編制8", formations: {}, collapsedFormations: {} },
+                    8: { name: "編制9", formations: {}, collapsedFormations: {} },
+                    9: { name: "編制10", formations: {}, collapsedFormations: {} }
                 };
             });
             
@@ -6235,8 +6240,8 @@ const { useState, useEffect } = React;
                                 
                                 <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>🔧 高度な機能</h3>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>📁 編制パターン管理（5パターン）</h4>
-                                <p><strong>編制タブ:</strong> 画面上部に5つの編制タブ（編制1-5）を表示</p>
+                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>📁 編制パターン管理（10パターン）</h4>
+                                <p><strong>編制タブ:</strong> 画面上部に10個の編制タブ（編制1-10）を表示</p>
                                 <p><strong>編制切り替え:</strong> タブをクリックして編制を切り替え。各編制は独立した12部隊を持つ</p>
                                 <p><strong>[...]メニュー:</strong></p>
                                 <ul style={{marginLeft: '20px'}}>
