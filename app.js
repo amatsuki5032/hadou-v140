@@ -123,16 +123,16 @@ const { useState, useEffect } = React;
                 }
                 // デフォルト: 10個の空パターン
                 return {
-                    0: { name: "編制1", formations: {}, collapsedFormations: {} },
-                    1: { name: "編制2", formations: {}, collapsedFormations: {} },
-                    2: { name: "編制3", formations: {}, collapsedFormations: {} },
-                    3: { name: "編制4", formations: {}, collapsedFormations: {} },
-                    4: { name: "編制5", formations: {}, collapsedFormations: {} },
-                    5: { name: "編制6", formations: {}, collapsedFormations: {} },
-                    6: { name: "編制7", formations: {}, collapsedFormations: {} },
-                    7: { name: "編制8", formations: {}, collapsedFormations: {} },
-                    8: { name: "編制9", formations: {}, collapsedFormations: {} },
-                    9: { name: "編制10", formations: {}, collapsedFormations: {} }
+                    0: { name: "編制1", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    1: { name: "編制2", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    2: { name: "編制3", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    3: { name: "編制4", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    4: { name: "編制5", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    5: { name: "編制6", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    6: { name: "編制7", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    7: { name: "編制8", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    8: { name: "編制9", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                    9: { name: "編制10", formations: {}, collapsedFormations: {}, allowDuplicates: false }
                 };
             });
             
@@ -1037,6 +1037,18 @@ const { useState, useEffect } = React;
                 setOpenPatternMenu(null);
             };
             
+            // 重複チェックを切り替え
+            const toggleDuplicateCheck = (patternIndex) => {
+                setFormationPatterns(prev => ({
+                    ...prev,
+                    [patternIndex]: {
+                        ...prev[patternIndex],
+                        allowDuplicates: !prev[patternIndex]?.allowDuplicates
+                    }
+                }));
+                setOpenPatternMenu(null);
+            };
+            
             // 編制パターンをコピー
             const copyFromPattern = (targetIndex, sourceIndex) => {
                 const targetName = formationPatterns[targetIndex]?.name || `編制${targetIndex + 1}`;
@@ -1266,7 +1278,10 @@ const { useState, useEffect } = React;
                     };
                     
                     // 重複チェック: 他の部隊から同じ武将・名宝を削除
-                    if (overwriteGenerals || overwriteTreasures) {
+                    // allowDuplicates が true の場合はスキップ
+                    const allowDuplicates = formationPatterns[activePattern]?.allowDuplicates || false;
+                    
+                    if (!allowDuplicates && (overwriteGenerals || overwriteTreasures)) {
                         Object.keys(newFormations).forEach(formationKey => {
                             if (formationKey === showTemplateLoadDialog) return; // 自分自身はスキップ
                             
@@ -3202,6 +3217,28 @@ const { useState, useEffect } = React;
                                                             </div>
                                                         )}
                                                     </div>
+                                                    
+                                                    <button
+                                                        onClick={() => toggleDuplicateCheck(patternIndex)}
+                                                        style={{
+                                                            width: '100%',
+                                                            padding: '10px 16px',
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: formationPatterns[patternIndex]?.allowDuplicates ? '#4caf50' : '#fff',
+                                                            textAlign: 'left',
+                                                            cursor: 'pointer',
+                                                            fontSize: '13px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '8px'
+                                                        }}
+                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseLeave={(e) => e.target.style.background = 'none'}
+                                                    >
+                                                        <span>{formationPatterns[patternIndex]?.allowDuplicates ? '✓' : '□'}</span>
+                                                        <span>武将・名宝の重複を許可</span>
+                                                    </button>
                                                     
                                                     <button
                                                         onClick={() => resetPattern(patternIndex)}
