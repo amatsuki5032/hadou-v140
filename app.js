@@ -467,15 +467,18 @@ const { useState, useEffect } = React;
                 // 名宝に勢力タグを追加（related武将の相性値から自動判定）
                 const treasuresWithFaction = EMBEDDED_TREASURES_DATA.map(t => {
                     const related = t.related;
-                    let faction = 'イベント';
                     
-                    // related武将から勢力を判定
+                    // related武将がいる場合は、その武将の勢力で上書き
                     if (related && generalToFactionMap[related]) {
-                        faction = generalToFactionMap[related];
+                        const faction = generalToFactionMap[related];
+                        return {...t, faction, factions: [faction]};
                     }
                     
-                    // 元のfactionsを無視して、判定結果で上書き
-                    return {...t, faction, factions: [faction]};
+                    // related武将がいない場合は、元のfactionsを維持
+                    // factionsが空または存在しない場合は「イベント」
+                    const factions = (t.factions && t.factions.length > 0) ? t.factions : ['イベント'];
+                    const faction = factions[0]; // 後方互換性のため
+                    return {...t, faction, factions};
                 });
                 
                 setTreasures(treasuresWithFaction);
