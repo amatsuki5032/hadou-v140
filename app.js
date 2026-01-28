@@ -468,15 +468,19 @@ const { useState, useEffect } = React;
                 const treasuresWithFaction = EMBEDDED_TREASURES_DATA.map(t => {
                     const related = t.related;
                     
-                    // related武将がいる場合は、その武将の勢力で上書き
+                    // related武将がいる場合は、その武将の勢力のみ
                     if (related && generalToFactionMap[related]) {
                         const faction = generalToFactionMap[related];
                         return {...t, faction, factions: [faction]};
                     }
                     
-                    // related武将がいない場合は、元のfactionsを維持
-                    // factionsが空または存在しない場合は「イベント」
-                    const factions = (t.factions && t.factions.length > 0) ? t.factions : ['イベント'];
+                    // related武将がいない場合は、元のfactionsを維持（複数勢力対応）
+                    // factionsが空または存在しない場合は全勢力対応
+                    let factions = t.factions;
+                    if (!factions || factions.length === 0) {
+                        // 空の場合は全勢力対応（イベント除く）
+                        factions = ['魏', '蜀', '袁紹', '呉', '他'];
+                    }
                     const faction = factions[0]; // 後方互換性のため
                     return {...t, faction, factions};
                 });
