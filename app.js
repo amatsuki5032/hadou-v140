@@ -464,16 +464,18 @@ const { useState, useEffect } = React;
                     generalToFactionMap[g.name] = faction;
                 });
                 
-                // 名宝に勢力タグを追加
+                // 名宝に勢力タグを追加（related武将の相性値から自動判定）
                 const treasuresWithFaction = EMBEDDED_TREASURES_DATA.map(t => {
                     const related = t.related;
                     let faction = 'イベント';
                     
+                    // related武将から勢力を判定
                     if (related && generalToFactionMap[related]) {
                         faction = generalToFactionMap[related];
                     }
                     
-                    return {...t, faction};
+                    // 元のfactionsを無視して、判定結果で上書き
+                    return {...t, faction, factions: [faction]};
                 });
                 
                 setTreasures(treasuresWithFaction);
