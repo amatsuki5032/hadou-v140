@@ -119,7 +119,25 @@ const { useState, useEffect } = React;
             const [formationPatterns, setFormationPatterns] = useState(() => {
                 const saved = localStorage.getItem('formationPatterns');
                 if (saved) {
-                    return JSON.parse(saved);
+                    const parsedData = JSON.parse(saved);
+                    
+                    // マイグレーション: 5個から10個に拡張
+                    const defaultPattern = { name: "", formations: {}, collapsedFormations: {}, allowDuplicates: false };
+                    
+                    for (let i = 0; i < 10; i++) {
+                        if (!parsedData[i]) {
+                            // 存在しない編制パターンを追加
+                            parsedData[i] = {
+                                ...defaultPattern,
+                                name: `編制${i + 1}`
+                            };
+                        } else if (!parsedData[i].hasOwnProperty('allowDuplicates')) {
+                            // allowDuplicatesがない場合は追加
+                            parsedData[i].allowDuplicates = false;
+                        }
+                    }
+                    
+                    return parsedData;
                 }
                 // デフォルト: 10個の空パターン
                 return {
