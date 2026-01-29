@@ -464,32 +464,24 @@ const { useState, useEffect } = React;
                     generalToFactionMap[g.name] = faction;
                 });
                 
+                // イベント名・コラボ名のリスト（武将として扱わない）
+                const eventNames = ['異民族', '謎', 'セプテム', 'ニコル', '軒轅剣参', '仙剣奇侠伝', '繁体字版', '黄巾', '横山', 'ORIGINS', 'イベント', '利権', 'コラボ'];
+                
                 // 名宝に勢力タグを追加（related武将の相性値から自動判定）
                 // 名宝データの factions フィールドは完全に無視
-                const unmappedGenerals = new Set();
                 const treasuresWithFaction = EMBEDDED_TREASURES_DATA.map(t => {
                     const related = t.related;
                     
                     // related武将がいる場合は、その武将の勢力のみ
-                    if (related && generalToFactionMap[related]) {
+                    // ただし、イベント名・コラボ名は除外
+                    if (related && !eventNames.includes(related) && generalToFactionMap[related]) {
                         const faction = generalToFactionMap[related];
                         return {...t, faction, factions: [faction]};
                     }
                     
-                    // related武将がマッピングされていない場合はログに記録
-                    if (related && !generalToFactionMap[related]) {
-                        unmappedGenerals.add(related);
-                    }
-                    
-                    // related武将がいない場合は「イベント」
+                    // related武将がいない、またはイベント名の場合は「イベント」
                     return {...t, faction: 'イベント', factions: ['イベント']};
                 });
-                
-                // マッピングされていない武将をログ出力
-                if (unmappedGenerals.size > 0) {
-                    console.warn('以下の武将が generalToFactionMap にマッピングされていません:');
-                    console.warn(Array.from(unmappedGenerals));
-                }
                 
                 setTreasures(treasuresWithFaction);
                 
