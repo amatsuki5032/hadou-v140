@@ -465,6 +465,7 @@ const { useState, useEffect } = React;
                 });
                 
                 // 名宝に勢力タグを追加（related武将の相性値から自動判定）
+                // 名宝データの factions フィールドは完全に無視
                 const treasuresWithFaction = EMBEDDED_TREASURES_DATA.map(t => {
                     const related = t.related;
                     
@@ -474,15 +475,8 @@ const { useState, useEffect } = React;
                         return {...t, faction, factions: [faction]};
                     }
                     
-                    // related武将がいない場合は、元のfactionsを維持（複数勢力対応）
-                    // factionsが空または存在しない場合は全勢力対応
-                    let factions = t.factions;
-                    if (!factions || factions.length === 0) {
-                        // 空の場合は全勢力対応（イベント除く）
-                        factions = ['魏', '蜀', '袁紹', '呉', '他'];
-                    }
-                    const faction = factions[0]; // 後方互換性のため
-                    return {...t, faction, factions};
+                    // related武将がいない場合は「イベント」
+                    return {...t, faction: 'イベント', factions: ['イベント']};
                 });
                 
                 setTreasures(treasuresWithFaction);
