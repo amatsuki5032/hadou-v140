@@ -450,6 +450,12 @@ const { useState, useEffect } = React;
                 const generalToFactionMap = {};
                 EMBEDDED_GENERALS_DATA.forEach(g => {
                     if (!g.name || g.name === 'nan') return;
+                    
+                    // 既に同じ名前の武将が登録されている場合、相性値が0でない方を優先
+                    if (generalToFactionMap[g.name] && g.affinity === 0) {
+                        return; // 相性0はスキップ
+                    }
+                    
                     const affinity = g.affinity;
                     let faction = 'イベント';
                     
