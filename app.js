@@ -466,6 +466,7 @@ const { useState, useEffect } = React;
                 
                 // 名宝に勢力タグを追加（related武将の相性値から自動判定）
                 // 名宝データの factions フィールドは完全に無視
+                const unmappedGenerals = new Set();
                 const treasuresWithFaction = EMBEDDED_TREASURES_DATA.map(t => {
                     const related = t.related;
                     
@@ -475,9 +476,20 @@ const { useState, useEffect } = React;
                         return {...t, faction, factions: [faction]};
                     }
                     
+                    // related武将がマッピングされていない場合はログに記録
+                    if (related && !generalToFactionMap[related]) {
+                        unmappedGenerals.add(related);
+                    }
+                    
                     // related武将がいない場合は「イベント」
                     return {...t, faction: 'イベント', factions: ['イベント']};
                 });
+                
+                // マッピングされていない武将をログ出力
+                if (unmappedGenerals.size > 0) {
+                    console.warn('以下の武将が generalToFactionMap にマッピングされていません:');
+                    console.warn(Array.from(unmappedGenerals));
+                }
                 
                 setTreasures(treasuresWithFaction);
                 
