@@ -4379,6 +4379,8 @@ const { useState, useEffect } = React;
                                                         ...prev,
                                                         [rarity]: !prev[rarity]
                                                     }));
+                                                    // LRタグが外れた場合、侍従タグもクリア
+                                                    toggleFilter('rarity', rarity);
                                                 }}
                                             >
                                                 {rarity}
