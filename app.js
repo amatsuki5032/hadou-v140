@@ -2544,10 +2544,19 @@ const { useState, useEffect } = React;
                 const slotOrder = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
                 const formationOrder = [];
                 
-                // 部隊順序を構築（部隊1〜12）
+                // おススメ部隊を最優先
+                if (recommendTargetFormation && !collapsedFormations[recommendTargetFormation]) {
+                    formationOrder.push(recommendTargetFormation);
+                }
+                
+                // 残りの部隊順序を構築（部隊1〜12）
                 TABS.forEach(tab => {
                     for (let i = 0; i < tab.count; i++) {
-                        formationOrder.push(`${tab.id}-${i}`);
+                        const formationKey = `${tab.id}-${i}`;
+                        // おススメ部隊は既に追加済みなのでスキップ
+                        if (formationKey !== recommendTargetFormation) {
+                            formationOrder.push(formationKey);
+                        }
                     }
                 });
                 
