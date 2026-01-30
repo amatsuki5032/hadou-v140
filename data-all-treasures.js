@@ -45,9 +45,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "武器",
     weapon_type: "馬",
     related: "呂布",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 6,
@@ -223,9 +221,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "防具",
     weapon_type: null,
     related: "呂布",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 25,
@@ -251,9 +247,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "文物",
     weapon_type: null,
     related: "董卓",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 28,
@@ -435,9 +429,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "武器",
     weapon_type: "槍",
     related: "張角",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 47,
@@ -621,9 +613,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "文物",
     weapon_type: null,
     related: "呂布",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 66,
@@ -631,9 +621,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "防具",
     weapon_type: null,
     related: "張角",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 67,
@@ -799,9 +787,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "防具",
     weapon_type: null,
     related: "董卓",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 84,
@@ -1125,9 +1111,7 @@ const EMBEDDED_TREASURES_DATA = [
     category: "武器",
     weapon_type: "弓",
     related: "呂布",
-    factions: [
-      "他"
-    ]
+    factions: []
   },
   {
     id: 117,
@@ -1338,7 +1322,7 @@ const EMBEDDED_TREASURES_DATA = [
     weapon_type: null,
     related: "趙霊児",
     factions: [
-      "蜀",
+      "他",
       "イベント",
       "蜀"
     ]
@@ -1350,7 +1334,7 @@ const EMBEDDED_TREASURES_DATA = [
     weapon_type: null,
     related: "阿奴",
     factions: [
-      "蜀",
+      "他",
       "イベント",
       "蜀"
     ]
@@ -1924,9 +1908,39 @@ const EMBEDDED_TREASURES_DATA = [
     category: "文物",
     weapon_type: null,
     related: "コラボ"
+  },
+  {
+    id: 206,
+    name: "冷艶鋸",
+    category: "武器",
+    weapon_type: "馬",
+    related: "関羽",
+    factions: []
+  },
+  {
+    id: 207,
+    name: "龍紋護臂甲",
+    category: "防具",
+    weapon_type: null,
+    related: "関羽",
+    factions: []
+  },
+  {
+    id: 208,
+    name: "大志冠世剣",
+    category: "武器",
+    weapon_type: "弓",
+    related: "韓信",
+    factions: []
+  },
+  {
+    id: 209,
+    name: "武略冠世兜",
+    category: "防具",
+    weapon_type: null,
+    related: "韓信",
+    factions: []
   }
 ];
 
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = { EMBEDDED_TREASURES_DATA };
-}
+console.log('名宝データ読み込み完了:', EMBEDDED_TREASURES_DATA.length, '個');
