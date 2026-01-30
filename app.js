@@ -2817,16 +2817,6 @@ const { useState, useEffect } = React;
                     setUnitTypeFilter(prev => 
                         prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
                     );
-                } else if (type === 'rarity') {
-                    // レアリティフィルタの切り替え
-                    setRarityFilter(prev => {
-                        const newFilter = prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value];
-                        // LRが解除された場合、侍従フィルタもクリア
-                        if (value === 'LR' && !newFilter.includes('LR')) {
-                            setAttendantFilter([]);
-                        }
-                        return newFilter;
-                    });
                 } else if (type === 'faction') {
                     // 勢力フィルタは排他的（1つだけON）
                     setFactionFilter(prev => 
@@ -4375,12 +4365,14 @@ const { useState, useEffect } = React;
                                                 key={rarity}
                                                 className={`filter-chip ${expandedRarities[rarity] ? 'active' : ''}`}
                                                 onClick={() => {
+                                                    // LRがOFFになる場合、侍従タグもクリア
+                                                    if (rarity === 'LR' && expandedRarities['LR']) {
+                                                        setAttendantFilter([]);
+                                                    }
                                                     setExpandedRarities(prev => ({
                                                         ...prev,
                                                         [rarity]: !prev[rarity]
                                                     }));
-                                                    // LRタグが外れた場合、侍従タグもクリア
-                                                    toggleFilter('rarity', rarity);
                                                 }}
                                             >
                                                 {rarity}
