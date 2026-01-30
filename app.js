@@ -1689,35 +1689,49 @@ const { useState, useEffect } = React;
                 // 配置順序
                 const slots = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
                 
-                // 全部隊を順番にチェック
+                // 部隊チェック順序を構築（おススメ部隊を最優先）
+                const formationOrder = [];
+                
+                // おススメ部隊を最優先
+                if (recommendTargetFormation && !collapsedFormations[recommendTargetFormation]) {
+                    formationOrder.push(recommendTargetFormation);
+                }
+                
+                // 残りの部隊を追加
                 for (const tab of TABS) {
                     for (let i = 0; i < tab.count; i++) {
                         const formationKey = `${tab.id}-${i}`;
-                        
-                        // 折りたたまれている部隊はスキップ
-                        if (collapsedFormations[formationKey]) {
-                            continue;
+                        if (formationKey !== recommendTargetFormation) {
+                            formationOrder.push(formationKey);
                         }
-                        
-                        const formation = formations[formationKey];
-                        
-                        // 各武将枠の名宝スロットを順番にチェック
-                        for (const slotName of slots) {
-                            const treasureKey = `${slotName}-${treasureSlot}`;
-                            if (!formation.treasures || !formation.treasures[treasureKey]) {
-                                // 空いている名宝枠が見つかったら配置
-                                setFormations(prev => ({
-                                    ...prev,
-                                    [formationKey]: {
-                                        ...prev[formationKey],
-                                        treasures: {
-                                            ...prev[formationKey].treasures,
-                                            [treasureKey]: treasure
-                                        }
+                    }
+                }
+                
+                // 全部隊を順番にチェック
+                for (const formationKey of formationOrder) {
+                    // 折りたたまれている部隊はスキップ
+                    if (collapsedFormations[formationKey]) {
+                        continue;
+                    }
+                    
+                    const formation = formations[formationKey];
+                    
+                    // 各武将枠の名宝スロットを順番にチェック
+                    for (const slotName of slots) {
+                        const treasureKey = `${slotName}-${treasureSlot}`;
+                        if (!formation.treasures || !formation.treasures[treasureKey]) {
+                            // 空いている名宝枠が見つかったら配置
+                            setFormations(prev => ({
+                                ...prev,
+                                [formationKey]: {
+                                    ...prev[formationKey],
+                                    treasures: {
+                                        ...prev[formationKey].treasures,
+                                        [treasureKey]: treasure
                                     }
-                                }));
-                                return true;
-                            }
+                                }
+                            }));
+                            return true;
                         }
                     }
                 }
@@ -3291,7 +3305,7 @@ const { useState, useEffect } = React;
                                                                 minWidth: '120px',
                                                                 zIndex: 1001
                                                             }}>
-                                                                {[0, 1, 2, 3, 4].filter(i => i !== patternIndex).map(sourceIndex => (
+                                                                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(i => i !== patternIndex).map(sourceIndex => (
                                                                     <button
                                                                         key={sourceIndex}
                                                                         onClick={() => copyFromPattern(patternIndex, sourceIndex)}
