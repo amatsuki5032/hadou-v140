@@ -8,7 +8,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 2001,
@@ -18,7 +18,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 73
   },
   {
     "id": 2001,
@@ -28,7 +28,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 88
   },
   {
     "id": 2001,
@@ -38,7 +38,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 31
   },
   {
     "id": 2001,
@@ -48,7 +48,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 82
   },
   {
     "id": 2001,
@@ -58,7 +58,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 2001,
@@ -68,7 +68,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 2001,
@@ -78,7 +78,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 23
   },
   {
     "id": 2001,
@@ -88,7 +88,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 2001,
@@ -98,7 +98,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 2001,
@@ -108,7 +108,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 7
   },
   {
     "id": 2001,
@@ -118,7 +118,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 2001,
@@ -138,7 +138,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 82
   },
   {
     "id": 2001,
@@ -148,7 +148,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 122
   },
   {
     "id": 2001,
@@ -158,7 +158,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 145
   },
   {
     "id": 3001,
@@ -602,7 +602,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 20
   },
   {
     "id": 4002,
@@ -612,7 +612,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 4003,
@@ -622,7 +622,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 22
   },
   {
     "id": 4004,
@@ -662,7 +662,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4008,
@@ -672,7 +672,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4009,
@@ -682,7 +682,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 129
   },
   {
     "id": 4010,
@@ -702,7 +702,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 23
   },
   {
     "id": 4012,
@@ -712,7 +712,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 69
   },
   {
     "id": 4013,
@@ -722,7 +722,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 127
   },
   {
     "id": 4014,
@@ -752,7 +752,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 4017,
@@ -762,7 +762,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 22
   },
   {
     "id": 4018,
@@ -772,7 +772,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4019,
@@ -782,7 +782,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4020,
@@ -842,7 +842,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 121
   },
   {
     "id": 4026,
@@ -852,7 +852,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4027,
@@ -862,7 +862,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4028,
@@ -872,7 +872,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 22
   },
   {
     "id": 4029,
@@ -892,7 +892,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 4031,
@@ -922,7 +922,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 26
   },
   {
     "id": 4034,
@@ -932,7 +932,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 4035,
@@ -942,7 +942,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 4036,
@@ -952,7 +952,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 4037,
@@ -962,7 +962,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4038,
@@ -972,7 +972,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 31
   },
   {
     "id": 4039,
@@ -982,7 +982,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 145
   },
   {
     "id": 4040,
@@ -992,7 +992,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4041,
@@ -1002,7 +1002,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 23
   },
   {
     "id": 4042,
@@ -1012,7 +1012,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 143
   },
   {
     "id": 4043,
@@ -1022,7 +1022,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 126
   },
   {
     "id": 4044,
@@ -1032,7 +1032,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 4045,
@@ -1052,7 +1052,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 70
   },
   {
     "id": 4047,
@@ -1062,7 +1062,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 70
   },
   {
     "id": 4048,
@@ -1082,7 +1082,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 73
   },
   {
     "id": 4050,
@@ -1102,7 +1102,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 4052,
@@ -1112,7 +1112,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 31
   },
   {
     "id": 4053,
@@ -1122,7 +1122,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 122
   },
   {
     "id": 4054,
@@ -1152,7 +1152,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 4057,
@@ -1162,7 +1162,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 127
   },
   {
     "id": 4058,
@@ -1172,7 +1172,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 0,
     "attack": 0,
     "intelligence": 0,
-    "affinity": 0
+    "affinity": 29
   },
   {
     "id": 4059,
@@ -1272,7 +1272,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 87,
     "attack": 85,
     "intelligence": 77,
-    "affinity": 0
+    "affinity": 22
   },
   {
     "id": 5003,
@@ -1282,7 +1282,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 95,
     "attack": 93,
     "intelligence": 86,
-    "affinity": 0
+    "affinity": 21
   },
   {
     "id": 5004,
@@ -1292,7 +1292,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 89,
     "attack": 45,
     "intelligence": 98,
-    "affinity": 0
+    "affinity": 34
   },
   {
     "id": 5005,
@@ -1302,7 +1302,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 98,
     "attack": 78,
     "intelligence": 98,
-    "affinity": 0
+    "affinity": 69
   },
   {
     "id": 5006,
@@ -1312,7 +1312,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 93,
     "attack": 96,
     "intelligence": 76,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 5007,
@@ -1322,7 +1322,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 97,
     "attack": 99,
     "intelligence": 33,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 5008,
@@ -1342,7 +1342,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 96,
     "attack": 95,
     "intelligence": 77,
-    "affinity": 0
+    "affinity": 100
   },
   {
     "id": 5010,
@@ -1352,7 +1352,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 49,
     "attack": 27,
     "intelligence": 73,
-    "affinity": 0
+    "affinity": 1
   },
   {
     "id": 5011,
@@ -1362,7 +1362,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 91,
     "attack": 90,
     "intelligence": 92,
-    "affinity": 0
+    "affinity": 102
   },
   {
     "id": 5012,
@@ -1372,7 +1372,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 90,
     "attack": 95,
     "intelligence": 69,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 5013,
@@ -1382,7 +1382,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 85,
     "attack": 89,
     "intelligence": 70,
-    "affinity": 0
+    "affinity": 80
   },
   {
     "id": 5014,
@@ -1392,7 +1392,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 98,
     "attack": 55,
     "intelligence": 100,
-    "affinity": 0
+    "affinity": 25
   },
   {
     "id": 5015,
@@ -1402,7 +1402,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 95,
     "attack": 100,
     "intelligence": 31,
-    "affinity": 0
+    "affinity": 75
   },
   {
     "id": 5016,
@@ -1412,7 +1412,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 98,
     "attack": 67,
     "intelligence": 99,
-    "affinity": 0
+    "affinity": 65
   },
   {
     "id": 5017,
@@ -1422,7 +1422,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 64,
     "attack": 28,
     "intelligence": 81,
-    "affinity": 0
+    "affinity": 72
   },
   {
     "id": 5018,
@@ -1432,7 +1432,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 90,
     "attack": 91,
     "intelligence": 75,
-    "affinity": 0
+    "affinity": 126
   },
   {
     "id": 5019,
@@ -1442,7 +1442,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 95,
     "attack": 92,
     "intelligence": 79,
-    "affinity": 0
+    "affinity": 22
   },
   {
     "id": 5020,
@@ -1452,7 +1452,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 97,
     "attack": 73,
     "intelligence": 96,
-    "affinity": 0
+    "affinity": 20
   },
   {
     "id": 5021,
@@ -1462,7 +1462,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 48,
     "attack": 26,
     "intelligence": 74,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 5022,
@@ -1472,7 +1472,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 97,
     "attack": 99,
     "intelligence": 85,
-    "affinity": 0
+    "affinity": 121
   },
   {
     "id": 5023,
@@ -1482,7 +1482,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 91,
     "attack": 61,
     "intelligence": 98,
-    "affinity": 0
+    "affinity": 126
   },
   {
     "id": 5024,
@@ -1492,7 +1492,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 92,
     "attack": 93,
     "intelligence": 68,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 5025,
@@ -1502,7 +1502,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 90,
     "attack": 95,
     "intelligence": 68,
-    "affinity": 0
+    "affinity": 124
   },
   {
     "id": 5026,
@@ -1512,7 +1512,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 89,
     "attack": 94,
     "intelligence": 75,
-    "affinity": 0
+    "affinity": 125
   },
   {
     "id": 5027,
@@ -1522,7 +1522,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 90,
     "attack": 92,
     "intelligence": 72,
-    "affinity": 0
+    "affinity": 27
   },
   {
     "id": 5028,
@@ -1532,7 +1532,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 95,
     "attack": 98,
     "intelligence": 66,
-    "affinity": 0
+    "affinity": 122
   },
   {
     "id": 5029,
@@ -1542,7 +1542,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 93,
     "attack": 92,
     "intelligence": 78,
-    "affinity": 0
+    "affinity": 120
   },
   {
     "id": 5030,
@@ -1552,7 +1552,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 86,
     "attack": 69,
     "intelligence": 87,
-    "affinity": 0
+    "affinity": 7
   },
   {
     "id": 5031,
@@ -1562,7 +1562,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 85,
     "attack": 90,
     "intelligence": 41,
-    "affinity": 0
+    "affinity": 7
   },
   {
     "id": 5032,
@@ -1582,7 +1582,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 92,
     "attack": 84,
     "intelligence": 93,
-    "affinity": 0
+    "affinity": 24
   },
   {
     "id": 5034,
@@ -1592,7 +1592,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 84,
     "attack": 93,
     "intelligence": 60,
-    "affinity": 0
+    "affinity": 96
   },
   {
     "id": 5035,
@@ -1602,7 +1602,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 89,
     "attack": 50,
     "intelligence": 94,
-    "affinity": 0
+    "affinity": 41
   },
   {
     "id": 5036,
@@ -1612,7 +1612,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 69,
     "attack": 42,
     "intelligence": 98,
-    "affinity": 0
+    "affinity": 70
   },
   {
     "id": 5037,
@@ -1622,7 +1622,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 78,
     "attack": 49,
     "intelligence": 95,
-    "affinity": 0
+    "affinity": 38
   },
   {
     "id": 5038,
@@ -1632,7 +1632,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 91,
     "attack": 93,
     "intelligence": 81,
-    "affinity": 0
+    "affinity": 102
   },
   {
     "id": 5039,
@@ -1642,7 +1642,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 84,
     "attack": 87,
     "intelligence": 67,
-    "affinity": 0
+    "affinity": 72
   },
   {
     "id": 5040,
@@ -1652,7 +1652,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 100,
     "attack": 80,
     "intelligence": 95,
-    "affinity": 0
+    "affinity": 65
   },
   {
     "id": 5041,
@@ -1662,7 +1662,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 90,
     "attack": 72,
     "intelligence": 96,
-    "affinity": 0
+    "affinity": 31
   },
   {
     "id": 5042,
@@ -1682,7 +1682,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 85,
     "attack": 87,
     "intelligence": 75,
-    "affinity": 0
+    "affinity": 124
   },
   {
     "id": 5044,
@@ -1692,7 +1692,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 86,
     "attack": 89,
     "intelligence": 64,
-    "affinity": 0
+    "affinity": 145
   },
   {
     "id": 5045,
@@ -1702,7 +1702,7 @@ const SSR_GENERALS_DATA = [
     "leadership": 94,
     "attack": 70,
     "intelligence": 94,
-    "affinity": 0
+    "affinity": 124
   },
   {
     "id": 5046,
