@@ -2854,8 +2854,9 @@ const { useState, useEffect } = React;
                         prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
                     );
                 } else if (type === 'treasureFaction') {
+                    // 名宝の勢力フィルタも排他的（1つだけON）
                     setTreasureFactionFilter(prev => 
-                        prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+                        prev.includes(value) ? [] : [value]
                     );
                 }
             };
