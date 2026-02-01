@@ -3755,6 +3755,37 @@ const { useState, useEffect } = React;
                                     {/* 折りたたみ時は非表示 */}
                                     {!collapsedFormations[key] && (
                                     <div>
+                                    {/* コメント入力欄 */}
+                                    <div style={{
+                                        padding: '8px 12px',
+                                        borderBottom: '1px solid #2a2a2a',
+                                        background: '#151820'
+                                    }}>
+                                        <input
+                                            type="text"
+                                            placeholder="メモを入力..."
+                                            value={data.comment || ''}
+                                            onChange={(e) => {
+                                                setFormations(prev => ({
+                                                    ...prev,
+                                                    [key]: {
+                                                        ...prev[key],
+                                                        comment: e.target.value
+                                                    }
+                                                }));
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                padding: '6px 10px',
+                                                background: '#0a0e1a',
+                                                border: '1px solid #2a2a2a',
+                                                borderRadius: '4px',
+                                                color: '#e8e6e3',
+                                                fontSize: '12px',
+                                                fontFamily: 'inherit'
+                                            }}
+                                        />
+                                    </div>
                                     {/* 技能効果表示 */}
                                     {showSkillEffects[key] && (() => {
                                         const effects = calculateSkillEffects(key);
