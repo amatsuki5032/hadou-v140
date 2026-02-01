@@ -164,6 +164,9 @@ const { useState, useEffect } = React;
                 };
             });
             
+            // Undo用: 直前の編制状態を保存
+            const [undoHistory, setUndoHistory] = useState(null);
+            
             const [activePattern, setActivePattern] = useState(() => {
                 const saved = localStorage.getItem('activePattern');
                 return saved ? parseInt(saved) : 0;
@@ -173,9 +176,15 @@ const { useState, useEffect } = React;
             const formations = formationPatterns[activePattern]?.formations || {};
             const collapsedFormations = formationPatterns[activePattern]?.collapsedFormations || {};
             
-            // formationsを更新する関数
+            // formationsを更新する関数（Undo用に変更前の状態を保存）
             const setFormations = (updater) => {
                 setFormationPatterns(prev => {
+                    // 変更前の状態を保存
+                    setUndoHistory({
+                        pattern: activePattern,
+                        formations: JSON.parse(JSON.stringify(prev[activePattern].formations))
+                    });
+                    
                     const newFormations = typeof updater === 'function' ? updater(prev[activePattern].formations) : updater;
                     return {
                         ...prev,
@@ -198,6 +207,27 @@ const { useState, useEffect } = React;
                             collapsedFormations: newCollapsed
                         }
                     };
+                });
+            };
+            
+            // Undo: 直前の操作を戻す
+            const handleUndo = () => {
+                if (!undoHistory) {
+                    alert('戻す操作がありません');
+                    return;
+                }
+                
+                setFormationPatterns(prev => {
+                    const restored = {
+                        ...prev,
+                        [undoHistory.pattern]: {
+                            ...prev[undoHistory.pattern],
+                            formations: undoHistory.formations
+                        }
+                    };
+                    // 履歴をクリア
+                    setUndoHistory(null);
+                    return restored;
                 });
             };
             
@@ -3557,6 +3587,27 @@ const { useState, useEffect } = React;
                                 </div>
                             )}
                         </div>
+                        
+                        {/* 戻すボタン */}
+                        <button
+                            onClick={handleUndo}
+                            disabled={!undoHistory}
+                            style={{
+                                padding: '8px 16px',
+                                background: undoHistory ? '#3498db' : '#555',
+                                border: '1px solid ' + (undoHistory ? '#2980b9' : '#444'),
+                                borderRadius: '4px',
+                                color: '#fff',
+                                cursor: undoHistory ? 'pointer' : 'not-allowed',
+                                fontSize: '13px',
+                                fontWeight: 'bold',
+                                marginLeft: '8px',
+                                opacity: undoHistory ? 1 : 0.5
+                            }}
+                            title={undoHistory ? '直前の操作を戻す' : '戻す操作がありません'}
+                        >
+                            ⟲ 戻す
+                        </button>
                     </div>
                     
                     <div className="main-content">
