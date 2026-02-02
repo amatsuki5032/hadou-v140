@@ -3547,6 +3547,29 @@ const { useState, useEffect } = React;
                             <div style={{padding: '12px 30px', background: '#0f1419', borderBottom: '1px solid #2a2a2a'}}>
                                 <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
                                     <span style={{color: '#888', fontSize: '12px', marginRight: '8px'}}>プロファイル:</span>
+                                    
+                                    {/* 編制連動モードトグル */}
+                                    <button
+                                        onClick={toggleFormationLinkMode}
+                                        style={{
+                                            padding: '6px 12px',
+                                            background: formationLinkMode ? '#27ae60' : '#555',
+                                            border: '2px solid ' + (formationLinkMode ? '#2ecc71' : '#666'),
+                                            borderRadius: '4px',
+                                            color: '#fff',
+                                            cursor: 'pointer',
+                                            fontSize: '11px',
+                                            fontWeight: 'bold',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            marginRight: '8px'
+                                        }}
+                                        title={formationLinkMode ? '編制連動ON: 全プロファイルで編制を共有' : '編制連動OFF: プロファイルごとに独立した編制'}
+                                    >
+                                        🔗 {formationLinkMode ? 'ON' : 'OFF'}
+                                    </button>
+                                    
                                     {profileNames.map((name, index) => (
                                         <button
                                             key={index}
@@ -3564,28 +3587,6 @@ const { useState, useEffect } = React;
                                             {name}
                                         </button>
                                     ))}
-                                    
-                                    {/* 編制連動モードトグル */}
-                                    <button
-                                        onClick={toggleFormationLinkMode}
-                                        style={{
-                                            marginLeft: 'auto',
-                                            padding: '6px 12px',
-                                            background: formationLinkMode ? '#27ae60' : '#555',
-                                            border: '2px solid ' + (formationLinkMode ? '#2ecc71' : '#666'),
-                                            borderRadius: '4px',
-                                            color: '#fff',
-                                            cursor: 'pointer',
-                                            fontSize: '11px',
-                                            fontWeight: 'bold',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px'
-                                        }}
-                                        title={formationLinkMode ? '編制連動ON: 全プロファイルで編制を共有' : '編制連動OFF: プロファイルごとに独立した編制'}
-                                    >
-                                        🔗 編制連動 {formationLinkMode ? 'ON' : 'OFF'}
-                                    </button>
                                 </div>
                             </div>
                             
