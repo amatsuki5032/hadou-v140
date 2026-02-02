@@ -552,12 +552,19 @@ const { useState, useEffect } = React;
                 return saved ? JSON.parse(saved) : [];
             });
             
+            // 保留セット（武将と名宝をセットで保管）
+            const [pendingSets, setPendingSets] = useState(() => {
+                const saved = localStorage.getItem('pendingSets');
+                return saved ? JSON.parse(saved) : [];
+            });
+            
             // 設定画面用の検索
             const [rankSearchTerm, setRankSearchTerm] = useState('');
             
             // パネル表示フラグ
             const [showGeneralsPanel, setShowGeneralsPanel] = useState(true);
             const [showTreasuresPanel, setShowTreasuresPanel] = useState(true);
+            const [showPendingPanel, setShowPendingPanel] = useState(true);
             
             // 武将の並び順（unit_type: 兵科順、affinity: 相性順）
             const [generalsSortOrder, setGeneralsSortOrder] = useState('affinity');
@@ -789,6 +796,11 @@ const { useState, useEffect } = React;
             useEffect(() => {
                 localStorage.setItem('disabledTreasures', JSON.stringify(disabledTreasures));
             }, [disabledTreasures]);
+            
+            // 保留セットをlocalStorageに保存
+            useEffect(() => {
+                localStorage.setItem('pendingSets', JSON.stringify(pendingSets));
+            }, [pendingSets]);
             
             // 名宝カテゴリの折りたたみ状態をlocalStorageに保存
             useEffect(() => {
@@ -6577,6 +6589,139 @@ const { useState, useEffect } = React;
                         )}
                     </div>
                 )}
+                
+                {/* 保留パネル */}
+                <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`} style={{
+                    background: '#1a1f2e',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    marginBottom: '16px'
+                }}>
+                    <div className="panel-header">
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                            <div className="panel-title">保留</div>
+                            <button
+                                onClick={() => setShowPendingPanel(!showPendingPanel)}
+                                style={{
+                                    padding: '2px 6px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: '#d4af37',
+                                    cursor: 'pointer',
+                                    fontSize: '14px',
+                                    fontWeight: 'bold'
+                                }}
+                                title={showPendingPanel ? 'パネルを閉じる' : 'パネルを開く'}
+                            >
+                                {showPendingPanel ? '▽' : '▷'}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {showPendingPanel && (
+                        <div style={{marginTop: '12px'}}>
+                            {pendingSets.length === 0 ? (
+                                <div style={{
+                                    padding: '40px',
+                                    textAlign: 'center',
+                                    color: '#888',
+                                    border: '2px dashed #3a3a3a',
+                                    borderRadius: '8px'
+                                }}>
+                                    武将・名宝をドラッグ＆ドロップして保留できます
+                                </div>
+                            ) : (
+                                <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                                    {pendingSets.map((set, index) => (
+                                        <div key={index} style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: 'repeat(4, 1fr)',
+                                            gap: '8px',
+                                            padding: '8px',
+                                            background: '#0f1419',
+                                            borderRadius: '4px',
+                                            border: '1px solid #2a2a2a'
+                                        }}>
+                                            {/* 武将枠 */}
+                                            <div
+                                                onDragOver={(e) => e.preventDefault()}
+                                                onDrop={(e) => {
+                                                    e.preventDefault();
+                                                    const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                                                    if (data.type === 'general') {
+                                                        // TODO: 保留への武将配置処理
+                                                    }
+                                                }}
+                                                style={{
+                                                    minHeight: '80px',
+                                                    background: '#1a1f2e',
+                                                    border: '2px dashed #3a3a3a',
+                                                    borderRadius: '4px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: '#666',
+                                                    fontSize: '12px'
+                                                }}
+                                            >
+                                                {set.general ? (
+                                                    <div>{set.general.name}</div>
+                                                ) : (
+                                                    '武将'
+                                                )}
+                                            </div>
+                                            
+                                            {/* 武器枠 */}
+                                            <div style={{
+                                                minHeight: '80px',
+                                                background: '#1a1f2e',
+                                                border: '2px dashed #3a3a3a',
+                                                borderRadius: '4px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: '#666',
+                                                fontSize: '12px'
+                                            }}>
+                                                {set.weapon ? set.weapon.name : '武器'}
+                                            </div>
+                                            
+                                            {/* 防具枠 */}
+                                            <div style={{
+                                                minHeight: '80px',
+                                                background: '#1a1f2e',
+                                                border: '2px dashed #3a3a3a',
+                                                borderRadius: '4px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: '#666',
+                                                fontSize: '12px'
+                                            }}>
+                                                {set.armor ? set.armor.name : '防具'}
+                                            </div>
+                                            
+                                            {/* 文物枠 */}
+                                            <div style={{
+                                                minHeight: '80px',
+                                                background: '#1a1f2e',
+                                                border: '2px dashed #3a3a3a',
+                                                borderRadius: '4px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: '#666',
+                                                fontSize: '12px'
+                                            }}>
+                                                {set.artifact ? set.artifact.name : '文物'}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
                 
                 {/* コンテキストヘルプモーダル */}
                 {contextHelpType && (
