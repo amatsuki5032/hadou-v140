@@ -6688,13 +6688,8 @@ const { useState, useEffect } = React;
                     </div>
                 )}
                 
-                {/* 保留パネル */}
-                <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`} style={{
-                    background: '#1a1f2e',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    marginBottom: '16px'
-                }}>
+                {/* 保留パネル（右3） */}
+                <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`}>
                     <div className="panel-header">
                         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                             <div className="panel-title">保留</div>
@@ -6807,20 +6802,33 @@ const { useState, useEffect } = React;
                                                     }
                                                 }}
                                                 style={{
-                                                    minHeight: '80px',
+                                                    minHeight: '100px',
                                                     background: set.general ? '#2a2a2a' : '#1a1f2e',
                                                     border: '2px dashed #3a3a3a',
                                                     borderRadius: '4px',
                                                     display: 'flex',
+                                                    flexDirection: 'column',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
-                                                    color: set.general ? '#fff' : '#666',
-                                                    fontSize: '12px',
                                                     cursor: set.general ? 'move' : 'default',
-                                                    padding: '4px'
+                                                    padding: '8px'
                                                 }}
                                             >
-                                                {set.general ? set.general.name : '武将'}
+                                                {set.general ? (
+                                                    <>
+                                                        <ItemImage 
+                                                            src={getImageUrl('general', set.general.id, set.general.rarity, set.general.name)}
+                                                            alt={set.general.name}
+                                                            rarity={set.general.rarity}
+                                                            style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}}
+                                                        />
+                                                        <div style={{fontSize: '10px', color: '#fff', marginTop: '4px', textAlign: 'center'}}>
+                                                            {set.general.name}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div style={{color: '#666', fontSize: '12px'}}>武将</div>
+                                                )}
                                             </div>
                                             
                                             {/* 武器・防具・文物枠 */}
@@ -6884,20 +6892,33 @@ const { useState, useEffect } = React;
                                                             }
                                                         }}
                                                         style={{
-                                                            minHeight: '80px',
+                                                            minHeight: '100px',
                                                             background: item ? '#2a2a2a' : '#1a1f2e',
                                                             border: '2px dashed #3a3a3a',
                                                             borderRadius: '4px',
                                                             display: 'flex',
+                                                            flexDirection: 'column',
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
-                                                            color: item ? '#fff' : '#666',
-                                                            fontSize: '12px',
                                                             cursor: item ? 'move' : 'default',
-                                                            padding: '4px'
+                                                            padding: '8px'
                                                         }}
                                                     >
-                                                        {item ? item.name : label}
+                                                        {item ? (
+                                                            <>
+                                                                <ItemImage 
+                                                                    src={getImageUrl('treasure', item.id, item.rarity, item.name)}
+                                                                    alt={item.name}
+                                                                    rarity={item.rarity}
+                                                                    style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}}
+                                                                />
+                                                                <div style={{fontSize: '10px', color: '#fff', marginTop: '4px', textAlign: 'center'}}>
+                                                                    {item.name}
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <div style={{color: '#666', fontSize: '12px'}}>{label}</div>
+                                                        )}
                                                     </div>
                                                 );
                                             })}
