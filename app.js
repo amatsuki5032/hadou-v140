@@ -172,7 +172,8 @@ const { useState, useEffect } = React;
                     return JSON.parse(saved);
                 }
                 
-                // profile1〜4（プロファイル2〜5に対応）の空編制
+                // 初回起動時: プロファイル1（formationPatterns）をコピーして初期化
+                // ※この時点ではformationPatternsは未初期化なので、useEffect内で処理
                 const empty = {};
                 for (let i = 1; i < 5; i++) {
                     empty[`profile${i}`] = {
@@ -188,10 +189,22 @@ const { useState, useEffect } = React;
                         9: { name: "編制10", formations: {}, collapsedFormations: {}, allowDuplicates: false }
                     };
                 }
-                // 初期化時に即座に保存
-                localStorage.setItem('profileFormations', JSON.stringify(empty));
                 return empty;
             });
+            
+            // 初回起動時: プロファイル1の内容をプロファイル2〜5にコピー
+            useEffect(() => {
+                const hasInitialized = localStorage.getItem('profileFormationsInitialized');
+                if (!hasInitialized && formationPatterns) {
+                    const updated = {};
+                    for (let i = 1; i < 5; i++) {
+                        updated[`profile${i}`] = JSON.parse(JSON.stringify(formationPatterns));
+                    }
+                    setProfileFormations(updated);
+                    localStorage.setItem('profileFormations', JSON.stringify(updated));
+                    localStorage.setItem('profileFormationsInitialized', 'true');
+                }
+            }, [formationPatterns]);
             
             // Undo用: 直前の編制状態を保存
             const [undoHistory, setUndoHistory] = useState(null);
@@ -307,7 +320,7 @@ const { useState, useEffect } = React;
                     return;
                 }
                 
-                setFormationPatterns(prev => {
+                const updateFunction = (prev) => {
                     const restored = {
                         ...prev,
                         [undoHistory.pattern]: {
@@ -315,10 +328,22 @@ const { useState, useEffect } = React;
                             formations: undoHistory.formations
                         }
                     };
-                    // 履歴をクリア
-                    setUndoHistory(null);
                     return restored;
-                });
+                };
+                
+                if (currentProfile === 0) {
+                    // プロファイル1
+                    setFormationPatterns(updateFunction);
+                } else {
+                    // プロファイル2〜5
+                    setProfileFormations(prev => ({
+                        ...prev,
+                        [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
+                    }));
+                }
+                
+                // 履歴をクリア
+                setUndoHistory(null);
             };
             
             const [loading, setLoading] = useState(true);
