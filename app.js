@@ -4027,9 +4027,9 @@ const { useState, useEffect } = React;
                         </button>
                     </div>
                     
-                    <div className="main-content" style={{display: 'flex', gap: '16px'}}>
+                    <div className="main-content">
                         {/* 部隊エリア（左） */}
-                        <div className="formations-area" style={{flex: '1 1 auto'}}>
+                        <div className="formations-area">
                             {currentFormations.map(({ key, number, data }) => (
                                 <div key={key} className="formation-card">
                                     <div className="formation-header">
@@ -4781,7 +4781,7 @@ const { useState, useEffect } = React;
                         </div>
                         
                         {/* 武将リスト（右1） */}
-                        <div className={`generals-panel ${!showGeneralsPanel ? 'collapsed' : ''}`} style={{flex: '0 0 300px'}}>
+                        <div className={`generals-panel ${!showGeneralsPanel ? 'collapsed' : ''}`}>
                             <div className="panel-header">
                                 <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                                     <div className="panel-title">武将リスト</div>
@@ -5188,7 +5188,7 @@ const { useState, useEffect } = React;
                         </div>
                         
                         {/* 名宝リスト（右2） */}
-                        <div className={`treasures-panel ${!showTreasuresPanel ? 'collapsed' : ''}`} style={{flex: '0 0 300px'}}>
+                        <div className={`treasures-panel ${!showTreasuresPanel ? 'collapsed' : ''}`}>
                             <div className="panel-header">
                                 <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                                     <div className="panel-title">名宝リスト</div>
@@ -6689,7 +6689,7 @@ const { useState, useEffect } = React;
                 )}
                 
                 {/* 保留パネル（右3） */}
-                <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`} style={{flex: '0 0 600px'}}>
+                <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`}>
                     <div className="panel-header">
                         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                             <div className="panel-title">保留</div>
@@ -6929,7 +6929,6 @@ const { useState, useEffect } = React;
                         </div>
                     )}
                 </div>
-            </div>
                 
                 {/* コンテキストヘルプモーダル */}
                 {contextHelpType && (
