@@ -2964,8 +2964,9 @@ const { useState, useEffect } = React;
             // フィルタートグル
             const toggleFilter = (type, value) => {
                 if (type === 'unitType') {
+                    // 兵種フィルタは排他的（1つだけON）
                     setUnitTypeFilter(prev => 
-                        prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+                        prev.includes(value) ? [] : [value]
                     );
                 } else if (type === 'faction') {
                     // 勢力フィルタは排他的（1つだけON）
@@ -2973,8 +2974,9 @@ const { useState, useEffect } = React;
                         prev.includes(value) ? [] : [value]
                     );
                 } else if (type === 'attendant') {
+                    // 侍従フィルタは排他的（1つだけON）
                     setAttendantFilter(prev => 
-                        prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+                        prev.includes(value) ? [] : [value]
                     );
                 } else if (type === 'treasureWeapon') {
                     setTreasureWeaponFilter(prev => 
@@ -4601,14 +4603,23 @@ const { useState, useEffect } = React;
                                                 key={rarity}
                                                 className={`filter-chip ${expandedRarities[rarity] ? 'active' : ''}`}
                                                 onClick={() => {
+                                                    // レアリティは排他的（1つだけON）
+                                                    const isCurrentlyActive = expandedRarities[rarity];
+                                                    
                                                     // LRがOFFになる場合、侍従タグもクリア
-                                                    if (rarity === 'LR' && expandedRarities['LR']) {
+                                                    if (rarity === 'LR' && isCurrentlyActive) {
                                                         setAttendantFilter([]);
                                                     }
-                                                    setExpandedRarities(prev => ({
-                                                        ...prev,
-                                                        [rarity]: !prev[rarity]
-                                                    }));
+                                                    
+                                                    // 全てOFFにしてから、クリックしたものだけON（再クリックでOFF）
+                                                    setExpandedRarities({
+                                                        LR: false,
+                                                        UR: false,
+                                                        SSR: false,
+                                                        SR: false,
+                                                        R: false,
+                                                        [rarity]: !isCurrentlyActive
+                                                    });
                                                 }}
                                             >
                                                 {rarity}
