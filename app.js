@@ -164,6 +164,37 @@ const { useState, useEffect } = React;
                 };
             });
             
+            // 編制連動モード
+            const [formationLinkMode, setFormationLinkMode] = useState(() => {
+                const saved = localStorage.getItem('formationLinkMode');
+                return saved !== null ? JSON.parse(saved) : true; // デフォルトはON
+            });
+            
+            // プロファイル別の独立編制（連動OFF時のみ使用）
+            const [profileFormations, setProfileFormations] = useState(() => {
+                const saved = localStorage.getItem('profileFormations');
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+                // デフォルト: 各プロファイル用の空編制（プロファイル2〜5）
+                const empty = {};
+                for (let i = 1; i < 5; i++) { // profile1〜4 (プロファイル2〜5に対応)
+                    empty[`profile${i}`] = {
+                        0: { name: "編制1", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        1: { name: "編制2", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        2: { name: "編制3", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        3: { name: "編制4", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        4: { name: "編制5", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        5: { name: "編制6", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        6: { name: "編制7", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        7: { name: "編制8", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        8: { name: "編制9", formations: {}, collapsedFormations: {}, allowDuplicates: false },
+                        9: { name: "編制10", formations: {}, collapsedFormations: {}, allowDuplicates: false }
+                    };
+                }
+                return empty;
+            });
+            
             // Undo用: 直前の編制状態を保存
             const [undoHistory, setUndoHistory] = useState(null);
             
@@ -173,12 +204,25 @@ const { useState, useEffect } = React;
             });
             
             // 現在アクティブな編制のformationsとcollapsedFormationsを取得
-            const formations = formationPatterns[activePattern]?.formations || {};
-            const collapsedFormations = formationPatterns[activePattern]?.collapsedFormations || {};
+            // 連動モードとプロファイルに応じて適切な編制を返す
+            const getCurrentFormationPatterns = () => {
+                if (formationLinkMode || currentProfile === 0) {
+                    // 連動ON または プロファイル1 → formationPatterns
+                    return formationPatterns;
+                } else {
+                    // 連動OFF かつ プロファイル2〜5 → profileFormations
+                    return profileFormations[`profile${currentProfile}`] || formationPatterns;
+                }
+            };
+            
+            const currentFormationPatterns = getCurrentFormationPatterns();
+            const formations = currentFormationPatterns[activePattern]?.formations || {};
+            const collapsedFormations = currentFormationPatterns[activePattern]?.collapsedFormations || {};
             
             // formationsを更新する関数（Undo用に変更前の状態を保存）
             const setFormations = (updater) => {
-                setFormationPatterns(prev => {
+                // 連動モードとプロファイルに応じて適切なsetterを使う
+                const updateFunction = (prev) => {
                     // 変更前の状態を保存
                     setUndoHistory({
                         pattern: activePattern,
@@ -193,12 +237,23 @@ const { useState, useEffect } = React;
                             formations: newFormations
                         }
                     };
-                });
+                };
+                
+                if (formationLinkMode || currentProfile === 0) {
+                    // 連動ON または プロファイル1 → formationPatterns更新
+                    setFormationPatterns(updateFunction);
+                } else {
+                    // 連動OFF かつ プロファイル2〜5 → profileFormations更新
+                    setProfileFormations(prev => ({
+                        ...prev,
+                        [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
+                    }));
+                }
             };
             
             // collapsedFormationsを更新する関数
             const setCollapsedFormations = (updater) => {
-                setFormationPatterns(prev => {
+                const updateFunction = (prev) => {
                     const newCollapsed = typeof updater === 'function' ? updater(prev[activePattern].collapsedFormations) : updater;
                     return {
                         ...prev,
@@ -207,7 +262,39 @@ const { useState, useEffect } = React;
                             collapsedFormations: newCollapsed
                         }
                     };
-                });
+                };
+                
+                if (formationLinkMode || currentProfile === 0) {
+                    setFormationPatterns(updateFunction);
+                } else {
+                    setProfileFormations(prev => ({
+                        ...prev,
+                        [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
+                    }));
+                }
+            };
+            
+            // 連動モードの切り替え
+            const toggleFormationLinkMode = () => {
+                const newMode = !formationLinkMode;
+                setFormationLinkMode(newMode);
+                localStorage.setItem('formationLinkMode', JSON.stringify(newMode));
+                
+                // 連動OFF→ON の場合、特に何もしない（独立編制は保持）
+                // 連動ON→OFF の場合、初回のみ現在の編制を各プロファイルにコピー
+                if (!newMode) {
+                    setProfileFormations(prev => {
+                        const updated = { ...prev };
+                        for (let i = 1; i < 5; i++) {
+                            // 既に独立編制がある場合は上書きしない
+                            if (!updated[`profile${i}`] || Object.keys(updated[`profile${i}`]).length === 0) {
+                                updated[`profile${i}`] = JSON.parse(JSON.stringify(formationPatterns));
+                            }
+                        }
+                        localStorage.setItem('profileFormations', JSON.stringify(updated));
+                        return updated;
+                    });
+                }
             };
             
             // Undo: 直前の操作を戻す
@@ -648,6 +735,13 @@ const { useState, useEffect } = React;
                     localStorage.setItem('formationPatterns', JSON.stringify(formationPatterns));
                 }
             }, [formationPatterns]);
+            
+            // プロファイル別編制をlocalStorageに保存
+            useEffect(() => {
+                if (Object.keys(profileFormations).length > 0) {
+                    localStorage.setItem('profileFormations', JSON.stringify(profileFormations));
+                }
+            }, [profileFormations]);
             
             // アクティブな編制パターン番号を保存
             useEffect(() => {
@@ -2894,9 +2988,11 @@ const { useState, useEffect } = React;
             // JSON エクスポート
             const exportData = () => {
                 const data = {
-                    version: 'v83',
+                    version: 'v141',
                     exportDate: new Date().toISOString(),
                     formationPatterns,
+                    formationLinkMode,
+                    profileFormations,
                     activePattern,
                     profileData,
                     profileNames,
@@ -2989,6 +3085,19 @@ const { useState, useEffect } = React;
                             setFormationPatterns(data.formationPatterns);
                         }
                         if (data.activePattern !== undefined) setActivePattern(data.activePattern);
+                        
+                        // 連動モードをインポート（デフォルトはON）
+                        if (data.formationLinkMode !== undefined) {
+                            setFormationLinkMode(data.formationLinkMode);
+                            localStorage.setItem('formationLinkMode', JSON.stringify(data.formationLinkMode));
+                        }
+                        
+                        // プロファイル別編制をインポート
+                        if (data.profileFormations) {
+                            setProfileFormations(data.profileFormations);
+                            localStorage.setItem('profileFormations', JSON.stringify(data.profileFormations));
+                        }
+                        
                         if (data.profileData) setProfileData(data.profileData);
                         if (data.profileNames) setProfileNames(data.profileNames);
                         if (data.currentProfile !== undefined) setCurrentProfile(data.currentProfile);
@@ -3449,6 +3558,28 @@ const { useState, useEffect } = React;
                                             {name}
                                         </button>
                                     ))}
+                                    
+                                    {/* 編制連動モードトグル */}
+                                    <button
+                                        onClick={toggleFormationLinkMode}
+                                        style={{
+                                            marginLeft: 'auto',
+                                            padding: '6px 12px',
+                                            background: formationLinkMode ? '#27ae60' : '#555',
+                                            border: '2px solid ' + (formationLinkMode ? '#2ecc71' : '#666'),
+                                            borderRadius: '4px',
+                                            color: '#fff',
+                                            cursor: 'pointer',
+                                            fontSize: '11px',
+                                            fontWeight: 'bold',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px'
+                                        }}
+                                        title={formationLinkMode ? '編制連動ON: 全プロファイルで編制を共有' : '編制連動OFF: プロファイルごとに独立した編制'}
+                                    >
+                                        🔗 編制連動 {formationLinkMode ? 'ON' : 'OFF'}
+                                    </button>
                                 </div>
                             </div>
                             
