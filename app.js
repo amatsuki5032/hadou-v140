@@ -1739,21 +1739,18 @@ const { useState, useEffect } = React;
             
             // 部隊の折りたたみ状態を切り替え
             const toggleFormationCollapse = (formationKey) => {
-                // 折りたたみ状態を更新（useEffectが自動的に対象部隊を切り替える）
-                setFormationPatterns(prev => {
-                    const currentCollapsed = prev[activePattern].collapsedFormations || {};
+                setCollapsedFormations(prev => {
                     const newCollapsed = {
-                        ...currentCollapsed,
-                        [formationKey]: !currentCollapsed[formationKey]
+                        ...prev,
+                        [formationKey]: !prev[formationKey]
                     };
                     
-                    return {
-                        ...prev,
-                        [activePattern]: {
-                            ...prev[activePattern],
-                            collapsedFormations: newCollapsed
-                        }
-                    };
+                    // 部隊を開いた（折りたたみ解除した）場合、おススメ部隊に設定
+                    if (prev[formationKey]) {
+                        setRecommendTargetFormation(formationKey);
+                    }
+                    
+                    return newCollapsed;
                 });
             };
             
@@ -1824,12 +1821,25 @@ const { useState, useEffect } = React;
                     formationOrder.push(recommendTargetFormation);
                 }
                 
-                // 残りの部隊を追加
-                for (const tab of TABS) {
-                    for (let i = 0; i < tab.count; i++) {
-                        const formationKey = `${tab.id}-${i}`;
+                // 現在のタブの部隊を次に優先
+                const currentTab = TABS.find(tab => tab.id === activeTab);
+                if (currentTab) {
+                    for (let i = 0; i < currentTab.count; i++) {
+                        const formationKey = `${currentTab.id}-${i}`;
                         if (formationKey !== recommendTargetFormation) {
                             formationOrder.push(formationKey);
+                        }
+                    }
+                }
+                
+                // 残りの部隊を追加
+                for (const tab of TABS) {
+                    if (tab.id !== activeTab) {
+                        for (let i = 0; i < tab.count; i++) {
+                            const formationKey = `${tab.id}-${i}`;
+                            if (formationKey !== recommendTargetFormation) {
+                                formationOrder.push(formationKey);
+                            }
                         }
                     }
                 }
@@ -2643,12 +2653,6 @@ const { useState, useEffect } = React;
             
             // 武将ダブルクリック：空き枠に自動配置
             const handleGeneralDoubleClick = (general) => {
-                // UR武将の場合は重複チェック
-                if (general.rarity === 'UR' && isURGeneralUsed(general.id)) {
-                    alert('UR武将は重複して配置できません');
-                    return;
-                }
-                
                 // 既に使用中の武将をダブルクリック → 編制から削除
                 if (isGeneralUsed(general.id, general.name, general.rarity)) {
                     setFormations(prev => {
@@ -2682,6 +2686,12 @@ const { useState, useEffect } = React;
                     return;
                 }
                 
+                // UR武将の場合は重複チェック（配置しようとしている時のみ）
+                if (general.rarity === 'UR' && isURGeneralUsed(general.id)) {
+                    alert('UR武将は重複して配置できません');
+                    return;
+                }
+                
                 const slotOrder = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
                 const formationOrder = [];
                 
@@ -2690,13 +2700,25 @@ const { useState, useEffect } = React;
                     formationOrder.push(recommendTargetFormation);
                 }
                 
-                // 残りの部隊順序を構築（部隊1〜12）
-                TABS.forEach(tab => {
-                    for (let i = 0; i < tab.count; i++) {
-                        const formationKey = `${tab.id}-${i}`;
-                        // おススメ部隊は既に追加済みなのでスキップ
+                // 現在のタブの部隊を次に優先
+                const currentTab = TABS.find(tab => tab.id === activeTab);
+                if (currentTab) {
+                    for (let i = 0; i < currentTab.count; i++) {
+                        const formationKey = `${currentTab.id}-${i}`;
                         if (formationKey !== recommendTargetFormation) {
                             formationOrder.push(formationKey);
+                        }
+                    }
+                }
+                
+                // 残りの部隊順序を構築
+                TABS.forEach(tab => {
+                    if (tab.id !== activeTab) {
+                        for (let i = 0; i < tab.count; i++) {
+                            const formationKey = `${tab.id}-${i}`;
+                            if (formationKey !== recommendTargetFormation) {
+                                formationOrder.push(formationKey);
+                            }
                         }
                     }
                 });
