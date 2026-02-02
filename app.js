@@ -1814,18 +1814,33 @@ const { useState, useEffect } = React;
                 }
                 setDraggedGeneral({ general });
                 e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'general',
+                    general: general,
+                    from: 'general-list'
+                }));
             };
             
             // 配置済み武将からのドラッグ開始
             const handleSlotDragStart = (e, general, formationKey, slotName) => {
                 setDraggedGeneral({ ...general, sourceFormation: formationKey, sourceSlot: slotName });
                 e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'general',
+                    general: general,
+                    from: `formation-${formationKey}-${slotName}`
+                }));
             };
             
             // 侍従のドラッグ開始
             const handleAttendantDragStart = (e, attendant, formationKey, slotName) => {
                 setDraggedGeneral({ ...attendant, sourceFormation: formationKey, sourceSlot: slotName, isFromAttendant: true });
                 e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'general',
+                    general: attendant,
+                    from: `formation-${formationKey}-attendant-${slotName}`
+                }));
             };
             
             // 名宝のドラッグ開始
@@ -1836,6 +1851,11 @@ const { useState, useEffect } = React;
                 }
                 setDraggedTreasure(treasure);
                 e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'treasure',
+                    treasure: treasure,
+                    from: 'treasure-list'
+                }));
             };
             
             // 名宝を空いている枠に自動配置
@@ -1916,6 +1936,11 @@ const { useState, useEffect } = React;
             const handleTreasureSlotDragStart = (e, treasure, formationKey, slotName, treasureSlot) => {
                 setDraggedTreasure({ ...treasure, sourceFormation: formationKey, sourceSlot: slotName, sourceTreasureSlot: treasureSlot });
                 e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'treasure',
+                    treasure: treasure,
+                    from: `formation-${formationKey}-${slotName}-${treasureSlot}`
+                }));
             };
             
             // ドロップ
