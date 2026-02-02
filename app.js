@@ -3052,7 +3052,7 @@ const { useState, useEffect } = React;
             // JSON エクスポート
             const exportData = () => {
                 const data = {
-                    version: 'v142',
+                    version: 'v144',
                     exportDate: new Date().toISOString(),
                     formationPatterns,
                     profileFormations,
@@ -3064,7 +3064,8 @@ const { useState, useEffect } = React;
                     favoriteTreasures,
                     disabledGenerals,
                     disabledTreasures,
-                    formationTemplates
+                    formationTemplates,
+                    pendingSets
                 };
                 
                 const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
@@ -3162,6 +3163,77 @@ const { useState, useEffect } = React;
                 input.click();
             };
             
+            // 保留に追加（武将または名宝をどこにでもドロップ可能）
+            const addToPending = (item, itemType) => {
+                setPendingSets(prev => {
+                    // 空いているセットを探す
+                    let targetIndex = -1;
+                    
+                    if (itemType === 'general') {
+                        // 武将枠が空いているセットを探す
+                        targetIndex = prev.findIndex(set => !set.general);
+                    } else {
+                        // 名宝：該当カテゴリが空いているセットを探す
+                        const slotName = itemType === 'weapon' ? 'weapon' : 
+                                       itemType === 'armor' ? 'armor' : 'artifact';
+                        targetIndex = prev.findIndex(set => !set[slotName]);
+                    }
+                    
+                    if (targetIndex >= 0) {
+                        // 既存のセットに追加
+                        const newSets = [...prev];
+                        if (itemType === 'general') {
+                            newSets[targetIndex] = {...newSets[targetIndex], general: item};
+                        } else if (itemType === 'weapon') {
+                            newSets[targetIndex] = {...newSets[targetIndex], weapon: item};
+                        } else if (itemType === 'armor') {
+                            newSets[targetIndex] = {...newSets[targetIndex], armor: item};
+                        } else if (itemType === 'artifact') {
+                            newSets[targetIndex] = {...newSets[targetIndex], artifact: item};
+                        }
+                        return newSets;
+                    } else {
+                        // 新しいセットを作成
+                        const newSet = {general: null, weapon: null, armor: null, artifact: null};
+                        if (itemType === 'general') {
+                            newSet.general = item;
+                        } else if (itemType === 'weapon') {
+                            newSet.weapon = item;
+                        } else if (itemType === 'armor') {
+                            newSet.armor = item;
+                        } else if (itemType === 'artifact') {
+                            newSet.artifact = item;
+                        }
+                        return [...prev, newSet];
+                    }
+                });
+            };
+            
+            // 保留から削除
+            const removeFromPending = (setIndex, slotType) => {
+                setPendingSets(prev => {
+                    const newSets = [...prev];
+                    newSets[setIndex] = {...newSets[setIndex], [slotType]: null};
+                    
+                    // 全て空のセットは削除
+                    if (!newSets[setIndex].general && !newSets[setIndex].weapon && 
+                        !newSets[setIndex].armor && !newSets[setIndex].artifact) {
+                        newSets.splice(setIndex, 1);
+                    }
+                    
+                    return newSets;
+                });
+            };
+            
+            // 保留から編制に配置（ダブルクリック）
+            const deployFromPending = (item, itemType) => {
+                if (itemType === 'general') {
+                    handleGeneralDoubleClick(item);
+                } else {
+                    autoAssignTreasure(item);
+                }
+            };
+            
             // JSON インポート
             const importData = (event) => {
                 const file = event.target.files[0];
@@ -3247,6 +3319,7 @@ const { useState, useEffect } = React;
                         if (data.disabledGenerals) setDisabledGenerals(data.disabledGenerals);
                         if (data.disabledTreasures) setDisabledTreasures(data.disabledTreasures);
                         if (data.formationTemplates) setFormationTemplates(data.formationTemplates);
+                        if (data.pendingSets) setPendingSets(data.pendingSets);
                         
                         alert('データをインポートしました');
                         
@@ -6621,19 +6694,34 @@ const { useState, useEffect } = React;
                     {showPendingPanel && (
                         <div style={{marginTop: '12px'}}>
                             {pendingSets.length === 0 ? (
-                                <div style={{
+                                <div 
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                                        if (data.type === 'general') {
+                                            addToPending(data.general, 'general');
+                                        } else if (data.type === 'treasure') {
+                                            const category = data.treasure.category;
+                                            const itemType = category === '武器' ? 'weapon' : 
+                                                           category === '防具' ? 'armor' : 'artifact';
+                                            addToPending(data.treasure, itemType);
+                                        }
+                                    }}
+                                    style={{
                                     padding: '40px',
                                     textAlign: 'center',
                                     color: '#888',
                                     border: '2px dashed #3a3a3a',
-                                    borderRadius: '8px'
+                                    borderRadius: '8px',
+                                    cursor: 'copy'
                                 }}>
                                     武将・名宝をドラッグ＆ドロップして保留できます
                                 </div>
                             ) : (
                                 <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                                    {pendingSets.map((set, index) => (
-                                        <div key={index} style={{
+                                    {pendingSets.map((set, setIndex) => (
+                                        <div key={setIndex} style={{
                                             display: 'grid',
                                             gridTemplateColumns: 'repeat(4, 1fr)',
                                             gap: '8px',
@@ -6649,72 +6737,145 @@ const { useState, useEffect } = React;
                                                     e.preventDefault();
                                                     const data = JSON.parse(e.dataTransfer.getData('application/json'));
                                                     if (data.type === 'general') {
-                                                        // TODO: 保留への武将配置処理
+                                                        if (data.from?.startsWith('pending-')) {
+                                                            // 保留内での移動
+                                                            const [, fromSetIdx, fromSlot] = data.from.split('-');
+                                                            if (parseInt(fromSetIdx) !== setIndex || fromSlot !== 'general') {
+                                                                removeFromPending(parseInt(fromSetIdx), fromSlot);
+                                                                setPendingSets(prev => {
+                                                                    const newSets = [...prev];
+                                                                    if (newSets[setIndex].general) {
+                                                                        // 入れ替え
+                                                                        newSets[parseInt(fromSetIdx)] = {
+                                                                            ...newSets[parseInt(fromSetIdx)],
+                                                                            [fromSlot]: newSets[setIndex].general
+                                                                        };
+                                                                    }
+                                                                    newSets[setIndex] = {...newSets[setIndex], general: data.general};
+                                                                    return newSets;
+                                                                });
+                                                            }
+                                                        } else {
+                                                            // 外部から追加
+                                                            setPendingSets(prev => {
+                                                                const newSets = [...prev];
+                                                                newSets[setIndex] = {...newSets[setIndex], general: data.general};
+                                                                return newSets;
+                                                            });
+                                                        }
+                                                    }
+                                                }}
+                                                draggable={!!set.general}
+                                                onDragStart={(e) => {
+                                                    if (set.general) {
+                                                        e.dataTransfer.setData('application/json', JSON.stringify({
+                                                            type: 'general',
+                                                            general: set.general,
+                                                            from: `pending-${setIndex}-general`
+                                                        }));
+                                                    }
+                                                }}
+                                                onDoubleClick={() => {
+                                                    if (set.general) {
+                                                        deployFromPending(set.general, 'general');
+                                                        removeFromPending(setIndex, 'general');
                                                     }
                                                 }}
                                                 style={{
                                                     minHeight: '80px',
-                                                    background: '#1a1f2e',
+                                                    background: set.general ? '#2a2a2a' : '#1a1f2e',
                                                     border: '2px dashed #3a3a3a',
                                                     borderRadius: '4px',
                                                     display: 'flex',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
-                                                    color: '#666',
-                                                    fontSize: '12px'
+                                                    color: set.general ? '#fff' : '#666',
+                                                    fontSize: '12px',
+                                                    cursor: set.general ? 'move' : 'default',
+                                                    padding: '4px'
                                                 }}
                                             >
-                                                {set.general ? (
-                                                    <div>{set.general.name}</div>
-                                                ) : (
-                                                    '武将'
-                                                )}
+                                                {set.general ? set.general.name : '武将'}
                                             </div>
                                             
-                                            {/* 武器枠 */}
-                                            <div style={{
-                                                minHeight: '80px',
-                                                background: '#1a1f2e',
-                                                border: '2px dashed #3a3a3a',
-                                                borderRadius: '4px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: '#666',
-                                                fontSize: '12px'
-                                            }}>
-                                                {set.weapon ? set.weapon.name : '武器'}
-                                            </div>
-                                            
-                                            {/* 防具枠 */}
-                                            <div style={{
-                                                minHeight: '80px',
-                                                background: '#1a1f2e',
-                                                border: '2px dashed #3a3a3a',
-                                                borderRadius: '4px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: '#666',
-                                                fontSize: '12px'
-                                            }}>
-                                                {set.armor ? set.armor.name : '防具'}
-                                            </div>
-                                            
-                                            {/* 文物枠 */}
-                                            <div style={{
-                                                minHeight: '80px',
-                                                background: '#1a1f2e',
-                                                border: '2px dashed #3a3a3a',
-                                                borderRadius: '4px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: '#666',
-                                                fontSize: '12px'
-                                            }}>
-                                                {set.artifact ? set.artifact.name : '文物'}
-                                            </div>
+                                            {/* 武器・防具・文物枠 */}
+                                            {['weapon', 'armor', 'artifact'].map((slotType) => {
+                                                const item = set[slotType];
+                                                const label = slotType === 'weapon' ? '武器' : 
+                                                            slotType === 'armor' ? '防具' : '文物';
+                                                const category = slotType === 'weapon' ? '武器' : 
+                                                               slotType === 'armor' ? '防具' : '文物';
+                                                
+                                                return (
+                                                    <div
+                                                        key={slotType}
+                                                        onDragOver={(e) => e.preventDefault()}
+                                                        onDrop={(e) => {
+                                                            e.preventDefault();
+                                                            const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                                                            if (data.type === 'treasure' && data.treasure.category === category) {
+                                                                if (data.from?.startsWith('pending-')) {
+                                                                    // 保留内での移動
+                                                                    const [, fromSetIdx, fromSlot] = data.from.split('-');
+                                                                    if (parseInt(fromSetIdx) !== setIndex || fromSlot !== slotType) {
+                                                                        removeFromPending(parseInt(fromSetIdx), fromSlot);
+                                                                        setPendingSets(prev => {
+                                                                            const newSets = [...prev];
+                                                                            if (newSets[setIndex][slotType]) {
+                                                                                // 入れ替え
+                                                                                newSets[parseInt(fromSetIdx)] = {
+                                                                                    ...newSets[parseInt(fromSetIdx)],
+                                                                                    [fromSlot]: newSets[setIndex][slotType]
+                                                                                };
+                                                                            }
+                                                                            newSets[setIndex] = {...newSets[setIndex], [slotType]: data.treasure};
+                                                                            return newSets;
+                                                                        });
+                                                                    }
+                                                                } else {
+                                                                    // 外部から追加
+                                                                    setPendingSets(prev => {
+                                                                        const newSets = [...prev];
+                                                                        newSets[setIndex] = {...newSets[setIndex], [slotType]: data.treasure};
+                                                                        return newSets;
+                                                                    });
+                                                                }
+                                                            }
+                                                        }}
+                                                        draggable={!!item}
+                                                        onDragStart={(e) => {
+                                                            if (item) {
+                                                                e.dataTransfer.setData('application/json', JSON.stringify({
+                                                                    type: 'treasure',
+                                                                    treasure: item,
+                                                                    from: `pending-${setIndex}-${slotType}`
+                                                                }));
+                                                            }
+                                                        }}
+                                                        onDoubleClick={() => {
+                                                            if (item) {
+                                                                deployFromPending(item, 'treasure');
+                                                                removeFromPending(setIndex, slotType);
+                                                            }
+                                                        }}
+                                                        style={{
+                                                            minHeight: '80px',
+                                                            background: item ? '#2a2a2a' : '#1a1f2e',
+                                                            border: '2px dashed #3a3a3a',
+                                                            borderRadius: '4px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            color: item ? '#fff' : '#666',
+                                                            fontSize: '12px',
+                                                            cursor: item ? 'move' : 'default',
+                                                            padding: '4px'
+                                                        }}
+                                                    >
+                                                        {item ? item.name : label}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     ))}
                                 </div>
