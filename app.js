@@ -281,13 +281,19 @@ const { useState, useEffect } = React;
                 localStorage.setItem('formationLinkMode', JSON.stringify(newMode));
                 
                 // 連動OFF→ON の場合、特に何もしない（独立編制は保持）
-                // 連動ON→OFF の場合、初回のみ現在の編制を各プロファイルにコピー
+                // 連動ON→OFF の場合、現在の編制を各プロファイルにコピー
                 if (!newMode) {
                     setProfileFormations(prev => {
                         const updated = { ...prev };
                         for (let i = 1; i < 5; i++) {
-                            // 既に独立編制がある場合は上書きしない
-                            if (!updated[`profile${i}`] || Object.keys(updated[`profile${i}`]).length === 0) {
+                            // 空の編制または編制が存在しない場合のみコピー
+                            const hasEmptyFormations = !updated[`profile${i}`] || 
+                                Object.values(updated[`profile${i}`] || {}).every(pattern => 
+                                    !pattern.formations || Object.keys(pattern.formations).length === 0
+                                );
+                            
+                            if (hasEmptyFormations) {
+                                // プロファイル1の編制をコピー
                                 updated[`profile${i}`] = JSON.parse(JSON.stringify(formationPatterns));
                             }
                         }
