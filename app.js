@@ -164,46 +164,17 @@ const { useState, useEffect } = React;
                 };
             });
             
-            // プロファイル別の独立編制（全プロファイルで独立）
+            // プロファイル別の独立編制（プロファイル2〜5）
             const [profileFormations, setProfileFormations] = useState(() => {
                 const saved = localStorage.getItem('profileFormations');
-                const oldFormationPatterns = localStorage.getItem('formationPatterns');
                 
                 if (saved) {
                     return JSON.parse(saved);
                 }
                 
-                // 既存のformationPatternsがあれば、profile0に移行
-                if (oldFormationPatterns) {
-                    const parsedOld = JSON.parse(oldFormationPatterns);
-                    const migrated = {};
-                    
-                    // profile0に既存データをセット
-                    migrated['profile0'] = parsedOld;
-                    
-                    // profile1〜4は空でスタート
-                    for (let i = 1; i < 5; i++) {
-                        migrated[`profile${i}`] = {
-                            0: { name: "編制1", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            1: { name: "編制2", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            2: { name: "編制3", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            3: { name: "編制4", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            4: { name: "編制5", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            5: { name: "編制6", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            6: { name: "編制7", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            7: { name: "編制8", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            8: { name: "編制9", formations: {}, collapsedFormations: {}, allowDuplicates: false },
-                            9: { name: "編制10", formations: {}, collapsedFormations: {}, allowDuplicates: false }
-                        };
-                    }
-                    
-                    localStorage.setItem('profileFormations', JSON.stringify(migrated));
-                    return migrated;
-                }
-                
-                // 完全に新規の場合、全プロファイルで空編制
+                // profile1〜4（プロファイル2〜5に対応）の空編制
                 const empty = {};
-                for (let i = 0; i < 5; i++) {
+                for (let i = 1; i < 5; i++) {
                     empty[`profile${i}`] = {
                         0: { name: "編制1", formations: {}, collapsedFormations: {}, allowDuplicates: false },
                         1: { name: "編制2", formations: {}, collapsedFormations: {}, allowDuplicates: false },
@@ -217,6 +188,8 @@ const { useState, useEffect } = React;
                         9: { name: "編制10", formations: {}, collapsedFormations: {}, allowDuplicates: false }
                     };
                 }
+                // 初期化時に即座に保存
+                localStorage.setItem('profileFormations', JSON.stringify(empty));
                 return empty;
             });
             
@@ -229,9 +202,14 @@ const { useState, useEffect } = React;
             });
             
             // 現在アクティブな編制のformationsとcollapsedFormationsを取得
-            // 全プロファイルで独立した編制を使用
             const getCurrentFormationPatterns = () => {
-                return profileFormations[`profile${currentProfile}`] || formationPatterns;
+                if (currentProfile === 0) {
+                    // プロファイル1はformationPatternsを参照
+                    return formationPatterns;
+                } else {
+                    // プロファイル2〜5はprofileFormationsを参照
+                    return profileFormations[`profile${currentProfile}`] || formationPatterns;
+                }
             };
             
             const currentFormationPatterns = getCurrentFormationPatterns();
@@ -257,11 +235,16 @@ const { useState, useEffect } = React;
                     };
                 };
                 
-                // 全プロファイルで独立した編制を更新
-                setProfileFormations(prev => ({
-                    ...prev,
-                    [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
-                }));
+                if (currentProfile === 0) {
+                    // プロファイル1はformationPatternsを更新
+                    setFormationPatterns(updateFunction);
+                } else {
+                    // プロファイル2〜5はprofileFormationsを更新
+                    setProfileFormations(prev => ({
+                        ...prev,
+                        [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
+                    }));
+                }
             };
             
             // collapsedFormationsを更新する関数
@@ -277,11 +260,16 @@ const { useState, useEffect } = React;
                     };
                 };
                 
-                // 全プロファイルで独立した編制を更新
-                setProfileFormations(prev => ({
-                    ...prev,
-                    [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
-                }));
+                if (currentProfile === 0) {
+                    // プロファイル1はformationPatternsを更新
+                    setFormationPatterns(updateFunction);
+                } else {
+                    // プロファイル2〜5はprofileFormationsを更新
+                    setProfileFormations(prev => ({
+                        ...prev,
+                        [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
+                    }));
+                }
             };
             
             // プロファイル1から現在の編制をコピー
@@ -295,8 +283,8 @@ const { useState, useEffect } = React;
                     return;
                 }
                 
-                const profile1Patterns = profileFormations['profile0'];
-                if (!profile1Patterns || !profile1Patterns[activePattern]) {
+                // プロファイル1の編制はformationPatternsから取得
+                if (!formationPatterns || !formationPatterns[activePattern]) {
                     alert('プロファイル1の編制が見つかりません');
                     return;
                 }
@@ -305,7 +293,7 @@ const { useState, useEffect } = React;
                     ...prev,
                     [`profile${currentProfile}`]: {
                         ...prev[`profile${currentProfile}`],
-                        [activePattern]: JSON.parse(JSON.stringify(profile1Patterns[activePattern]))
+                        [activePattern]: JSON.parse(JSON.stringify(formationPatterns[activePattern]))
                     }
                 }));
                 
@@ -3477,31 +3465,6 @@ const { useState, useEffect } = React;
                                                         )}
                                                     </div>
                                                     
-                                                    {/* プロファイル1からコピー */}
-                                                    {currentProfile !== 0 && (
-                                                        <button
-                                                            onClick={() => {
-                                                                copyFromProfile1();
-                                                                setOpenPatternMenu(null);
-                                                            }}
-                                                            style={{
-                                                                width: '100%',
-                                                                padding: '10px 16px',
-                                                                background: 'none',
-                                                                border: 'none',
-                                                                color: '#4caf50',
-                                                                textAlign: 'left',
-                                                                cursor: 'pointer',
-                                                                fontSize: '13px',
-                                                                borderBottom: '1px solid #2a2a2a'
-                                                            }}
-                                                            onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
-                                                            onMouseLeave={(e) => e.target.style.background = 'none'}
-                                                        >
-                                                            📋 プロファイル1からコピー
-                                                        </button>
-                                                    )}
-                                                    
                                                     <button
                                                         onClick={() => toggleDuplicateCheck(patternIndex)}
                                                         style={{
@@ -3574,6 +3537,30 @@ const { useState, useEffect } = React;
                             <div style={{padding: '12px 30px', background: '#0f1419', borderBottom: '1px solid #2a2a2a'}}>
                                 <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
                                     <span style={{color: '#888', fontSize: '12px', marginRight: '8px'}}>プロファイル:</span>
+                                    
+                                    {/* プロファイル1からコピーボタン */}
+                                    {currentProfile !== 0 && (
+                                        <button
+                                            onClick={copyFromProfile1}
+                                            style={{
+                                                padding: '6px 12px',
+                                                background: '#4caf50',
+                                                border: '2px solid #66bb6a',
+                                                borderRadius: '4px',
+                                                color: '#fff',
+                                                cursor: 'pointer',
+                                                fontSize: '11px',
+                                                fontWeight: 'bold',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '4px',
+                                                marginRight: '8px'
+                                            }}
+                                            title={`${profileNames[0]}の編制${activePattern + 1}をコピー`}
+                                        >
+                                            📋 {profileNames[0]}からコピー
+                                        </button>
+                                    )}
                                     
                                     {profileNames.map((name, index) => (
                                         <button
