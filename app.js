@@ -3588,28 +3588,28 @@ const { useState, useEffect } = React;
                                     <span style={{color: '#888', fontSize: '12px', marginRight: '8px'}}>プロファイル:</span>
                                     
                                     {/* プロファイル1からコピーボタン */}
-                                    {currentProfile !== 0 && (
-                                        <button
-                                            onClick={copyFromProfile1}
-                                            style={{
-                                                padding: '6px 12px',
-                                                background: '#4caf50',
-                                                border: '2px solid #66bb6a',
-                                                borderRadius: '4px',
-                                                color: '#fff',
-                                                cursor: 'pointer',
-                                                fontSize: '11px',
-                                                fontWeight: 'bold',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '4px',
-                                                marginRight: '8px'
-                                            }}
-                                            title={`${profileNames[0]}の編制${activePattern + 1}をコピー`}
-                                        >
-                                            📋 {profileNames[0]}からコピー
-                                        </button>
-                                    )}
+                                    <button
+                                        onClick={currentProfile !== 0 ? copyFromProfile1 : undefined}
+                                        disabled={currentProfile === 0}
+                                        style={{
+                                            padding: '6px 12px',
+                                            background: currentProfile !== 0 ? '#4caf50' : '#555',
+                                            border: currentProfile !== 0 ? '2px solid #66bb6a' : '2px solid #444',
+                                            borderRadius: '4px',
+                                            color: currentProfile !== 0 ? '#fff' : '#888',
+                                            cursor: currentProfile !== 0 ? 'pointer' : 'not-allowed',
+                                            fontSize: '11px',
+                                            fontWeight: 'bold',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            marginRight: '8px',
+                                            opacity: currentProfile !== 0 ? 1 : 0.5
+                                        }}
+                                        title={currentProfile !== 0 ? `${profileNames[0]}の編制${activePattern + 1}をコピー` : 'プロファイル1では使用できません'}
+                                    >
+                                        📋 {profileNames[0]}からコピー
+                                    </button>
                                     
                                     {profileNames.map((name, index) => (
                                         <button
