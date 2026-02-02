@@ -3066,6 +3066,90 @@ const { useState, useEffect } = React;
                 alert('データをエクスポートしました');
             };
             
+            // 単一編制をエクスポート
+            const exportSingleFormation = (patternIndex) => {
+                const currentFormationPatterns = getCurrentFormationPatterns();
+                const pattern = currentFormationPatterns[patternIndex];
+                
+                if (!pattern) {
+                    alert('編制データが見つかりません');
+                    return;
+                }
+                
+                const data = {
+                    type: 'single-formation',
+                    version: 'v143',
+                    exportDate: new Date().toISOString(),
+                    patternIndex,
+                    patternName: pattern.name || `編制${patternIndex + 1}`,
+                    formation: pattern
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `hadou-formation-${pattern.name || `編制${patternIndex + 1}`}-${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert(`${pattern.name || `編制${patternIndex + 1}`}をエクスポートしました`);
+            };
+            
+            // 単一編制をインポート
+            const importSingleFormation = (patternIndex) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            
+                            // データ検証
+                            if (data.type !== 'single-formation' || !data.formation) {
+                                alert('無効な編制ファイルです');
+                                return;
+                            }
+                            
+                            // 確認ダイアログ
+                            const targetName = getCurrentFormationPatterns()[patternIndex]?.name || `編制${patternIndex + 1}`;
+                            if (!confirm(`${targetName}を上書きしてインポートしますか？`)) {
+                                return;
+                            }
+                            
+                            // 編制をインポート
+                            if (currentProfile === 0) {
+                                // プロファイル1
+                                setFormationPatterns(prev => ({
+                                    ...prev,
+                                    [patternIndex]: data.formation
+                                }));
+                            } else {
+                                // プロファイル2〜5
+                                setProfileFormations(prev => ({
+                                    ...prev,
+                                    [`profile${currentProfile}`]: {
+                                        ...prev[`profile${currentProfile}`],
+                                        [patternIndex]: data.formation
+                                    }
+                                }));
+                            }
+                            
+                            alert(`${data.patternName}をインポートしました`);
+                        } catch (error) {
+                            alert('インポートに失敗しました: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            };
+            
             // JSON インポート
             const importData = (event) => {
                 const file = event.target.files[0];
@@ -3527,13 +3611,57 @@ const { useState, useEffect } = React;
                                                             fontSize: '13px',
                                                             display: 'flex',
                                                             alignItems: 'center',
-                                                            gap: '8px'
+                                                            gap: '8px',
+                                                            borderBottom: '1px solid #2a2a2a'
                                                         }}
                                                         onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
                                                         <span>{formationPatterns[patternIndex]?.allowDuplicates ? '✓' : '□'}</span>
                                                         <span>武将・名宝の重複を許可</span>
+                                                    </button>
+                                                    
+                                                    <button
+                                                        onClick={() => {
+                                                            exportSingleFormation(patternIndex);
+                                                            setOpenPatternMenu(null);
+                                                        }}
+                                                        style={{
+                                                            width: '100%',
+                                                            padding: '10px 16px',
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: '#3498db',
+                                                            textAlign: 'left',
+                                                            cursor: 'pointer',
+                                                            fontSize: '13px'
+                                                        }}
+                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseLeave={(e) => e.target.style.background = 'none'}
+                                                    >
+                                                        💾 この編制をエクスポート
+                                                    </button>
+                                                    
+                                                    <button
+                                                        onClick={() => {
+                                                            importSingleFormation(patternIndex);
+                                                            setOpenPatternMenu(null);
+                                                        }}
+                                                        style={{
+                                                            width: '100%',
+                                                            padding: '10px 16px',
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: '#9b59b6',
+                                                            textAlign: 'left',
+                                                            cursor: 'pointer',
+                                                            fontSize: '13px',
+                                                            borderBottom: '1px solid #2a2a2a'
+                                                        }}
+                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseLeave={(e) => e.target.style.background = 'none'}
+                                                    >
+                                                        📂 編制をインポート
                                                     </button>
                                                     
                                                     <button
