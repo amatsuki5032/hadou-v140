@@ -1199,24 +1199,3 @@
             flex-shrink: 0;
             border-radius: 2px;
         }
-/* === 保留パネル === */
-.pending-panel {
-    flex: 1;
-    min-width: 280px;
-    max-width: 600px;
-    background: var(--bg-modal);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    border-left: 2px solid var(--border-primary);
-}
-
-.pending-panel.collapsed {
-    flex: 0 0 60px;
-    min-width: 60px;
-}
-
-.pending-panel.collapsed .pending-content {
-    display: none;
-}
