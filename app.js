@@ -6688,7 +6688,7 @@ const { useState, useEffect } = React;
                     </div>
                 )}
                 
-                {/* 保留パネル（右3） */}
+                {/* 保留パネル（右3） - 使う時はコメントを外してください
                 <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`}>
                     <div className="panel-header">
                         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
@@ -6929,6 +6929,7 @@ const { useState, useEffect } = React;
                         </div>
                     )}
                 </div>
+                */}
                 
                 {/* コンテキストヘルプモーダル */}
                 {contextHelpType && (
