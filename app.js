@@ -6931,8 +6931,8 @@ const { useState, useEffect } = React;
                 </div>
             </div>
                 
-            {/* コンテキストヘルプモーダル */}
-            {contextHelpType && (
+                {/* コンテキストヘルプモーダル */}
+                {contextHelpType && (
                     <div style={{
                         position: 'fixed',
                         top: 0,
