@@ -6686,7 +6686,7 @@ const { useState, useEffect } = React;
                             </div>
                         )}
                     </div>
-                )}
+            )}
                 
                 {/* 保留パネル（右3） */}
                 <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`}>
@@ -6931,13 +6931,13 @@ const { useState, useEffect } = React;
                 </div>
             </div>
                 
-                {/* コンテキストヘルプモーダル */}
-                {contextHelpType && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
+            {/* コンテキストヘルプモーダル */}
+            {contextHelpType && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
                         bottom: 0,
                         background: 'rgba(0,0,0,0.7)',
                         display: 'flex',
@@ -7063,7 +7063,7 @@ const { useState, useEffect } = React;
                             )}
                         </div>
                     </div>
-                )}
+            )}
                 
                 {/* ヘルプモーダル */}
                 {showHelpModal && (
@@ -7206,9 +7206,9 @@ const { useState, useEffect } = React;
                             </div>
                         </div>
                     </div>
-                )}
+            )}
                 
-                </div>
+            </div>
         );
     }
     
