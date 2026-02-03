@@ -6686,10 +6686,15 @@ const { useState, useEffect } = React;
                             </div>
                         )}
                     </div>
-            )}
+                )}
                 
-                {/* 保留パネル（右3） */}
-                <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`}>
+                {/* 保留パネル */}
+                <div className={`pending-panel ${!showPendingPanel ? 'collapsed' : ''}`} style={{
+                    background: '#1a1f2e',
+                    borderRadius: '8px',
+                    padding: '16px',
+                    marginBottom: '16px'
+                }}>
                     <div className="panel-header">
                         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                             <div className="panel-title">保留</div>
@@ -6712,7 +6717,7 @@ const { useState, useEffect } = React;
                     </div>
                     
                     {showPendingPanel && (
-                        <div className="pending-content" style={{marginTop: '12px'}}>
+                        <div style={{marginTop: '12px'}}>
                             {pendingSets.length === 0 ? (
                                 <div 
                                     onDragOver={(e) => e.preventDefault()}
@@ -6802,33 +6807,20 @@ const { useState, useEffect } = React;
                                                     }
                                                 }}
                                                 style={{
-                                                    minHeight: '100px',
+                                                    minHeight: '80px',
                                                     background: set.general ? '#2a2a2a' : '#1a1f2e',
                                                     border: '2px dashed #3a3a3a',
                                                     borderRadius: '4px',
                                                     display: 'flex',
-                                                    flexDirection: 'column',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
+                                                    color: set.general ? '#fff' : '#666',
+                                                    fontSize: '12px',
                                                     cursor: set.general ? 'move' : 'default',
-                                                    padding: '8px'
+                                                    padding: '4px'
                                                 }}
                                             >
-                                                {set.general ? (
-                                                    <>
-                                                        <ItemImage 
-                                                            src={getImageUrl('general', set.general.id, set.general.rarity, set.general.name)}
-                                                            alt={set.general.name}
-                                                            rarity={set.general.rarity}
-                                                            style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}}
-                                                        />
-                                                        <div style={{fontSize: '10px', color: '#fff', marginTop: '4px', textAlign: 'center'}}>
-                                                            {set.general.name}
-                                                        </div>
-                                                    </>
-                                                ) : (
-                                                    <div style={{color: '#666', fontSize: '12px'}}>武将</div>
-                                                )}
+                                                {set.general ? set.general.name : '武将'}
                                             </div>
                                             
                                             {/* 武器・防具・文物枠 */}
@@ -6892,33 +6884,20 @@ const { useState, useEffect } = React;
                                                             }
                                                         }}
                                                         style={{
-                                                            minHeight: '100px',
+                                                            minHeight: '80px',
                                                             background: item ? '#2a2a2a' : '#1a1f2e',
                                                             border: '2px dashed #3a3a3a',
                                                             borderRadius: '4px',
                                                             display: 'flex',
-                                                            flexDirection: 'column',
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
+                                                            color: item ? '#fff' : '#666',
+                                                            fontSize: '12px',
                                                             cursor: item ? 'move' : 'default',
-                                                            padding: '8px'
+                                                            padding: '4px'
                                                         }}
                                                     >
-                                                        {item ? (
-                                                            <>
-                                                                <ItemImage 
-                                                                    src={getImageUrl('treasure', item.id, item.rarity, item.name)}
-                                                                    alt={item.name}
-                                                                    rarity={item.rarity}
-                                                                    style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px'}}
-                                                                />
-                                                                <div style={{fontSize: '10px', color: '#fff', marginTop: '4px', textAlign: 'center'}}>
-                                                                    {item.name}
-                                                                </div>
-                                                            </>
-                                                        ) : (
-                                                            <div style={{color: '#666', fontSize: '12px'}}>{label}</div>
-                                                        )}
+                                                        {item ? item.name : label}
                                                     </div>
                                                 );
                                             })}
@@ -6929,15 +6908,14 @@ const { useState, useEffect } = React;
                         </div>
                     )}
                 </div>
-            </div>
                 
-            {/* コンテキストヘルプモーダル */}
-            {contextHelpType && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
+                {/* コンテキストヘルプモーダル */}
+                {contextHelpType && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
                         bottom: 0,
                         background: 'rgba(0,0,0,0.7)',
                         display: 'flex',
@@ -7063,7 +7041,7 @@ const { useState, useEffect } = React;
                             )}
                         </div>
                     </div>
-            )}
+                )}
                 
                 {/* ヘルプモーダル */}
                 {showHelpModal && (
@@ -7206,9 +7184,9 @@ const { useState, useEffect } = React;
                             </div>
                         </div>
                     </div>
-            )}
+                )}
                 
-            </div>
+                </div>
         );
     }
     
