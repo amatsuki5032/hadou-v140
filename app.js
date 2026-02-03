@@ -6930,7 +6930,6 @@ const { useState, useEffect } = React;
                     )}
                 </div>
             </div>
-                
                 {/* コンテキストヘルプモーダル */}
                 {contextHelpType && (
                     <div style={{
