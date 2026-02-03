@@ -1199,11 +1199,23 @@
             flex-shrink: 0;
             border-radius: 2px;
         }
-/* === 保留パネル === */
+/* === レイアウト調整 === */
+.formations-area {
+    width: 700px !important;  /* 900pxから縮小 */
+}
+
+.generals-panel {
+    max-width: 320px !important;  /* 400pxから縮小 */
+}
+
+.treasures-panel {
+    max-width: 320px !important;  /* 400pxから縮小 */
+}
+
 .pending-panel {
-    flex: 1;
+    flex: 0 1 450px;
     min-width: 280px;
-    max-width: 600px;
+    max-width: 450px;
     background: var(--bg-modal);
     display: flex;
     flex-direction: column;
