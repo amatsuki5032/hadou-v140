@@ -164,7 +164,7 @@ const { useState, useEffect } = React;
                 };
             });
             
-            // プロファイル別の独立編制（プロファイル2〜5）
+            // プロファイル別の独立編制（プロファイル2?5）
             const [profileFormations, setProfileFormations] = useState(() => {
                 const saved = localStorage.getItem('profileFormations');
                 
@@ -192,7 +192,7 @@ const { useState, useEffect } = React;
                 return empty;
             });
             
-            // 初回起動時: プロファイル1の内容をプロファイル2〜5にコピー
+            // 初回起動時: プロファイル1の内容をプロファイル2?5にコピー
             useEffect(() => {
                 const hasInitialized = localStorage.getItem('profileFormationsInitialized');
                 if (!hasInitialized && formationPatterns) {
@@ -220,7 +220,7 @@ const { useState, useEffect } = React;
                     // プロファイル1はformationPatternsを参照
                     return formationPatterns;
                 } else {
-                    // プロファイル2〜5はprofileFormationsを参照
+                    // プロファイル2?5はprofileFormationsを参照
                     return profileFormations[`profile${currentProfile}`] || formationPatterns;
                 }
             };
@@ -252,7 +252,7 @@ const { useState, useEffect } = React;
                     // プロファイル1はformationPatternsを更新
                     setFormationPatterns(updateFunction);
                 } else {
-                    // プロファイル2〜5はprofileFormationsを更新
+                    // プロファイル2?5はprofileFormationsを更新
                     setProfileFormations(prev => ({
                         ...prev,
                         [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
@@ -277,7 +277,7 @@ const { useState, useEffect } = React;
                     // プロファイル1はformationPatternsを更新
                     setFormationPatterns(updateFunction);
                 } else {
-                    // プロファイル2〜5はprofileFormationsを更新
+                    // プロファイル2?5はprofileFormationsを更新
                     setProfileFormations(prev => ({
                         ...prev,
                         [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
@@ -335,7 +335,7 @@ const { useState, useEffect } = React;
                     // プロファイル1
                     setFormationPatterns(updateFunction);
                 } else {
-                    // プロファイル2〜5
+                    // プロファイル2?5
                     setProfileFormations(prev => ({
                         ...prev,
                         [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
@@ -467,7 +467,7 @@ const { useState, useEffect } = React;
                 return (
                     <div className="image-modal-overlay" onClick={() => setShowImageSettings(false)}>
                         <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-                            <h2 className="image-modal-title">🖼️ 画像URL設定</h2>
+                            <h2 className="image-modal-title">??? 画像URL設定</h2>
                             
                             <div className="image-url-input-group">
                                 <label>画像URLマッピング</label>
@@ -477,16 +477,16 @@ const { useState, useEffect } = React;
                                     placeholder={'general_LR_1=https://i.imgur.com/xxxxx.jpg\ngeneral_UR_曹操=https://i.imgur.com/yyyyy.jpg\ntreasure_青龍偃月刀=https://i.imgur.com/zzzzz.jpg'}
                                 />
                                 <div className="image-url-help">
-                                    <strong>📝 記述方法:</strong><br/>
+                                    <strong>?? 記述方法:</strong><br/>
                                     ● 1行に1つのマッピング: <strong>キー=URL</strong><br/>
                                     ● 武将のキー形式: <strong>general_レア度_ID</strong> または <strong>general_レア度_名前</strong><br/>
                                     ● 名宝のキー形式: <strong>treasure_名前</strong> または <strong>treasure_種類_名前</strong><br/><br/>
-                                    <strong>📌 記述例:</strong><br/>
+                                    <strong>?? 記述例:</strong><br/>
                                     general_LR_1=https://i.imgur.com/abc123.jpg<br/>
                                     general_UR_曹操=https://i.imgur.com/def456.jpg<br/>
                                     treasure_青龍偃月刀=https://i.imgur.com/ghi789.jpg<br/>
                                     treasure_weapon_方天画戟=https://i.imgur.com/jkl012.jpg<br/><br/>
-                                    <strong>💡 ヒント:</strong><br/>
+                                    <strong>?? ヒント:</strong><br/>
                                     ● #で始まる行はコメントとして無視されます<br/>
                                     ● Imgurアルバムの画像を右クリック→「画像アドレスをコピー」で取得<br/>
                                     ● 画像URLは i.imgur.com/xxxxx.jpg の形式
@@ -495,10 +495,10 @@ const { useState, useEffect } = React;
                             
                             <div className="image-modal-buttons">
                                 <button className="image-modal-button image-modal-button-save" onClick={handleSave}>
-                                    💾 保存
+                                    ?? 保存
                                 </button>
                                 <button className="image-modal-button image-modal-button-cancel" onClick={() => setShowImageSettings(false)}>
-                                    ✕ キャンセル
+                                    ? キャンセル
                                 </button>
                             </div>
                         </div>
@@ -1602,7 +1602,7 @@ const { useState, useEffect } = React;
                 console.log("formation:", formation);
                 
                 if (!formation) {
-                    console.log("❌ formationがnull/undefined");
+                    console.log("? formationがnull/undefined");
                     return null;
                 }
                 
@@ -1702,7 +1702,7 @@ const { useState, useEffect } = React;
                 } else if (skillType === "unlock") {
                     const unlockRank = skill.unlock_rank || 999;
                     if (starRank < unlockRank) {
-                        console.log(`    ⏭️ 未解放技能のためスキップ (要★${unlockRank})`);
+                        console.log(`    ?? 未解放技能のためスキップ (要★${unlockRank})`);
                         return;
                     }
                     skillLevel = 1;
@@ -1727,7 +1727,7 @@ const { useState, useEffect } = React;
                 
                 // 技能効果データを取得
                 if (!SKILL_EFFECTS_DATA[skillName]) {
-                    console.log(`  ⚠️ ${skillName}の効果データなし`);
+                    console.log(`  ?? ${skillName}の効果データなし`);
                     return;
                 }
                 
@@ -1738,7 +1738,7 @@ const { useState, useEffect } = React;
                 
                 // 対象パラメータでない場合はスキップ
                 if (!targetParams.includes(paramType)) {
-                    console.log(`  ⏭️ 対象外パラメータのためスキップ`);
+                    console.log(`  ?? 対象外パラメータのためスキップ`);
                     return;
                 }
                 
@@ -1753,7 +1753,7 @@ const { useState, useEffect } = React;
                 
                 if (effectValue) {
                     results[paramType] += effectValue;
-                    console.log(`  ✅ ${paramType}に+${effectValue}を加算 (合計: ${results[paramType]})`);
+                    console.log(`  ? ${paramType}に+${effectValue}を加算 (合計: ${results[paramType]})`);
                 }
             };
             
@@ -3168,7 +3168,7 @@ const { useState, useEffect } = React;
                                     [patternIndex]: data.formation
                                 }));
                             } else {
-                                // プロファイル2〜5
+                                // プロファイル2?5
                                 setProfileFormations(prev => ({
                                     ...prev,
                                     [`profile${currentProfile}`]: {
@@ -3479,7 +3479,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title="全データをJSONファイルでエクスポート"
                             >
-                                📥エクスポート
+                                ??エクスポート
                             </button>
                             <label
                                 style={{
@@ -3494,7 +3494,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title="JSONファイルからインポート"
                             >
-                                📤インポート
+                                ??インポート
                                 <input
                                     type="file"
                                     accept=".json"
@@ -3531,7 +3531,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title={showContextHelp ? 'ヘルプボタンを非表示' : 'ヘルプボタンを表示'}
                             >
-                                {showContextHelp ? '💡ON' : '💡OFF'}
+                                {showContextHelp ? '??ON' : '??OFF'}
                             </button>
                             <button
                                 onClick={() => setShowImages(!showImages)}
@@ -3547,7 +3547,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title={showImages ? '画像を非表示' : '画像を表示'}
                             >
-                                {showImages ? '🖼️ON' : '🖼️OFF'}
+                                {showImages ? '???ON' : '???OFF'}
                             </button>
                             <button
                                 className={`tab-button ${viewMode === 'formation' ? 'active' : ''}`}
@@ -3667,7 +3667,7 @@ const { useState, useEffect } = React;
                                                             onMouseLeave={(e) => e.target.style.background = 'none'}
                                                         >
                                                             <span>他の編制からコピー</span>
-                                                            <span>▶</span>
+                                                            <span>?</span>
                                                         </button>
                                                         
                                                         {/* サブメニュー */}
@@ -3727,7 +3727,7 @@ const { useState, useEffect } = React;
                                                         onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
-                                                        <span>{formationPatterns[patternIndex]?.allowDuplicates ? '✓' : '□'}</span>
+                                                        <span>{formationPatterns[patternIndex]?.allowDuplicates ? '?' : '□'}</span>
                                                         <span>武将・名宝の重複を許可</span>
                                                     </button>
                                                     
@@ -3749,7 +3749,7 @@ const { useState, useEffect } = React;
                                                         onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
-                                                        💾 この編制をエクスポート
+                                                        ?? この編制をエクスポート
                                                     </button>
                                                     
                                                     <button
@@ -3771,7 +3771,7 @@ const { useState, useEffect } = React;
                                                         onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
-                                                        📂 編制をインポート
+                                                        ?? 編制をインポート
                                                     </button>
                                                     
                                                     <button
@@ -3846,7 +3846,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title={currentProfile !== 0 ? `${profileNames[0]}の編制${activePattern + 1}をコピー` : 'プロファイル1では使用できません'}
                                     >
-                                        📋 {profileNames[0]}からコピー
+                                        ?? {profileNames[0]}からコピー
                                     </button>
                                     
                                     {profileNames.map((name, index) => (
@@ -3898,7 +3898,7 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{background: '#4285f4', color: '#fff', fontWeight: 'bold'}}
                                     >
-                                        ☁️ Google Drive連携
+                                        ?? Google Drive連携
                                     </button>
                                     
                                     <div className="reset-dropdown-separator"></div>
@@ -3911,7 +3911,7 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{background: '#27ae60', color: '#fff'}}
                                     >
-                                        📥 全データをエクスポート
+                                        ?? 全データをエクスポート
                                     </button>
                                     <button 
                                         className="reset-dropdown-item"
@@ -3921,7 +3921,7 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{background: '#2980b9', color: '#fff'}}
                                     >
-                                        📤 全データをインポート
+                                        ?? 全データをインポート
                                     </button>
                                     
                                     <div className="reset-dropdown-separator"></div>
@@ -4023,7 +4023,7 @@ const { useState, useEffect } = React;
                             }}
                             title={undoHistory ? '直前の操作を戻す' : '戻す操作がありません'}
                         >
-                            ⟲ 戻す
+                            ? 戻す
                         </button>
                     </div>
                     
@@ -4061,7 +4061,7 @@ const { useState, useEffect } = React;
                                                     transition: 'all 0.3s'
                                                 }}
                                             >
-                                                {recommendTargetFormation === key ? '🎯' : '○'}
+                                                {recommendTargetFormation === key ? '??' : '○'}
                                             </button>
                                             <label 
                                                 htmlFor={`collapse-${key}`}
@@ -4097,7 +4097,7 @@ const { useState, useEffect } = React;
                                             }}
                                             title="この部隊をテンプレートとして保存"
                                         >
-                                            💾保存
+                                            ??保存
                                         </button>
                                         <button
                                             onClick={() => loadFormationTemplate(key)}
@@ -4114,7 +4114,7 @@ const { useState, useEffect } = React;
                                             }}
                                             title="テンプレートから呼び出し"
                                         >
-                                            📂呼出
+                                            ??呼出
                                         </button>
                                         <button
                                             onClick={() => resetFormation(key)}
@@ -4225,7 +4225,7 @@ const { useState, useEffect } = React;
                                                     borderBottom: '1px solid rgba(212, 175, 55, 0.3)',
                                                     paddingBottom: '4px'
                                                 }}>
-                                                    ⚔️ 技能効果
+                                                    ?? 技能効果
                                                 </div>
                                                 <div style={{display: 'flex', gap: '24px', flexWrap: 'wrap'}}>
                                                     {['攻撃速度', '会心発生', '戦法速度'].map(param => {
@@ -4798,7 +4798,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title={showGeneralsPanel ? 'パネルを閉じる' : 'パネルを開く'}
                                     >
-                                        {showGeneralsPanel ? '▽' : '▷'}
+                                        {showGeneralsPanel ? '▽' : '?'}
                                     </button>
                                     {showContextHelp && (
                                         <button
@@ -4877,7 +4877,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title="全フィルタをリセット"
                                     >
-                                        🔄
+                                        ??
                                     </button>
                                 </div>
                                 
@@ -4964,7 +4964,7 @@ const { useState, useEffect } = React;
                                             }}
                                             title={!formations[recommendTargetFormation]?.slots?.['主将'] ? '対象部隊に主将を配置してください' : 'おススメ武将のみ表示'}
                                         >
-                                            🎯おススメ
+                                            ??おススメ
                                         </button>
                                     </div>
                                     <div className="filter-group" style={{marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px'}}>
@@ -5058,7 +5058,7 @@ const { useState, useEffect } = React;
                                                     >
                                                         <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
                                                             <span style={{fontSize: '11px', color: '#888'}}>
-                                                                {expandedRarities[rarity] ? '▼' : '▶'}
+                                                                {expandedRarities[rarity] ? '▼' : '?'}
                                                             </span>
                                                             <span style={{fontWeight: 'bold', color: '#d4af37', fontSize: '12px'}}>
                                                                 {rarity} ({totalCount}人)
@@ -5205,7 +5205,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title={showTreasuresPanel ? 'パネルを閉じる' : 'パネルを開く'}
                                     >
-                                        {showTreasuresPanel ? '▽' : '▷'}
+                                        {showTreasuresPanel ? '▽' : '?'}
                                     </button>
                                     {showContextHelp && (
                                         <button
@@ -5249,7 +5249,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title="全フィルタをリセット"
                                     >
-                                        🔄
+                                        ??
                                     </button>
                                 </div>
                                 
@@ -5393,7 +5393,7 @@ const { useState, useEffect } = React;
                                                     : '対象部隊に武将を配置してください';
                                             })()}
                                         >
-                                            🎯おススメ
+                                            ??おススメ
                                         </button>
                                     </div>
                                 </div>
@@ -5445,7 +5445,7 @@ const { useState, useEffect } = React;
                                                     >
                                                         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                                                             <span style={{fontSize: '12px', color: '#888'}}>
-                                                                {expandedTreasureCategories[category] ? '▼' : '▶'}
+                                                                {expandedTreasureCategories[category] ? '▼' : '?'}
                                                             </span>
                                                             <span style={{fontWeight: 'bold', color: '#d4af37'}}>
                                                                 {category} ({treasuresByCategory[category].length}個)
@@ -5615,7 +5615,7 @@ const { useState, useEffect } = React;
                                 width: '90%'
                             }}>
                                 <h2 style={{color: '#4285f4', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px'}}>
-                                    ☁️ Google Drive連携
+                                    ?? Google Drive連携
                                 </h2>
                                 
                                 <div style={{marginBottom: '24px', color: '#ccc', lineHeight: '1.8'}}>
@@ -5623,17 +5623,17 @@ const { useState, useEffect } = React;
                                         Google Driveを使ってデータを同期できます。
                                     </p>
                                     
-                                    <h3 style={{color: '#d4af37', fontSize: '16px', marginBottom: '12px'}}>📝 使い方</h3>
+                                    <h3 style={{color: '#d4af37', fontSize: '16px', marginBottom: '12px'}}>?? 使い方</h3>
                                     
                                     <div style={{background: '#0f1419', padding: '16px', borderRadius: '8px', marginBottom: '16px'}}>
-                                        <p style={{marginBottom: '12px', fontWeight: 'bold', color: '#4285f4'}}>1️⃣ データを保存（家のPC）</p>
+                                        <p style={{marginBottom: '12px', fontWeight: 'bold', color: '#4285f4'}}>1?? データを保存（家のPC）</p>
                                         <p style={{marginBottom: '8px', paddingLeft: '20px'}}>
                                             ① 「Google Driveへ保存」をクリック<br/>
                                             ② ダウンロードされたファイル「hadou-formation-sync.json」をGoogle Driveにアップロード<br/>
                                             　（推奨：「hadou-formation」フォルダを作成）
                                         </p>
                                         
-                                        <p style={{marginBottom: '12px', marginTop: '16px', fontWeight: 'bold', color: '#4285f4'}}>2️⃣ データを読み込み（職場のPC）</p>
+                                        <p style={{marginBottom: '12px', marginTop: '16px', fontWeight: 'bold', color: '#4285f4'}}>2?? データを読み込み（職場のPC）</p>
                                         <p style={{paddingLeft: '20px'}}>
                                             ① Google Driveから「hadou-formation-sync.json」をダウンロード<br/>
                                             ② 「Google Driveから読み込み」をクリック<br/>
@@ -5643,7 +5643,7 @@ const { useState, useEffect } = React;
                                     
                                     {gdriveLastSync && (
                                         <p style={{color: '#27ae60', fontSize: '13px', marginTop: '12px'}}>
-                                            ✓ 最終同期: {new Date(gdriveLastSync).toLocaleString('ja-JP')}
+                                            ? 最終同期: {new Date(gdriveLastSync).toLocaleString('ja-JP')}
                                         </p>
                                     )}
                                 </div>
@@ -5665,7 +5665,7 @@ const { useState, useEffect } = React;
                                             fontWeight: 'bold'
                                         }}
                                     >
-                                        ⬆️ Google Driveへ保存
+                                        ?? Google Driveへ保存
                                     </button>
                                     <button
                                         onClick={() => {
@@ -5683,7 +5683,7 @@ const { useState, useEffect } = React;
                                             fontWeight: 'bold'
                                         }}
                                     >
-                                        ⬇️ Google Driveから読み込み
+                                        ?? Google Driveから読み込み
                                     </button>
                                 </div>
                                 
@@ -5924,7 +5924,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title="現在のプロファイルをエクスポート"
                                     >
-                                        📥プロファイル保存
+                                        ??プロファイル保存
                                     </button>
                                     <label
                                         style={{
@@ -5939,7 +5939,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title="プロファイルをインポート"
                                     >
-                                        📤プロファイル読込
+                                        ??プロファイル読込
                                         <input
                                             type="file"
                                             accept=".json"
@@ -6086,7 +6086,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            💾 保存
+                                            ?? 保存
                                         </button>
                                         <button
                                             onClick={() => {
@@ -6117,7 +6117,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            📂 呼び出し
+                                            ?? 呼び出し
                                         </button>
                                     </div>
                                 </div>
@@ -6177,7 +6177,7 @@ const { useState, useEffect } = React;
                                                     gap: '8px'
                                                 }}>
                                                     <span style={{fontSize: '12px', color: '#888'}}>
-                                                        {expandedRarities[rarity] ? '▼' : '▶'}
+                                                        {expandedRarities[rarity] ? '▼' : '?'}
                                                     </span>
                                                     {rarity} ({filteredGenerals.length}名)
                                                 </h3>
@@ -6472,7 +6472,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            💾 保存
+                                            ?? 保存
                                         </button>
                                         <button
                                             onClick={() => {
@@ -6503,7 +6503,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            📂 呼び出し
+                                            ?? 呼び出し
                                         </button>
                                     </div>
                                 </div>
@@ -6543,7 +6543,7 @@ const { useState, useEffect } = React;
                                                     gap: '8px'
                                                 }}>
                                                     <span style={{fontSize: '12px', color: '#888'}}>
-                                                        {expandedTreasureCategories[category] ? '▼' : '▶'}
+                                                        {expandedTreasureCategories[category] ? '▼' : '?'}
                                                     </span>
                                                     {category} ({categoryTreasures.length}個)
                                                 </h3>
@@ -6633,7 +6633,7 @@ const { useState, useEffect } = React;
                                                         textAlign: 'center'
                                                     }}
                                                 >
-                                                    {isUR ? '✓ UR化' : 'UR化'}
+                                                    {isUR ? '? UR化' : 'UR化'}
                                                 </button>
                                                 <div style={{textAlign: 'center', minWidth: '180px'}}>
                                                     {Array.from({length: 10}, (_, i) => {
@@ -6706,7 +6706,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title={showPendingPanel ? 'パネルを閉じる' : 'パネルを開く'}
                             >
-                                {showPendingPanel ? '▽' : '▷'}
+                                {showPendingPanel ? '▽' : '?'}
                             </button>
                         </div>
                     </div>
@@ -6955,10 +6955,10 @@ const { useState, useEffect } = React;
                         }} onClick={(e) => e.stopPropagation()}>
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
                                 <h3 style={{color: '#3498db', margin: 0}}>
-                                    {contextHelpType === 'general' && '🎯 武将の配置方法'}
-                                    {contextHelpType === 'treasure' && '💎 名宝の配置方法'}
-                                    {contextHelpType === 'pattern' && '📁 編制パターンの使い方'}
-                                    {contextHelpType === 'template' && '💾 テンプレートの使い方'}
+                                    {contextHelpType === 'general' && '?? 武将の配置方法'}
+                                    {contextHelpType === 'treasure' && '?? 名宝の配置方法'}
+                                    {contextHelpType === 'pattern' && '?? 編制パターンの使い方'}
+                                    {contextHelpType === 'template' && '?? テンプレートの使い方'}
                                 </h3>
                                 <button
                                     onClick={() => setContextHelpType(null)}
@@ -6985,8 +6985,8 @@ const { useState, useEffect } = React;
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>ダブルクリック</p>
-                                        <p style={{margin: '4px 0'}}>• 武将をダブルクリック → 空きスロットに自動配置</p>
-                                        <p style={{margin: '4px 0'}}>• 配置済み武将をダブルクリック → 削除</p>
+                                        <p style={{margin: '4px 0'}}>? 武将をダブルクリック → 空きスロットに自動配置</p>
+                                        <p style={{margin: '4px 0'}}>? 配置済み武将をダブルクリック → 削除</p>
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>入れ替え</p>
@@ -7003,8 +7003,8 @@ const { useState, useEffect } = React;
                                 <div style={{lineHeight: '1.8', fontSize: '14px'}}>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>配置可能な場所</p>
-                                        <p style={{margin: '4px 0'}}>• 主将：武器・防具・文物を各1つずつ（最大3つ）</p>
-                                        <p style={{margin: '4px 0'}}>• 副将1：武器・防具・文物を各1つずつ（最大3つ）</p>
+                                        <p style={{margin: '4px 0'}}>? 主将：武器・防具・文物を各1つずつ（最大3つ）</p>
+                                        <p style={{margin: '4px 0'}}>? 副将1：武器・防具・文物を各1つずつ（最大3つ）</p>
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>ドラッグ&ドロップ</p>
@@ -7012,8 +7012,8 @@ const { useState, useEffect } = React;
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>ダブルクリック</p>
-                                        <p style={{margin: '4px 0'}}>• 名宝をダブルクリック → 種類に応じた空きスロットに自動配置</p>
-                                        <p style={{margin: '4px 0'}}>• 配置済み名宝をダブルクリック → 削除</p>
+                                        <p style={{margin: '4px 0'}}>? 名宝をダブルクリック → 種類に応じた空きスロットに自動配置</p>
+                                        <p style={{margin: '4px 0'}}>? 配置済み名宝をダブルクリック → 削除</p>
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ff6b6b'}}>注意</p>
@@ -7031,9 +7031,9 @@ const { useState, useEffect } = React;
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>[...]メニュー</p>
-                                        <p style={{margin: '4px 0'}}>• <strong>編制名を変更：</strong>分かりやすい名前を付ける</p>
-                                        <p style={{margin: '4px 0'}}>• <strong>他の編制からコピー：</strong>別の編制の内容をコピー</p>
-                                        <p style={{margin: '4px 0'}}>• <strong>この編制をリセット：</strong>全12部隊をクリア</p>
+                                        <p style={{margin: '4px 0'}}>? <strong>編制名を変更：</strong>分かりやすい名前を付ける</p>
+                                        <p style={{margin: '4px 0'}}>? <strong>他の編制からコピー：</strong>別の編制の内容をコピー</p>
+                                        <p style={{margin: '4px 0'}}>? <strong>この編制をリセット：</strong>全12部隊をクリア</p>
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>切り替え</p>
@@ -7045,12 +7045,12 @@ const { useState, useEffect } = React;
                             {contextHelpType === 'template' && (
                                 <div style={{lineHeight: '1.8', fontSize: '14px'}}>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>💾 保存</p>
-                                        <p style={{margin: '4px 0'}}>部隊の[💾保存]ボタンで現在の構成をテンプレートとして保存</p>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>?? 保存</p>
+                                        <p style={{margin: '4px 0'}}>部隊の[??保存]ボタンで現在の構成をテンプレートとして保存</p>
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>📂 呼出</p>
-                                        <p style={{margin: '4px 0'}}>部隊の[📂呼出]ボタンで保存したテンプレートを呼び出し</p>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>?? 呼出</p>
+                                        <p style={{margin: '4px 0'}}>部隊の[??呼出]ボタンで保存したテンプレートを呼び出し</p>
                                         <p style={{margin: '4px 0', fontSize: '12px', color: '#888'}}>上書き設定：武将・名宝の上書き有無を選択可能</p>
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px'}}>
@@ -7109,7 +7109,7 @@ const { useState, useEffect } = React;
                             </div>
                             
                             <div style={{lineHeight: '1.8'}}>
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px'}}>🖱️ 基本操作</h3>
+                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px'}}>??? 基本操作</h3>
                                 
                                 <h4 style={{color: '#ffd700', marginTop: '16px'}}>武将・名宝の配置</h4>
                                 <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
@@ -7135,24 +7135,24 @@ const { useState, useEffect } = React;
                                     <p style={{margin: '4px 0', color: '#ff6b6b'}}><strong>注意:</strong> 同じ名宝は1つの部隊にしか配置できません</p>
                                 </div>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>📋 基本機能</h3>
+                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>?? 基本機能</h3>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>🎯 編成画面</h4>
+                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>?? 編成画面</h4>
                                 <p><strong>部隊タブ:</strong> 主城部隊(6)、分城部隊(3)、出城部隊(3)の合計12部隊を管理</p>
                                 <p><strong>武将配置:</strong> 武将パネルから武将をドラッグ&ドロップで配置。主将・副将・補佐の3種類</p>
                                 <p><strong>侍従配置:</strong> LR武将は自動で侍従エリアが表示。侍従を配置可能</p>
                                 <p><strong>名宝配置:</strong> 主将と副将1に最大3つずつ名宝を装備可能（武器・防具・文物）</p>
                                 <p><strong>陣形選択:</strong> 各部隊の陣形タイプを選択可能</p>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>⭐ ランク設定画面</h4>
+                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>? ランク設定画面</h4>
                                 <p><strong>プロファイル機能:</strong> 5つのプロファイル(P0-P4)で異なるランク設定を保存可能</p>
                                 <p><strong>武将ランク:</strong> 各武将の星ランク(0-7)を設定</p>
                                 <p><strong>名宝ランク:</strong> 各名宝の精錬ランク(0-7)とUR化状態を設定</p>
                                 <p><strong>お気に入り・不使用:</strong> [★]ボタンでお気に入り登録、[×]ボタンで不使用設定</p>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>🔧 高度な機能</h3>
+                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>?? 高度な機能</h3>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>📁 編制パターン管理（10パターン）</h4>
+                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>?? 編制パターン管理（10パターン）</h4>
                                 <p><strong>編制タブ:</strong> 画面上部に10個の編制タブ（編制1-10）を表示</p>
                                 <p><strong>編制切り替え:</strong> タブをクリックして編制を切り替え。各編制は独立した12部隊を持つ</p>
                                 <p><strong>[...]メニュー:</strong></p>
@@ -7162,17 +7162,17 @@ const { useState, useEffect } = React;
                                     <li><strong>この編制をリセット:</strong> 全12部隊をクリア</li>
                                 </ul>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>💾 部隊テンプレート機能</h4>
-                                <p><strong>[💾保存]ボタン:</strong> 現在の部隊構成をテンプレートとして保存</p>
-                                <p><strong>[📂呼出]ボタン:</strong> 保存したテンプレートを別の部隊に呼び出し</p>
+                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>?? 部隊テンプレート機能</h4>
+                                <p><strong>[??保存]ボタン:</strong> 現在の部隊構成をテンプレートとして保存</p>
+                                <p><strong>[??呼出]ボタン:</strong> 保存したテンプレートを別の部隊に呼び出し</p>
                                 <p><strong>上書き設定:</strong></p>
                                 <ul style={{marginLeft: '20px'}}>
-                                    <li>☑ 武将・侍従を上書き: チェックを入れると既存の武将を置き換え</li>
-                                    <li>☑ 名宝を上書き: チェックを入れると既存の名宝を置き換え</li>
+                                    <li>? 武将・侍従を上書き: チェックを入れると既存の武将を置き換え</li>
+                                    <li>? 名宝を上書き: チェックを入れると既存の名宝を置き換え</li>
                                 </ul>
                                 <p><strong>重複削除:</strong> テンプレート呼び出し時、同じ武将・名宝が他の部隊にあれば自動削除</p>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>🔍 フィルタ機能</h4>
+                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>?? フィルタ機能</h4>
                                 <p><strong>武将フィルタ:</strong></p>
                                 <ul style={{marginLeft: '20px'}}>
                                     <li><strong>レア度:</strong> LR / UR</li>
@@ -7189,7 +7189,7 @@ const { useState, useEffect } = React;
                                     <li><strong>★お気に入り:</strong> お気に入り登録した名宝のみ表示</li>
                                 </ul>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>💡 ヒント</h3>
+                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>?? ヒント</h3>
                                 <ul style={{marginLeft: '20px', lineHeight: '1.8'}}>
                                     <li><strong>データ保存:</strong> すべてのデータはブラウザに自動保存されます（localStorage使用）</li>
                                     <li><strong>重複チェック:</strong> 同じ武将・名宝を複数の部隊に配置しようとすると警告が表示されます</li>
