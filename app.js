@@ -6712,7 +6712,7 @@ const { useState, useEffect } = React;
                     </div>
                     
                     {showPendingPanel && (
-                        <div style={{marginTop: '12px'}}>
+                        <div className="pending-content" style={{marginTop: '12px'}}>
                             {pendingSets.length === 0 ? (
                                 <div 
                                     onDragOver={(e) => e.preventDefault()}
