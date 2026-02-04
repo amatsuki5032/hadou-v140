@@ -1312,114 +1312,81 @@
             display: none;
         }
         */
-
 /* ===========================
-   更新情報バー
+   戦闘パラメータパネル
    =========================== */
-.update-info-bar {
-    background: #2a2a2a;
-    border-bottom: 1px solid #3a3a3a;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 14px;
-    color: #e8e6e3;
+.combat-parameters-panel {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width: 250px;
+    background: var(--bg-modal);
+    border: 2px solid var(--border-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
 }
 
-.version-tag {
-    background: #d4af37;
-    color: #000;
-    padding: 3px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 13px;
-}
-
-.update-date {
-    color: #888;
-    font-size: 13px;
-}
-
-.update-summary {
-    flex: 1;
-    color: #ccc;
-}
-
-.show-history-btn {
-    background: #3a3a3a;
-    border: 1px solid #555;
-    color: #e8e6e3;
-    padding: 5px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: background 0.2s;
-}
-
-.show-history-btn:hover {
-    background: #4a4a4a;
-}
-
-/* ===========================
-   更新履歴モーダル
-   =========================== */
-.history-modal-content {
-    max-width: 700px;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
-.history-content {
-    padding: 20px;
-}
-
-.history-entry {
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #3a3a3a;
-}
-
-.history-entry:last-child {
-    border-bottom: none;
-}
-
-.history-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.history-version {
-    background: #d4af37;
-    color: #000;
-    padding: 4px 12px;
-    border-radius: 4px;
+.combat-params-header {
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    padding: 10px 15px;
+    border-bottom: 2px solid var(--accent-gold);
+    border-radius: 6px 6px 0 0;
     font-weight: bold;
     font-size: 14px;
-}
-
-.history-date {
-    color: #888;
-    font-size: 13px;
-}
-
-.history-items {
-    list-style: none;
-    padding-left: 0;
-}
-
-.history-items li {
-    padding: 6px 0;
-    color: #ccc;
-    font-size: 14px;
+    color: var(--accent-gold);
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
 }
 
-.history-icon {
-    flex-shrink: 0;
+.combat-params-content {
+    padding: 12px;
+}
+
+.param-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.param-row:last-child {
+    border-bottom: none;
+}
+
+.param-icon {
     font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.param-label {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+
+.param-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--text-gold);
+    min-width: 60px;
+    text-align: right;
+}
+
+.param-value.active {
+    color: #4caf50;
+}
+
+.param-value.inactive {
+    color: #666;
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+    font-size: 13px;
 }
