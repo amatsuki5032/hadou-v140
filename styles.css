@@ -1317,8 +1317,8 @@
    =========================== */
 .combat-parameters-panel {
     position: absolute;
-    left: 20px;
-    top: 20px;
+    left: 0;
+    top: 120px;
     width: 250px;
     background: var(--bg-modal);
     border: 2px solid var(--border-secondary);
@@ -1329,11 +1329,11 @@
 
 .combat-params-header {
     background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-    padding: 10px 15px;
+    padding: 6px 12px;
     border-bottom: 2px solid var(--accent-gold);
     border-radius: 6px 6px 0 0;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--accent-gold);
     display: flex;
     align-items: center;
@@ -1341,14 +1341,14 @@
 }
 
 .combat-params-content {
-    padding: 12px;
+    padding: 8px;
 }
 
 .param-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 0;
+    padding: 4px 0;
     border-bottom: 1px solid var(--border-primary);
 }
 
