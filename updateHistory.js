@@ -94,6 +94,10 @@ function closeUpdateHistoryModal() {
     modal.style.display = 'none';
 }
 
+// グローバルに公開
+window.showUpdateHistoryModal = showUpdateHistoryModal;
+window.closeUpdateHistoryModal = closeUpdateHistoryModal;
+
 // 初期化：更新情報バーに最新情報を表示
 function initUpdateInfo() {
     const latest = getLatestUpdate();
@@ -104,17 +108,29 @@ function initUpdateInfo() {
     document.getElementById('update-summary').textContent = latest.summary;
 }
 
-// ページ読み込み時に初期化
-document.addEventListener('DOMContentLoaded', () => {
-    initUpdateInfo();
-    
-    // 詳細ボタンのイベントリスナー
-    document.getElementById('show-history-btn').addEventListener('click', showUpdateHistoryModal);
-    
-    // モーダル外クリックで閉じる
-    document.getElementById('update-history-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'update-history-modal') {
-            closeUpdateHistoryModal();
+// ページ読み込み時に初期化（Reactの描画後に実行）
+window.addEventListener('load', () => {
+    // React描画を待つ
+    setTimeout(() => {
+        const versionTag = document.getElementById('version-tag');
+        if (versionTag) {
+            initUpdateInfo();
+            
+            // 詳細ボタンのイベントリスナー
+            const showBtn = document.getElementById('show-history-btn');
+            if (showBtn) {
+                showBtn.addEventListener('click', showUpdateHistoryModal);
+            }
+            
+            // モーダル外クリックで閉じる
+            const modal = document.getElementById('update-history-modal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target.id === 'update-history-modal') {
+                        closeUpdateHistoryModal();
+                    }
+                });
+            }
         }
-    });
+    }, 100);
 });
