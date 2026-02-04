@@ -3566,6 +3566,24 @@ const { useState, useEffect } = React;
                         </div>
                     </div>
                     
+                    {/* 更新情報バー */}
+                    <div id="update-info-bar-react" className="update-info-bar">
+                        <span className="version-tag" id="version-tag">v145</span>
+                        <span className="update-date" id="update-date">2026-02-04</span>
+                        <span className="update-summary" id="update-summary">更新履歴表示機能を追加</span>
+                        <button 
+                            className="show-history-btn" 
+                            id="show-history-btn"
+                            onClick={() => {
+                                if (window.showUpdateHistoryModal) {
+                                    window.showUpdateHistoryModal();
+                                }
+                            }}
+                        >
+                            📋 詳細を見る
+                        </button>
+                    </div>
+                    
                     {viewMode === 'formation' ? (
                         <>
                             {/* 編制パターン選択タブ */}
@@ -7207,6 +7225,28 @@ const { useState, useEffect } = React;
                         </div>
                     </div>
                 )}
+                
+                {/* 更新履歴モーダル */}
+                <div id="update-history-modal" className="modal" style={{display: 'none'}}>
+                    <div className="modal-content history-modal-content">
+                        <div className="modal-header">
+                            <h2>📋 更新履歴</h2>
+                            <button 
+                                className="modal-close" 
+                                onClick={() => {
+                                    if (window.closeUpdateHistoryModal) {
+                                        window.closeUpdateHistoryModal();
+                                    }
+                                }}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div id="update-history-content" className="history-content">
+                            {/* updateHistory.jsで動的生成 */}
+                        </div>
+                    </div>
+                </div>
                 
                 </div>
         );
