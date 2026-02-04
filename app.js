@@ -1757,6 +1757,98 @@ const { useState, useEffect } = React;
                 }
             };
             
+            // 部隊の戦闘パラメータを計算（6つのパラメータ）
+            const calculateCombatParameters = (formationKey) => {
+                const formation = formations[formationKey];
+                if (!formation) return null;
+                
+                const result = {
+                    initialGauge: 0, tacticSpeed: 0, lethalResist: false,
+                    tacticReduce: 0, attackSpeed: 0, critical: 0
+                };
+                
+                const skillLevels = {};
+                
+                // 武将の技能を集計
+                Object.entries(formation.slots).forEach(([slotName, generalData]) => {
+                    if (!generalData) return;
+                    const generalId = typeof generalData === 'object' ? generalData.id : generalData;
+                    const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
+                    
+                    if (general?.skills) {
+                        const starRank = getGeneralStarRank(general);
+                        Object.entries(general.skills).forEach(([slot, skill]) => {
+                            const skillName = skill.name;
+                            if (!COMBAT_PARAMETERS[skillName]) return;
+                            
+                            let skillLevel = 1;
+                            if (skill.type === "levelup") {
+                                skillLevel = starRank >= (skill.levelup_rank || 999) ? 2 : 1;
+                            } else if (skill.type === "unlock") {
+                                if (starRank < (skill.unlock_rank || 999)) return;
+                            }
+                            
+                            if (!skillLevels[skillName]) {
+                                skillLevels[skillName] = { totalLevel: 0, slot: slotName };
+                            }
+                            skillLevels[skillName].totalLevel += skillLevel;
+                        });
+                    }
+                    
+                    // 侍従も同様に処理
+                    const attendantData = formation.attendants?.[slotName];
+                    if (attendantData) {
+                        const attendantId = typeof attendantData === 'object' ? attendantData.id : attendantData;
+                        const attendant = EMBEDDED_GENERALS_DATA.find(g => g.id === attendantId);
+                        
+                        if (attendant?.skills) {
+                            const starRank = getGeneralStarRank(attendant);
+                            Object.entries(attendant.skills).forEach(([slot, skill]) => {
+                                const skillName = skill.name;
+                                if (!COMBAT_PARAMETERS[skillName]) return;
+                                
+                                let skillLevel = 1;
+                                if (skill.type === "levelup") {
+                                    skillLevel = starRank >= (skill.levelup_rank || 999) ? 2 : 1;
+                                } else if (skill.type === "unlock") {
+                                    if (starRank < (skill.unlock_rank || 999)) return;
+                                }
+                                
+                                if (!skillLevels[skillName]) {
+                                    skillLevels[skillName] = { totalLevel: 0, slot: slotName };
+                                }
+                                skillLevels[skillName].totalLevel += skillLevel;
+                            });
+                        }
+                    }
+                });
+                
+                // 効果値を計算
+                const levelMap = {1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ'};
+                for (const [skillName, data] of Object.entries(skillLevels)) {
+                    const skillData = COMBAT_PARAMETERS[skillName];
+                    if (!skillData?.effects) continue;
+                    
+                    // 条件チェック
+                    const condition = skillData.condition;
+                    if (condition && condition !== "常に") {
+                        if (condition.includes("主将") && data.slot !== "主将") continue;
+                    }
+                    
+                    const effectiveLevel = Math.min(data.totalLevel, 5);
+                    const levelKey = levelMap[effectiveLevel];
+                    
+                    Object.entries(skillData.effects).forEach(([paramKey, levels]) => {
+                        if (paramKey === 'lethalResist') {
+                            result.lethalResist = true;
+                        } else if (levels[levelKey]) {
+                            result[paramKey] += levels[levelKey];
+                        }
+                    });
+                }
+                
+                return result;
+            };
             
             // 部隊をリセット
             const resetFormation = (formationKey) => {
@@ -4285,7 +4377,7 @@ const { useState, useEffect } = React;
                                         );
                                     })()}
                                     {/* 陣形と編制枠を横並び */}
-                                    <div style={{display: 'flex', gap: '16px'}}>
+                                    <div style={{display: 'flex', gap: '16px', position: 'relative'}}>
                                         {/* 左：陣形グリッド（相対位置指定でSVGオーバーレイ用） */}
                                         <div style={{flex: '0 0 auto', position: 'relative'}}>
                                             {/* グリッド */}
@@ -4789,6 +4881,56 @@ const { useState, useEffect } = React;
                                                         </React.Fragment>
                                                     );
                                                 })}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* 戦闘パラメータパネル */}
+                                        <div className="combat-parameters-panel">
+                                            <div className="combat-params-header">
+                                                <span>📊 部隊パラメータ</span>
+                                            </div>
+                                            <div className="combat-params-content">
+                                                {(() => {
+                                                    const params = calculateCombatParameters(key);
+                                                    if (!params) return <div className="no-data">データなし</div>;
+                                                    
+                                                    return (
+                                                        <>
+                                                            <div className="param-row">
+                                                                <span className="param-icon">⚡</span>
+                                                                <span className="param-label">出陣ゲージ:</span>
+                                                                <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
+                                                            </div>
+                                                            <div className="param-row">
+                                                                <span className="param-icon">🎯</span>
+                                                                <span className="param-label">戦法速度:</span>
+                                                                <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
+                                                            </div>
+                                                            <div className="param-row">
+                                                                <span className="param-icon">🛡️</span>
+                                                                <span className="param-label">致死耐性:</span>
+                                                                <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
+                                                                    {params.lethalResist ? 'ON' : 'OFF'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="param-row">
+                                                                <span className="param-icon">⏱️</span>
+                                                                <span className="param-label">戦法短縮:</span>
+                                                                <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
+                                                            </div>
+                                                            <div className="param-row">
+                                                                <span className="param-icon">⚔️</span>
+                                                                <span className="param-label">攻撃速度:</span>
+                                                                <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
+                                                            </div>
+                                                            <div className="param-row">
+                                                                <span className="param-icon">💥</span>
+                                                                <span className="param-label">会心発生:</span>
+                                                                <span className="param-value">+{params.critical.toFixed(1)}%</span>
+                                                            </div>
+                                                        </>
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                     </div>
