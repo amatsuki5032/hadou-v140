@@ -1317,7 +1317,7 @@
    =========================== */
 .combat-parameters-panel {
     position: absolute;
-    left: 20px;
+    right: 20px;
     bottom: 20px;
     width: 250px;
     background: var(--bg-modal);
