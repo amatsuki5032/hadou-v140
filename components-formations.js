@@ -5,7 +5,7 @@
  * 部隊エリア（12部隊のグリッド表示・配置・D&D）
  */
 function FormationsArea({
-    currentFormations, treasures,
+    currentFormations, treasures, collapsedFormations,
     showImages, showSkillEffects, setShowSkillEffects,
     recommendTargetFormation, setRecommendTargetFormation,
     // ハンドラ
