@@ -3676,6 +3676,7 @@ const { useState, useEffect } = React;
                         <FormationsArea
                             currentFormations={currentFormations}
                             treasures={treasures}
+                            collapsedFormations={collapsedFormations}
                             showImages={showImages}
                             showSkillEffects={showSkillEffects}
                             setShowSkillEffects={setShowSkillEffects}
