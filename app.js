@@ -1313,9 +1313,7 @@ const { useState, useEffect } = React;
                     alert('保存する部隊データがありません');
                     return;
                 }
-                
-                console.log('保存する部隊データ:', formationData);
-                
+
                 // treasuresをオブジェクトから配列に変換
                 let treasuresArray = Array(15).fill(null); // 5人 × 3個 = 15個
                 if (formationData.treasures) {
@@ -1366,9 +1364,7 @@ const { useState, useEffect } = React;
                     treasures: treasuresArray,
                     formationType: formationData.formationType
                 };
-                
-                console.log('保存するテンプレート:', template);
-                
+
                 setFormationTemplates(prev => ({
                     ...prev,
                     [templateName.trim()]: template
@@ -1405,15 +1401,9 @@ const { useState, useEffect } = React;
                     return;
                 }
                 
-                console.log('呼び出すテンプレート:', template);
-                console.log('上書き設定 - 武将:', overwriteGenerals, '名宝:', overwriteTreasures);
-                
                 const currentFormation = formations[showTemplateLoadDialog];
-                console.log('現在の部隊:', currentFormation);
-                
+
                 setFormations(prev => {
-                    console.log('変更前のformations:', prev);
-                    
                     // 完全に新しいオブジェクトを作成（浅いコピーではなく）
                     const targetFormation = {
                         formationType: prev[showTemplateLoadDialog]?.formationType || '基本陣形',
@@ -1421,8 +1411,6 @@ const { useState, useEffect } = React;
                         attendants: {},
                         treasures: {}
                     };
-                    
-                    console.log('初期化したtargetFormation:', targetFormation);
                     
                     // 武将（主将・副将・補佐）と侍従を上書き
                     if (overwriteGenerals) {
@@ -1447,9 +1435,6 @@ const { useState, useEffect } = React;
                     
                     // 名宝を上書き
                     if (overwriteTreasures) {
-                        console.log('名宝上書き開始');
-                        console.log('template.treasures:', template.treasures);
-                        
                         // 既に{}で初期化済みなので、テンプレートから直接コピー
                         if (template.treasures && Array.isArray(template.treasures)) {
                             const keyMapping = [
@@ -1462,7 +1447,6 @@ const { useState, useEffect } = React;
                             
                             template.treasures.forEach((treasure, index) => {
                                 if (treasure && keyMapping[index]) {
-                                    console.log(`名宝[${index}]をコピー:`, treasure);
                                     targetFormation.treasures[keyMapping[index]] = JSON.parse(JSON.stringify(treasure));
                                 }
                             });
@@ -1474,8 +1458,6 @@ const { useState, useEffect } = React;
                     
                     // 陣形タイプは常に上書き
                     targetFormation.formationType = template.formationType;
-                    
-                    console.log('変更後のtargetFormation:', targetFormation);
                     
                     const newFormations = {
                         ...prev,
@@ -1506,7 +1488,6 @@ const { useState, useEffect } = React;
                                             otherGeneral.id === targetGeneral.id && 
                                             otherGeneral.rarity === targetGeneral.rarity) {
                                             formation.slots[otherSlot] = null;
-                                            console.log(`部隊${formationKey}のスロット${otherSlot}から武将${targetGeneral.name}を削除`);
                                         }
                                     });
                                     
@@ -1517,7 +1498,6 @@ const { useState, useEffect } = React;
                                             attendant.id === targetGeneral.id && 
                                             attendant.rarity === targetGeneral.rarity) {
                                             formation.attendants[position] = null;
-                                            console.log(`部隊${formationKey}の侍従${position}から武将${targetGeneral.name}を削除`);
                                         }
                                     });
                                 });
@@ -1536,7 +1516,6 @@ const { useState, useEffect } = React;
                                             otherGeneral.id === targetAttendant.id && 
                                             otherGeneral.rarity === targetAttendant.rarity) {
                                             formation.slots[otherSlot] = null;
-                                            console.log(`部隊${formationKey}のスロット${otherSlot}から侍従武将${targetAttendant.name}を削除`);
                                         }
                                     });
                                     
@@ -1547,7 +1526,6 @@ const { useState, useEffect } = React;
                                             otherAttendant.id === targetAttendant.id && 
                                             otherAttendant.rarity === targetAttendant.rarity) {
                                             formation.attendants[otherPosition] = null;
-                                            console.log(`部隊${formationKey}の侍従${otherPosition}から侍従武将${targetAttendant.name}を削除`);
                                         }
                                     });
                                 });
@@ -1565,15 +1543,12 @@ const { useState, useEffect } = React;
                                             otherTreasure.id === targetTreasure.id && 
                                             otherTreasure.name === targetTreasure.name) {
                                             formation.treasures[otherKey] = null;
-                                            console.log(`部隊${formationKey}から名宝${targetTreasure.name}を削除`);
                                         }
                                     });
                                 });
                             }
                         });
                     }
-                    
-                    console.log('重複削除後のnewFormations:', newFormations);
                     
                     return newFormations;
                 });
@@ -1595,20 +1570,12 @@ const { useState, useEffect } = React;
             
             // 部隊の技能効果を集計
             const calculateSkillEffects = (formationKey) => {
-                console.log("=== calculateSkillEffects デバッグ開始 ===");
-                console.log("formationKey:", formationKey);
-                
                 const formation = formations[formationKey];
-                console.log("formation:", formation);
-                
+
                 if (!formation) {
-                    console.log("formationがnull/undefined");
                     return null;
                 }
-                
-                console.log("slots:", formation.slots);
-                console.log("attendants:", formation.attendants);
-                
+
                 // 集計対象パラメータ
                 const targetParams = ['攻撃速度', '会心発生', '戦法速度'];
                 
@@ -1617,56 +1584,37 @@ const { useState, useEffect } = React;
                 
                 // 配置された武将の技能を集計（メイン武将 + 侍従武将）
                 Object.entries(formation.slots).forEach(([slotName, generalData]) => {
-                    console.log(`\n--- ${slotName} の処理 ---`);
-                    console.log("generalData:", generalData);
-                    
                     if (!generalData) return;
-                    
-                    // generalDataがオブジェクトの場合は.idを取得、数値の場合はそのまま使用
+
                     const generalId = typeof generalData === 'object' ? generalData.id : generalData;
-                    console.log("generalId (修正後):", generalId);
-                    
+
                     // メイン武将の技能を集計
                     const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
-                    console.log("見つかった武将:", general?.name, general?.rarity);
-                    console.log("武将の技能:", general?.skills);
-                    
+
                     if (general && general.skills) {
                         const starRank = getGeneralStarRank(general);
-                        console.log(`  将星ランク: ★${starRank}`);
-                        
+
                         Object.entries(general.skills).forEach(([slot, skill]) => {
-                            console.log(`  技能${slot}:`, skill.name);
                             collectSkillLevel(skill, general, starRank, skillLevels);
                         });
                     }
-                    
+
                     // 侍従武将の技能を集計（メイン武将の技能として扱う）
                     const attendantData = formation.attendants?.[slotName];
-                    console.log("attendantData:", attendantData);
-                    
+
                     if (attendantData) {
-                        // attendantDataがオブジェクトの場合は.idを取得、数値の場合はそのまま使用
                         const attendantId = typeof attendantData === 'object' ? attendantData.id : attendantData;
-                        console.log("attendantId (修正後):", attendantId);
                         const attendant = EMBEDDED_GENERALS_DATA.find(g => g.id === attendantId);
-                        console.log("見つかった侍従:", attendant?.name, attendant?.rarity);
-                        console.log("侍従の技能:", attendant?.skills);
-                        
+
                         if (attendant && attendant.skills) {
                             const attendantStarRank = getGeneralStarRank(attendant);
-                            console.log(`  侍従将星ランク: ★${attendantStarRank}`);
-                            
+
                             Object.entries(attendant.skills).forEach(([slot, skill]) => {
-                                console.log(`  侍従技能${slot}:`, skill.name);
                                 collectSkillLevel(skill, attendant, attendantStarRank, skillLevels);
                             });
                         }
                     }
                 });
-                
-                console.log("\n=== 技能レベル集計結果 ===");
-                console.log(skillLevels);
                 
                 // 技能レベルから効果値を計算
                 const results = {};
@@ -1676,10 +1624,6 @@ const { useState, useEffect } = React;
                     calculateSkillEffect(skillName, totalLevel, results, targetParams);
                 }
                 
-                console.log("\n=== 最終集計結果 ===");
-                console.log(results);
-                console.log("=== デバッグ終了 ===\n");
-                
                 return results;
             };
             
@@ -1687,13 +1631,10 @@ const { useState, useEffect } = React;
             const collectSkillLevel = (skill, general, starRank, skillLevels) => {
                 const skillName = skill.name;
                 const skillType = skill.type;
-                
-                console.log(`    → ${skillName} (type: ${skillType}) のレベル集計中`);
-                console.log(`    将星ランク: ★${starRank}`);
-                
+
                 // 技能レベルを計算
                 let skillLevel = 1;
-                
+
                 if (skillType === "fixed") {
                     skillLevel = 1;
                 } else if (skillType === "levelup") {
@@ -1702,43 +1643,32 @@ const { useState, useEffect } = React;
                 } else if (skillType === "unlock") {
                     const unlockRank = skill.unlock_rank || 999;
                     if (starRank < unlockRank) {
-                        console.log(`未解放技能のためスキップ (要★${unlockRank})`);
                         return;
                     }
                     skillLevel = 1;
                 } else if (skillType === "lr_inherit") {
                     skillLevel = 1;
                 }
-                
-                console.log(`    計算された技能レベル: ${skillLevel}`);
-                
+
                 // 技能名ごとにレベルを加算
                 if (!skillLevels[skillName]) {
                     skillLevels[skillName] = 0;
                 }
                 skillLevels[skillName] += skillLevel;
-                
-                console.log(`    ${skillName}の累計レベル: ${skillLevels[skillName]}`);
             };
             
             // 技能レベルから効果値を計算するヘルパー関数
             const calculateSkillEffect = (skillName, totalLevel, results, targetParams) => {
-                console.log(`\n  --- ${skillName} (累計レベル${totalLevel}) の効果計算 ---`);
-                
                 // 技能効果データを取得
                 if (!SKILL_EFFECTS_DATA[skillName]) {
-                    console.log(`  ${skillName}の効果データなし`);
                     return;
                 }
-                
+
                 const skillEffect = SKILL_EFFECTS_DATA[skillName];
                 const paramType = skillEffect.parameter;
-                
-                console.log(`  パラメータ: ${paramType}`);
-                
+
                 // 対象パラメータでない場合はスキップ
                 if (!targetParams.includes(paramType)) {
-                    console.log(`  ⏭️ 対象外パラメータのためスキップ`);
                     return;
                 }
                 
@@ -1747,13 +1677,9 @@ const { useState, useEffect } = React;
                 const levelMap = {1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ'};
                 const levelKey = levelMap[effectiveLevel];
                 const effectValue = skillEffect.effects[levelKey];
-                
-                console.log(`  有効レベル: ${effectiveLevel} (${levelKey})`);
-                console.log(`  効果値: ${effectValue}`);
-                
+
                 if (effectValue) {
                     results[paramType] += effectValue;
-                    console.log(`  ${paramType}に+${effectValue}を加算 (合計: ${results[paramType]})`);
                 }
             };
             
