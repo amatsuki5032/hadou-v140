@@ -22,10 +22,10 @@ const FirebaseSync = {
         ...data,
         lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
       });
-      console.log('✅ Firebase同期成功');
+      console.log('Firebase同期成功');
       return true;
     } catch (error) {
-      console.error('❌ Firebase保存エラー:', error);
+      console.error('Firebase保存エラー:', error);
       return false;
     }
   },
@@ -35,12 +35,12 @@ const FirebaseSync = {
     try {
       const doc = await db.collection('hadou-data').doc('main').get();
       if (doc.exists) {
-        console.log('✅ Firebaseからデータ読み込み成功');
+        console.log('Firebaseからデータ読み込み成功');
         return doc.data();
       }
       return null;
     } catch (error) {
-      console.error('❌ Firebase読み込みエラー:', error);
+      console.error('Firebase読み込みエラー:', error);
       return null;
     }
   },
@@ -49,7 +49,7 @@ const FirebaseSync = {
   watchChanges(callback) {
     return db.collection('hadou-data').doc('main').onSnapshot((doc) => {
       if (doc.exists) {
-        console.log('🔄 Firebaseから更新を受信');
+        console.log('Firebaseから更新を受信');
         callback(doc.data());
       }
     });
