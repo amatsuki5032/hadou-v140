@@ -144,6 +144,138 @@ function canPlaceAttendant(formationType, generalSlot, attendantPosition) {
 }
 
 // ========================================
+// 侍従衝突解決
+// ========================================
+
+/**
+ * 同じマスに複数の侍従が配置される場合の衝突を解決する
+ * @param {string} formationType - 陣形名
+ * @param {Object} slots - スロットデータ
+ * @returns {Object} スロット名→配置座標のマップ
+ */
+function resolveAttendantConflicts(formationType, slots) {
+    const slotOrder = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
+    const coordinateMap = {};
+    const attendantPlacements = {};
+
+    slotOrder.forEach((slotName, index) => {
+        const general = slots[slotName];
+        if (!general || general.rarity !== 'LR' || !general.attendant_position) {
+            return;
+        }
+
+        const canPlace = canPlaceAttendant(formationType, slotName, general.attendant_position);
+
+        if (canPlace) {
+            const formationData = FORMATIONS_TYPES[formationType];
+            if (!formationData) return;
+
+            const generalCoords = formationData.mapping[slotName];
+            if (!generalCoords) return;
+
+            const [generalRow, generalCol] = generalCoords;
+            const offsetsList = getAttendantPositionOffsets(general.attendant_position);
+
+            for (const [rowOffset, colOffset] of offsetsList) {
+                const attendantRow = generalRow + rowOffset;
+                const attendantCol = generalCol + colOffset;
+
+                if (attendantRow >= 0 && attendantRow < 3 && attendantCol >= 0 && attendantCol < 3) {
+                    const cellValue = formationData.positions[attendantRow][attendantCol];
+
+                    if (cellValue === 0) {
+                        const coords = [attendantRow, attendantCol];
+                        const coordKey = `${attendantRow},${attendantCol}`;
+                        const is2way = general.attendant_position.includes('/');
+                        const priority = is2way ? 100 : index;
+
+                        if (!coordinateMap[coordKey] || coordinateMap[coordKey].priority > priority) {
+                            coordinateMap[coordKey] = { slot: slotName, priority, coords };
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    Object.values(coordinateMap).forEach(({ slot, coords }) => {
+        attendantPlacements[slot] = coords;
+    });
+
+    return attendantPlacements;
+}
+
+// ========================================
+// データフォーマット変換
+// ========================================
+
+/**
+ * 旧バージョンのデータフォーマットを現行形式に変換する
+ * @param {Object} oldData - 旧形式のデータ
+ * @returns {Object} 現行形式のデータ
+ */
+function convertOldDataFormat(oldData) {
+    const newData = {
+        formations: [],
+        formationTemplates: [],
+        disabledGenerals: [],
+        disabledTreasures: [],
+        generalRanks: {},
+        treasureRanks: {},
+        favorites: [],
+        favoriteTreasures: []
+    };
+
+    if (oldData.disabledGenerals && Array.isArray(oldData.disabledGenerals)) {
+        newData.disabledGenerals = oldData.disabledGenerals;
+    }
+
+    if (oldData.disabledTreasures && Array.isArray(oldData.disabledTreasures)) {
+        newData.disabledTreasures = oldData.disabledTreasures;
+    }
+
+    if (oldData.generalRanks && typeof oldData.generalRanks === 'object') {
+        newData.generalRanks = oldData.generalRanks;
+    }
+    if (oldData.treasureRanks && typeof oldData.treasureRanks === 'object') {
+        newData.treasureRanks = oldData.treasureRanks;
+    }
+
+    if (oldData.favorites && Array.isArray(oldData.favorites)) {
+        newData.favorites = oldData.favorites;
+    }
+    if (oldData.favoriteTreasures && Array.isArray(oldData.favoriteTreasures)) {
+        newData.favoriteTreasures = oldData.favoriteTreasures;
+    }
+
+    if (oldData.formationPatterns && typeof oldData.formationPatterns === 'object') {
+        for (const patternId in oldData.formationPatterns) {
+            const pattern = oldData.formationPatterns[patternId];
+            if (pattern && pattern.formations && typeof pattern.formations === 'object') {
+                for (const formationId in pattern.formations) {
+                    const formation = pattern.formations[formationId];
+                    newData.formations.push({
+                        id: formationId,
+                        name: pattern.name || '編制',
+                        type: formation.type || formation.formationType || '基本陣',
+                        slots: formation.slots || {},
+                        attendants: formation.attendants || {},
+                        treasures: formation.treasures || {},
+                        isActive: formation.isActive !== undefined ? formation.isActive : true
+                    });
+                }
+            }
+        }
+    }
+
+    if (oldData.formationTemplates && Array.isArray(oldData.formationTemplates)) {
+        newData.formationTemplates = oldData.formationTemplates;
+    }
+
+    return newData;
+}
+
+// ========================================
 // 画像パス生成ユーティリティ
 // ========================================
 

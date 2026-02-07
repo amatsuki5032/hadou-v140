@@ -8,60 +8,9 @@ const { useState, useEffect } = React;
 // positions: [row0, row1, row2] 各行は[col0, col1, col2]
 // FORMATIONS_TYPES は config.js から読み込み
 
-        
-        // 侍従配置の競合を解決
-        function resolveAttendantConflicts(formationType, slots) {
-            const slotOrder = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
-            const coordinateMap = {};
-            const attendantPlacements = {};
-            
-            slotOrder.forEach((slotName, index) => {
-                const general = slots[slotName];
-                if (!general || general.rarity !== 'LR' || !general.attendant_position) {
-                    return;
-                }
-                
-                const canPlace = canPlaceAttendant(formationType, slotName, general.attendant_position);
-                
-                if (canPlace) {
-                    const formationData = FORMATIONS_TYPES[formationType];
-                    if (!formationData) return;
-                    
-                    const generalCoords = formationData.mapping[slotName];
-                    if (!generalCoords) return;
-                    
-                    const [generalRow, generalCol] = generalCoords;
-                    const offsetsList = getAttendantPositionOffsets(general.attendant_position);
-                    
-                    for (const [rowOffset, colOffset] of offsetsList) {
-                        const attendantRow = generalRow + rowOffset;
-                        const attendantCol = generalCol + colOffset;
-                        
-                        if (attendantRow >= 0 && attendantRow < 3 && attendantCol >= 0 && attendantCol < 3) {
-                            const cellValue = formationData.positions[attendantRow][attendantCol];
-                            
-                            if (cellValue === 0) {
-                                const coords = [attendantRow, attendantCol];
-                                const coordKey = `${attendantRow},${attendantCol}`;
-                                const is2way = general.attendant_position.includes('/');
-                                const priority = is2way ? 100 : index;
-                                
-                                if (!coordinateMap[coordKey] || coordinateMap[coordKey].priority > priority) {
-                                    coordinateMap[coordKey] = { slot: slotName, priority, coords };
-                                }
-                                // 2方向侍従の場合、両方の座標を処理するためbreakしない
-                            }
-                        }
-                    }
-                }
-            });
-            
-            Object.values(coordinateMap).forEach(({ slot, coords }) => {
-                attendantPlacements[slot] = coords;
-            });
-            
-            return attendantPlacements;
-        }
+        // resolveAttendantConflicts → utils.js に移動済み
+        // calculateSkillEffects, calculateCombatParameters → calc-engine.js に移動済み
+        // convertOldDataFormat → utils.js に移動済み
         
         function App() {
             const [viewMode, setViewMode] = useState('formation'); // 'formation' or 'rank'
@@ -1568,212 +1517,14 @@ const { useState, useEffect } = React;
                 }
             };
             
-            // 部隊の技能効果を集計
-            const calculateSkillEffects = (formationKey) => {
-                const formation = formations[formationKey];
-
-                if (!formation) {
-                    return null;
-                }
-
-                // 集計対象パラメータ
-                const targetParams = ['攻撃速度', '会心発生', '戦法速度'];
-                
-                // 技能名ごとにレベルを集計
-                const skillLevels = {};
-                
-                // 配置された武将の技能を集計（メイン武将 + 侍従武将）
-                Object.entries(formation.slots).forEach(([slotName, generalData]) => {
-                    if (!generalData) return;
-
-                    const generalId = typeof generalData === 'object' ? generalData.id : generalData;
-
-                    // メイン武将の技能を集計
-                    const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
-
-                    if (general && general.skills) {
-                        const starRank = getGeneralStarRank(general);
-
-                        Object.entries(general.skills).forEach(([slot, skill]) => {
-                            collectSkillLevel(skill, general, starRank, skillLevels);
-                        });
-                    }
-
-                    // 侍従武将の技能を集計（メイン武将の技能として扱う）
-                    const attendantData = formation.attendants?.[slotName];
-
-                    if (attendantData) {
-                        const attendantId = typeof attendantData === 'object' ? attendantData.id : attendantData;
-                        const attendant = EMBEDDED_GENERALS_DATA.find(g => g.id === attendantId);
-
-                        if (attendant && attendant.skills) {
-                            const attendantStarRank = getGeneralStarRank(attendant);
-
-                            Object.entries(attendant.skills).forEach(([slot, skill]) => {
-                                collectSkillLevel(skill, attendant, attendantStarRank, skillLevels);
-                            });
-                        }
-                    }
-                });
-                
-                // 技能レベルから効果値を計算
-                const results = {};
-                targetParams.forEach(param => results[param] = 0);
-                
-                for (const [skillName, totalLevel] of Object.entries(skillLevels)) {
-                    calculateSkillEffect(skillName, totalLevel, results, targetParams);
-                }
-                
-                return results;
+            // 部隊の技能効果を集計（calc-engine.js のラッパー）
+            const calcSkillEffects = (formationKey) => {
+                return calculateSkillEffects(formations[formationKey], getGeneralStarRank);
             };
             
-            // 技能レベルを集計するヘルパー関数
-            const collectSkillLevel = (skill, general, starRank, skillLevels) => {
-                const skillName = skill.name;
-                const skillType = skill.type;
-
-                // 技能レベルを計算
-                let skillLevel = 1;
-
-                if (skillType === "fixed") {
-                    skillLevel = 1;
-                } else if (skillType === "levelup") {
-                    const levelupRank = skill.levelup_rank || 999;
-                    skillLevel = starRank >= levelupRank ? 2 : 1;
-                } else if (skillType === "unlock") {
-                    const unlockRank = skill.unlock_rank || 999;
-                    if (starRank < unlockRank) {
-                        return;
-                    }
-                    skillLevel = 1;
-                } else if (skillType === "lr_inherit") {
-                    skillLevel = 1;
-                }
-
-                // 技能名ごとにレベルを加算
-                if (!skillLevels[skillName]) {
-                    skillLevels[skillName] = 0;
-                }
-                skillLevels[skillName] += skillLevel;
-            };
-            
-            // 技能レベルから効果値を計算するヘルパー関数
-            const calculateSkillEffect = (skillName, totalLevel, results, targetParams) => {
-                // 技能効果データを取得
-                if (!SKILL_EFFECTS_DATA[skillName]) {
-                    return;
-                }
-
-                const skillEffect = SKILL_EFFECTS_DATA[skillName];
-                const paramType = skillEffect.parameter;
-
-                // 対象パラメータでない場合はスキップ
-                if (!targetParams.includes(paramType)) {
-                    return;
-                }
-                
-                // レベルに応じた効果値を取得（上限Ⅴ）
-                const effectiveLevel = Math.min(totalLevel, 5);
-                const levelMap = {1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ'};
-                const levelKey = levelMap[effectiveLevel];
-                const effectValue = skillEffect.effects[levelKey];
-
-                if (effectValue) {
-                    results[paramType] += effectValue;
-                }
-            };
-            
-            // 部隊の戦闘パラメータを計算（6つのパラメータ）
-            const calculateCombatParameters = (formationKey) => {
-                const formation = formations[formationKey];
-                if (!formation) return null;
-                
-                const result = {
-                    initialGauge: 0, tacticSpeed: 0, lethalResist: false,
-                    tacticReduce: 0, attackSpeed: 0, critical: 0
-                };
-                
-                const skillLevels = {};
-                
-                // 武将の技能を集計
-                Object.entries(formation.slots).forEach(([slotName, generalData]) => {
-                    if (!generalData) return;
-                    const generalId = typeof generalData === 'object' ? generalData.id : generalData;
-                    const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
-                    
-                    if (general?.skills) {
-                        const starRank = getGeneralStarRank(general);
-                        Object.entries(general.skills).forEach(([slot, skill]) => {
-                            const skillName = skill.name;
-                            if (!COMBAT_PARAMETERS[skillName]) return;
-                            
-                            let skillLevel = 1;
-                            if (skill.type === "levelup") {
-                                skillLevel = starRank >= (skill.levelup_rank || 999) ? 2 : 1;
-                            } else if (skill.type === "unlock") {
-                                if (starRank < (skill.unlock_rank || 999)) return;
-                            }
-                            
-                            if (!skillLevels[skillName]) {
-                                skillLevels[skillName] = { totalLevel: 0, slot: slotName };
-                            }
-                            skillLevels[skillName].totalLevel += skillLevel;
-                        });
-                    }
-                    
-                    // 侍従も同様に処理
-                    const attendantData = formation.attendants?.[slotName];
-                    if (attendantData) {
-                        const attendantId = typeof attendantData === 'object' ? attendantData.id : attendantData;
-                        const attendant = EMBEDDED_GENERALS_DATA.find(g => g.id === attendantId);
-                        
-                        if (attendant?.skills) {
-                            const starRank = getGeneralStarRank(attendant);
-                            Object.entries(attendant.skills).forEach(([slot, skill]) => {
-                                const skillName = skill.name;
-                                if (!COMBAT_PARAMETERS[skillName]) return;
-                                
-                                let skillLevel = 1;
-                                if (skill.type === "levelup") {
-                                    skillLevel = starRank >= (skill.levelup_rank || 999) ? 2 : 1;
-                                } else if (skill.type === "unlock") {
-                                    if (starRank < (skill.unlock_rank || 999)) return;
-                                }
-                                
-                                if (!skillLevels[skillName]) {
-                                    skillLevels[skillName] = { totalLevel: 0, slot: slotName };
-                                }
-                                skillLevels[skillName].totalLevel += skillLevel;
-                            });
-                        }
-                    }
-                });
-                
-                // 効果値を計算
-                const levelMap = {1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ'};
-                for (const [skillName, data] of Object.entries(skillLevels)) {
-                    const skillData = COMBAT_PARAMETERS[skillName];
-                    if (!skillData?.effects) continue;
-                    
-                    // 条件チェック
-                    const condition = skillData.condition;
-                    if (condition && condition !== "常に") {
-                        if (condition.includes("主将") && data.slot !== "主将") continue;
-                    }
-                    
-                    const effectiveLevel = Math.min(data.totalLevel, 5);
-                    const levelKey = levelMap[effectiveLevel];
-                    
-                    Object.entries(skillData.effects).forEach(([paramKey, levels]) => {
-                        if (paramKey === 'lethalResist') {
-                            result.lethalResist = true;
-                        } else if (levels[levelKey]) {
-                            result[paramKey] += levels[levelKey];
-                        }
-                    });
-                }
-                
-                return result;
+            // 部隊の戦闘パラメータを計算（calc-engine.js のラッパー）
+            const calcCombatParams = (formationKey) => {
+                return calculateCombatParameters(formations[formationKey], getGeneralStarRank);
             };
             
             // 部隊をリセット
@@ -2564,73 +2315,6 @@ const { useState, useEffect } = React;
                 input.click();
             };
             
-            // 旧データフォーマットを新フォーマットに変換
-            function convertOldDataFormat(oldData) {
-                const newData = {
-                    formations: [],
-                    formationTemplates: [],
-                    disabledGenerals: [],
-                    disabledTreasures: [],
-                    generalRanks: {},
-                    treasureRanks: {},
-                    favorites: [],
-                    favoriteTreasures: []
-                };
-                
-                // disabledGeneralsの変換（配列であることを確認）
-                if (oldData.disabledGenerals && Array.isArray(oldData.disabledGenerals)) {
-                    newData.disabledGenerals = oldData.disabledGenerals;
-                }
-                
-                // disabledTreasuresの変換（配列であることを確認）
-                if (oldData.disabledTreasures && Array.isArray(oldData.disabledTreasures)) {
-                    newData.disabledTreasures = oldData.disabledTreasures;
-                }
-                
-                // ランクの変換
-                if (oldData.generalRanks && typeof oldData.generalRanks === 'object') {
-                    newData.generalRanks = oldData.generalRanks;
-                }
-                if (oldData.treasureRanks && typeof oldData.treasureRanks === 'object') {
-                    newData.treasureRanks = oldData.treasureRanks;
-                }
-                
-                // お気に入りの変換（配列であることを確認）
-                if (oldData.favorites && Array.isArray(oldData.favorites)) {
-                    newData.favorites = oldData.favorites;
-                }
-                if (oldData.favoriteTreasures && Array.isArray(oldData.favoriteTreasures)) {
-                    newData.favoriteTreasures = oldData.favoriteTreasures;
-                }
-                
-                // formationPatternsを変換
-                if (oldData.formationPatterns && typeof oldData.formationPatterns === 'object') {
-                    for (const patternId in oldData.formationPatterns) {
-                        const pattern = oldData.formationPatterns[patternId];
-                        if (pattern && pattern.formations && typeof pattern.formations === 'object') {
-                            for (const formationId in pattern.formations) {
-                                const formation = pattern.formations[formationId];
-                                newData.formations.push({
-                                    id: formationId,
-                                    name: pattern.name || '編制',
-                                    type: formation.type || formation.formationType || '基本陣',
-                                    slots: formation.slots || {},
-                                    attendants: formation.attendants || {},
-                                    treasures: formation.treasures || {},
-                                    isActive: formation.isActive !== undefined ? formation.isActive : true
-                                });
-                            }
-                        }
-                    }
-                }
-                
-                // formationTemplatesがあれば変換
-                if (oldData.formationTemplates && Array.isArray(oldData.formationTemplates)) {
-                    newData.formationTemplates = oldData.formationTemplates;
-                }
-                
-                return newData;
-            }
             
             // Google Driveへ保存
             const saveToGoogleDrive = async () => {
@@ -4241,7 +3925,7 @@ const { useState, useEffect } = React;
                                     </div>
                                     {/* 技能効果表示 */}
                                     {showSkillEffects[key] && (() => {
-                                        const effects = calculateSkillEffects(key);
+                                        const effects = calcSkillEffects(key);
                                         if (!effects) return null;
                                         
                                         return (
@@ -4817,7 +4501,7 @@ const { useState, useEffect } = React;
                                             </div>
                                             <div className="combat-params-content">
                                                 {(() => {
-                                                    const params = calculateCombatParameters(key);
+                                                    const params = calcCombatParams(key);
                                                     if (!params) return <div className="no-data">データなし</div>;
                                                     
                                                     return (
