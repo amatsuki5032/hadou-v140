@@ -11,7 +11,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 75
   },
   {
-    "id": 2001,
+    "id": 2002,
     "rarity": "SSR",
     "name": "姜維",
     "unit_type": "槍",
@@ -21,7 +21,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 73
   },
   {
-    "id": 2001,
+    "id": 2003,
     "rarity": "SSR",
     "name": "皇甫嵩",
     "unit_type": "槍",
@@ -31,7 +31,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 88
   },
   {
-    "id": 2001,
+    "id": 2004,
     "rarity": "SSR",
     "name": "司馬懿",
     "unit_type": "馬",
@@ -41,7 +41,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 31
   },
   {
-    "id": 2001,
+    "id": 2005,
     "rarity": "SSR",
     "name": "祝融",
     "unit_type": "弓",
@@ -51,7 +51,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 82
   },
   {
-    "id": 2001,
+    "id": 2006,
     "rarity": "SSR",
     "name": "周瑜",
     "unit_type": "弓",
@@ -61,7 +61,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 125
   },
   {
-    "id": 2001,
+    "id": 2007,
     "rarity": "SSR",
     "name": "諸葛亮",
     "unit_type": "弓",
@@ -71,7 +71,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 75
   },
   {
-    "id": 2001,
+    "id": 2008,
     "rarity": "SSR",
     "name": "徐晃",
     "unit_type": "馬",
@@ -81,7 +81,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 23
   },
   {
-    "id": 2001,
+    "id": 2009,
     "rarity": "SSR",
     "name": "曹操",
     "unit_type": "馬",
@@ -91,7 +91,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 25
   },
   {
-    "id": 2001,
+    "id": 2010,
     "rarity": "SSR",
     "name": "孫策",
     "unit_type": "槍",
@@ -101,7 +101,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 125
   },
   {
-    "id": 2001,
+    "id": 2011,
     "rarity": "SSR",
     "name": "張角",
     "unit_type": "槍",
@@ -111,7 +111,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 7
   },
   {
-    "id": 2001,
+    "id": 2012,
     "rarity": "SSR",
     "name": "張飛",
     "unit_type": "槍",
@@ -121,7 +121,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 75
   },
   {
-    "id": 2001,
+    "id": 2013,
     "rarity": "SSR",
     "name": "董卓",
     "unit_type": "弓",
@@ -131,7 +131,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 0
   },
   {
-    "id": 2001,
+    "id": 2014,
     "rarity": "SSR",
     "name": "孟獲",
     "unit_type": "槍",
@@ -141,7 +141,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 82
   },
   {
-    "id": 2001,
+    "id": 2015,
     "rarity": "SSR",
     "name": "陸遜",
     "unit_type": "弓",
@@ -151,7 +151,7 @@ const SSR_GENERALS_DATA = [
     "affinity": 122
   },
   {
-    "id": 2001,
+    "id": 2016,
     "rarity": "SSR",
     "name": "呂布",
     "unit_type": "馬",

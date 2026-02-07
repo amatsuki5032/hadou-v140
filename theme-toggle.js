@@ -9,7 +9,7 @@
             const themeToggle = document.createElement('button');
             themeToggle.className = 'theme-toggle';
             themeToggle.style.marginLeft = 'auto';
-            themeToggle.textContent = savedTheme === 'light' ? '🌙 ダーク' : '☀️ ライト';
+            themeToggle.textContent = savedTheme === 'light' ? '🌙' : '☀️';
             
             themeToggle.addEventListener('click', function() {
                 const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -17,7 +17,7 @@
                 
                 document.documentElement.setAttribute('data-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
-                themeToggle.textContent = newTheme === 'light' ? '🌙 ダーク' : '☀️ ライト';
+                themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
             });
             
             header.appendChild(themeToggle);

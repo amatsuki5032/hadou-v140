@@ -467,7 +467,7 @@ const { useState, useEffect } = React;
                 return (
                     <div className="image-modal-overlay" onClick={() => setShowImageSettings(false)}>
                         <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-                            <h2 className="image-modal-title">🖼️ 画像URL設定</h2>
+                            <h2 className="image-modal-title">画像URL設定</h2>
                             
                             <div className="image-url-input-group">
                                 <label>画像URLマッピング</label>
@@ -477,16 +477,16 @@ const { useState, useEffect } = React;
                                     placeholder={'general_LR_1=https://i.imgur.com/xxxxx.jpg\ngeneral_UR_曹操=https://i.imgur.com/yyyyy.jpg\ntreasure_青龍偃月刀=https://i.imgur.com/zzzzz.jpg'}
                                 />
                                 <div className="image-url-help">
-                                    <strong>📝 記述方法:</strong><br/>
+                                    <strong>記述方法:</strong><br/>
                                     ● 1行に1つのマッピング: <strong>キー=URL</strong><br/>
                                     ● 武将のキー形式: <strong>general_レア度_ID</strong> または <strong>general_レア度_名前</strong><br/>
                                     ● 名宝のキー形式: <strong>treasure_名前</strong> または <strong>treasure_種類_名前</strong><br/><br/>
-                                    <strong>📌 記述例:</strong><br/>
+                                    <strong>記述例:</strong><br/>
                                     general_LR_1=https://i.imgur.com/abc123.jpg<br/>
                                     general_UR_曹操=https://i.imgur.com/def456.jpg<br/>
                                     treasure_青龍偃月刀=https://i.imgur.com/ghi789.jpg<br/>
                                     treasure_weapon_方天画戟=https://i.imgur.com/jkl012.jpg<br/><br/>
-                                    <strong>💡 ヒント:</strong><br/>
+                                    <strong>ヒント:</strong><br/>
                                     ● #で始まる行はコメントとして無視されます<br/>
                                     ● Imgurアルバムの画像を右クリック→「画像アドレスをコピー」で取得<br/>
                                     ● 画像URLは i.imgur.com/xxxxx.jpg の形式
@@ -495,7 +495,7 @@ const { useState, useEffect } = React;
                             
                             <div className="image-modal-buttons">
                                 <button className="image-modal-button image-modal-button-save" onClick={handleSave}>
-                                    💾 保存
+                                    保存
                                 </button>
                                 <button className="image-modal-button image-modal-button-cancel" onClick={() => setShowImageSettings(false)}>
                                     ✕ キャンセル
@@ -1313,9 +1313,7 @@ const { useState, useEffect } = React;
                     alert('保存する部隊データがありません');
                     return;
                 }
-                
-                console.log('保存する部隊データ:', formationData);
-                
+
                 // treasuresをオブジェクトから配列に変換
                 let treasuresArray = Array(15).fill(null); // 5人 × 3個 = 15個
                 if (formationData.treasures) {
@@ -1366,9 +1364,7 @@ const { useState, useEffect } = React;
                     treasures: treasuresArray,
                     formationType: formationData.formationType
                 };
-                
-                console.log('保存するテンプレート:', template);
-                
+
                 setFormationTemplates(prev => ({
                     ...prev,
                     [templateName.trim()]: template
@@ -1405,15 +1401,9 @@ const { useState, useEffect } = React;
                     return;
                 }
                 
-                console.log('呼び出すテンプレート:', template);
-                console.log('上書き設定 - 武将:', overwriteGenerals, '名宝:', overwriteTreasures);
-                
                 const currentFormation = formations[showTemplateLoadDialog];
-                console.log('現在の部隊:', currentFormation);
-                
+
                 setFormations(prev => {
-                    console.log('変更前のformations:', prev);
-                    
                     // 完全に新しいオブジェクトを作成（浅いコピーではなく）
                     const targetFormation = {
                         formationType: prev[showTemplateLoadDialog]?.formationType || '基本陣形',
@@ -1421,8 +1411,6 @@ const { useState, useEffect } = React;
                         attendants: {},
                         treasures: {}
                     };
-                    
-                    console.log('初期化したtargetFormation:', targetFormation);
                     
                     // 武将（主将・副将・補佐）と侍従を上書き
                     if (overwriteGenerals) {
@@ -1447,9 +1435,6 @@ const { useState, useEffect } = React;
                     
                     // 名宝を上書き
                     if (overwriteTreasures) {
-                        console.log('名宝上書き開始');
-                        console.log('template.treasures:', template.treasures);
-                        
                         // 既に{}で初期化済みなので、テンプレートから直接コピー
                         if (template.treasures && Array.isArray(template.treasures)) {
                             const keyMapping = [
@@ -1462,7 +1447,6 @@ const { useState, useEffect } = React;
                             
                             template.treasures.forEach((treasure, index) => {
                                 if (treasure && keyMapping[index]) {
-                                    console.log(`名宝[${index}]をコピー:`, treasure);
                                     targetFormation.treasures[keyMapping[index]] = JSON.parse(JSON.stringify(treasure));
                                 }
                             });
@@ -1474,8 +1458,6 @@ const { useState, useEffect } = React;
                     
                     // 陣形タイプは常に上書き
                     targetFormation.formationType = template.formationType;
-                    
-                    console.log('変更後のtargetFormation:', targetFormation);
                     
                     const newFormations = {
                         ...prev,
@@ -1506,7 +1488,6 @@ const { useState, useEffect } = React;
                                             otherGeneral.id === targetGeneral.id && 
                                             otherGeneral.rarity === targetGeneral.rarity) {
                                             formation.slots[otherSlot] = null;
-                                            console.log(`部隊${formationKey}のスロット${otherSlot}から武将${targetGeneral.name}を削除`);
                                         }
                                     });
                                     
@@ -1517,7 +1498,6 @@ const { useState, useEffect } = React;
                                             attendant.id === targetGeneral.id && 
                                             attendant.rarity === targetGeneral.rarity) {
                                             formation.attendants[position] = null;
-                                            console.log(`部隊${formationKey}の侍従${position}から武将${targetGeneral.name}を削除`);
                                         }
                                     });
                                 });
@@ -1536,7 +1516,6 @@ const { useState, useEffect } = React;
                                             otherGeneral.id === targetAttendant.id && 
                                             otherGeneral.rarity === targetAttendant.rarity) {
                                             formation.slots[otherSlot] = null;
-                                            console.log(`部隊${formationKey}のスロット${otherSlot}から侍従武将${targetAttendant.name}を削除`);
                                         }
                                     });
                                     
@@ -1547,7 +1526,6 @@ const { useState, useEffect } = React;
                                             otherAttendant.id === targetAttendant.id && 
                                             otherAttendant.rarity === targetAttendant.rarity) {
                                             formation.attendants[otherPosition] = null;
-                                            console.log(`部隊${formationKey}の侍従${otherPosition}から侍従武将${targetAttendant.name}を削除`);
                                         }
                                     });
                                 });
@@ -1565,15 +1543,12 @@ const { useState, useEffect } = React;
                                             otherTreasure.id === targetTreasure.id && 
                                             otherTreasure.name === targetTreasure.name) {
                                             formation.treasures[otherKey] = null;
-                                            console.log(`部隊${formationKey}から名宝${targetTreasure.name}を削除`);
                                         }
                                     });
                                 });
                             }
                         });
                     }
-                    
-                    console.log('重複削除後のnewFormations:', newFormations);
                     
                     return newFormations;
                 });
@@ -1595,20 +1570,12 @@ const { useState, useEffect } = React;
             
             // 部隊の技能効果を集計
             const calculateSkillEffects = (formationKey) => {
-                console.log("=== calculateSkillEffects デバッグ開始 ===");
-                console.log("formationKey:", formationKey);
-                
                 const formation = formations[formationKey];
-                console.log("formation:", formation);
-                
+
                 if (!formation) {
-                    console.log("❌ formationがnull/undefined");
                     return null;
                 }
-                
-                console.log("slots:", formation.slots);
-                console.log("attendants:", formation.attendants);
-                
+
                 // 集計対象パラメータ
                 const targetParams = ['攻撃速度', '会心発生', '戦法速度'];
                 
@@ -1617,56 +1584,37 @@ const { useState, useEffect } = React;
                 
                 // 配置された武将の技能を集計（メイン武将 + 侍従武将）
                 Object.entries(formation.slots).forEach(([slotName, generalData]) => {
-                    console.log(`\n--- ${slotName} の処理 ---`);
-                    console.log("generalData:", generalData);
-                    
                     if (!generalData) return;
-                    
-                    // generalDataがオブジェクトの場合は.idを取得、数値の場合はそのまま使用
+
                     const generalId = typeof generalData === 'object' ? generalData.id : generalData;
-                    console.log("generalId (修正後):", generalId);
-                    
+
                     // メイン武将の技能を集計
                     const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
-                    console.log("見つかった武将:", general?.name, general?.rarity);
-                    console.log("武将の技能:", general?.skills);
-                    
+
                     if (general && general.skills) {
                         const starRank = getGeneralStarRank(general);
-                        console.log(`  将星ランク: ★${starRank}`);
-                        
+
                         Object.entries(general.skills).forEach(([slot, skill]) => {
-                            console.log(`  技能${slot}:`, skill.name);
                             collectSkillLevel(skill, general, starRank, skillLevels);
                         });
                     }
-                    
+
                     // 侍従武将の技能を集計（メイン武将の技能として扱う）
                     const attendantData = formation.attendants?.[slotName];
-                    console.log("attendantData:", attendantData);
-                    
+
                     if (attendantData) {
-                        // attendantDataがオブジェクトの場合は.idを取得、数値の場合はそのまま使用
                         const attendantId = typeof attendantData === 'object' ? attendantData.id : attendantData;
-                        console.log("attendantId (修正後):", attendantId);
                         const attendant = EMBEDDED_GENERALS_DATA.find(g => g.id === attendantId);
-                        console.log("見つかった侍従:", attendant?.name, attendant?.rarity);
-                        console.log("侍従の技能:", attendant?.skills);
-                        
+
                         if (attendant && attendant.skills) {
                             const attendantStarRank = getGeneralStarRank(attendant);
-                            console.log(`  侍従将星ランク: ★${attendantStarRank}`);
-                            
+
                             Object.entries(attendant.skills).forEach(([slot, skill]) => {
-                                console.log(`  侍従技能${slot}:`, skill.name);
                                 collectSkillLevel(skill, attendant, attendantStarRank, skillLevels);
                             });
                         }
                     }
                 });
-                
-                console.log("\n=== 技能レベル集計結果 ===");
-                console.log(skillLevels);
                 
                 // 技能レベルから効果値を計算
                 const results = {};
@@ -1676,10 +1624,6 @@ const { useState, useEffect } = React;
                     calculateSkillEffect(skillName, totalLevel, results, targetParams);
                 }
                 
-                console.log("\n=== 最終集計結果 ===");
-                console.log(results);
-                console.log("=== デバッグ終了 ===\n");
-                
                 return results;
             };
             
@@ -1687,13 +1631,10 @@ const { useState, useEffect } = React;
             const collectSkillLevel = (skill, general, starRank, skillLevels) => {
                 const skillName = skill.name;
                 const skillType = skill.type;
-                
-                console.log(`    → ${skillName} (type: ${skillType}) のレベル集計中`);
-                console.log(`    将星ランク: ★${starRank}`);
-                
+
                 // 技能レベルを計算
                 let skillLevel = 1;
-                
+
                 if (skillType === "fixed") {
                     skillLevel = 1;
                 } else if (skillType === "levelup") {
@@ -1702,43 +1643,32 @@ const { useState, useEffect } = React;
                 } else if (skillType === "unlock") {
                     const unlockRank = skill.unlock_rank || 999;
                     if (starRank < unlockRank) {
-                        console.log(`    ⏭️ 未解放技能のためスキップ (要★${unlockRank})`);
                         return;
                     }
                     skillLevel = 1;
                 } else if (skillType === "lr_inherit") {
                     skillLevel = 1;
                 }
-                
-                console.log(`    計算された技能レベル: ${skillLevel}`);
-                
+
                 // 技能名ごとにレベルを加算
                 if (!skillLevels[skillName]) {
                     skillLevels[skillName] = 0;
                 }
                 skillLevels[skillName] += skillLevel;
-                
-                console.log(`    ${skillName}の累計レベル: ${skillLevels[skillName]}`);
             };
             
             // 技能レベルから効果値を計算するヘルパー関数
             const calculateSkillEffect = (skillName, totalLevel, results, targetParams) => {
-                console.log(`\n  --- ${skillName} (累計レベル${totalLevel}) の効果計算 ---`);
-                
                 // 技能効果データを取得
                 if (!SKILL_EFFECTS_DATA[skillName]) {
-                    console.log(`  ⚠️ ${skillName}の効果データなし`);
                     return;
                 }
-                
+
                 const skillEffect = SKILL_EFFECTS_DATA[skillName];
                 const paramType = skillEffect.parameter;
-                
-                console.log(`  パラメータ: ${paramType}`);
-                
+
                 // 対象パラメータでない場合はスキップ
                 if (!targetParams.includes(paramType)) {
-                    console.log(`  ⏭️ 対象外パラメータのためスキップ`);
                     return;
                 }
                 
@@ -1747,13 +1677,9 @@ const { useState, useEffect } = React;
                 const levelMap = {1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ'};
                 const levelKey = levelMap[effectiveLevel];
                 const effectValue = skillEffect.effects[levelKey];
-                
-                console.log(`  有効レベル: ${effectiveLevel} (${levelKey})`);
-                console.log(`  効果値: ${effectValue}`);
-                
+
                 if (effectValue) {
                     results[paramType] += effectValue;
-                    console.log(`  ✅ ${paramType}に+${effectValue}を加算 (合計: ${results[paramType]})`);
                 }
             };
             
@@ -3623,7 +3549,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title={showContextHelp ? 'ヘルプボタンを非表示' : 'ヘルプボタンを表示'}
                             >
-                                {showContextHelp ? '💡ON' : '💡OFF'}
+                                {showContextHelp ? '💡' : '💡'}
                             </button>
                             <button
                                 onClick={() => setShowImages(!showImages)}
@@ -3639,7 +3565,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title={showImages ? '画像を非表示' : '画像を表示'}
                             >
-                                {showImages ? '🖼️ON' : '🖼️OFF'}
+                                {showImages ? '🖼️' : '🖼️'}
                             </button>
                             <button
                                 className={`tab-button ${viewMode === 'formation' ? 'active' : ''}`}
@@ -3672,7 +3598,7 @@ const { useState, useEffect } = React;
                                 }
                             }}
                         >
-                            📋 詳細を見る
+                            詳細を見る
                         </button>
                     </div>
                     
@@ -3859,7 +3785,7 @@ const { useState, useEffect } = React;
                                                         onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
-                                                        💾 この編制をエクスポート
+                                                        この編制をエクスポート
                                                     </button>
                                                     
                                                     <button
@@ -3956,7 +3882,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title={currentProfile !== 0 ? `${profileNames[0]}の編制${activePattern + 1}をコピー` : 'プロファイル1では使用できません'}
                                     >
-                                        📋 {profileNames[0]}からコピー
+                                        {profileNames[0]}からコピー
                                     </button>
                                     
                                     {profileNames.map((name, index) => (
@@ -4008,7 +3934,7 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{background: '#4285f4', color: '#fff', fontWeight: 'bold'}}
                                     >
-                                        ☁️ Google Drive連携
+                                        Google Drive連携
                                     </button>
                                     
                                     <div className="reset-dropdown-separator"></div>
@@ -4207,7 +4133,7 @@ const { useState, useEffect } = React;
                                             }}
                                             title="この部隊をテンプレートとして保存"
                                         >
-                                            💾保存
+                                            保存
                                         </button>
                                         <button
                                             onClick={() => loadFormationTemplate(key)}
@@ -4335,7 +4261,7 @@ const { useState, useEffect } = React;
                                                     borderBottom: '1px solid rgba(212, 175, 55, 0.3)',
                                                     paddingBottom: '4px'
                                                 }}>
-                                                    ⚔️ 技能効果
+                                                    技能効果
                                                 </div>
                                                 <div style={{display: 'flex', gap: '24px', flexWrap: 'wrap'}}>
                                                     {['攻撃速度', '会心発生', '戦法速度'].map(param => {
@@ -5775,7 +5701,7 @@ const { useState, useEffect } = React;
                                 width: '90%'
                             }}>
                                 <h2 style={{color: '#4285f4', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px'}}>
-                                    ☁️ Google Drive連携
+                                    Google Drive連携
                                 </h2>
                                 
                                 <div style={{marginBottom: '24px', color: '#ccc', lineHeight: '1.8'}}>
@@ -5783,17 +5709,17 @@ const { useState, useEffect } = React;
                                         Google Driveを使ってデータを同期できます。
                                     </p>
                                     
-                                    <h3 style={{color: '#d4af37', fontSize: '16px', marginBottom: '12px'}}>📝 使い方</h3>
+                                    <h3 style={{color: '#d4af37', fontSize: '16px', marginBottom: '12px'}}>使い方</h3>
                                     
                                     <div style={{background: '#0f1419', padding: '16px', borderRadius: '8px', marginBottom: '16px'}}>
-                                        <p style={{marginBottom: '12px', fontWeight: 'bold', color: '#4285f4'}}>1️⃣ データを保存（家のPC）</p>
+                                        <p style={{marginBottom: '12px', fontWeight: 'bold', color: '#4285f4'}}>1. データを保存（家のPC）</p>
                                         <p style={{marginBottom: '8px', paddingLeft: '20px'}}>
                                             ① 「Google Driveへ保存」をクリック<br/>
                                             ② ダウンロードされたファイル「hadou-formation-sync.json」をGoogle Driveにアップロード<br/>
                                             　（推奨：「hadou-formation」フォルダを作成）
                                         </p>
                                         
-                                        <p style={{marginBottom: '12px', marginTop: '16px', fontWeight: 'bold', color: '#4285f4'}}>2️⃣ データを読み込み（職場のPC）</p>
+                                        <p style={{marginBottom: '12px', marginTop: '16px', fontWeight: 'bold', color: '#4285f4'}}>2. データを読み込み（職場のPC）</p>
                                         <p style={{paddingLeft: '20px'}}>
                                             ① Google Driveから「hadou-formation-sync.json」をダウンロード<br/>
                                             ② 「Google Driveから読み込み」をクリック<br/>
@@ -5825,7 +5751,7 @@ const { useState, useEffect } = React;
                                             fontWeight: 'bold'
                                         }}
                                     >
-                                        ⬆️ Google Driveへ保存
+                                        Google Driveへ保存
                                     </button>
                                     <button
                                         onClick={() => {
@@ -5843,7 +5769,7 @@ const { useState, useEffect } = React;
                                             fontWeight: 'bold'
                                         }}
                                     >
-                                        ⬇️ Google Driveから読み込み
+                                        Google Driveから読み込み
                                     </button>
                                 </div>
                                 
@@ -6246,7 +6172,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            💾 保存
+                                            保存
                                         </button>
                                         <button
                                             onClick={() => {
@@ -6632,7 +6558,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            💾 保存
+                                            保存
                                         </button>
                                         <button
                                             onClick={() => {
@@ -6877,7 +6803,7 @@ const { useState, useEffect } = React;
                                     {contextHelpType === 'general' && '🎯 武将の配置方法'}
                                     {contextHelpType === 'treasure' && '💎 名宝の配置方法'}
                                     {contextHelpType === 'pattern' && '📁 編制パターンの使い方'}
-                                    {contextHelpType === 'template' && '💾 テンプレートの使い方'}
+                                    {contextHelpType === 'template' && 'テンプレートの使い方'}
                                 </h3>
                                 <button
                                     onClick={() => setContextHelpType(null)}
@@ -6964,8 +6890,8 @@ const { useState, useEffect } = React;
                             {contextHelpType === 'template' && (
                                 <div style={{lineHeight: '1.8', fontSize: '14px'}}>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>💾 保存</p>
-                                        <p style={{margin: '4px 0'}}>部隊の[💾保存]ボタンで現在の構成をテンプレートとして保存</p>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>保存</p>
+                                        <p style={{margin: '4px 0'}}>部隊の[保存]ボタンで現在の構成をテンプレートとして保存</p>
                                     </div>
                                     <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                         <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>📂 呼出</p>
@@ -7028,7 +6954,7 @@ const { useState, useEffect } = React;
                             </div>
                             
                             <div style={{lineHeight: '1.8'}}>
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px'}}>🖱️ 基本操作</h3>
+                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px'}}>基本操作</h3>
                                 
                                 <h4 style={{color: '#ffd700', marginTop: '16px'}}>武将・名宝の配置</h4>
                                 <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
@@ -7054,7 +6980,7 @@ const { useState, useEffect } = React;
                                     <p style={{margin: '4px 0', color: '#ff6b6b'}}><strong>注意:</strong> 同じ名宝は1つの部隊にしか配置できません</p>
                                 </div>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>📋 基本機能</h3>
+                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>基本機能</h3>
                                 
                                 <h4 style={{color: '#ffd700', marginTop: '16px'}}>🎯 編成画面</h4>
                                 <p><strong>部隊タブ:</strong> 主城部隊(6)、分城部隊(3)、出城部隊(3)の合計12部隊を管理</p>
@@ -7081,8 +7007,8 @@ const { useState, useEffect } = React;
                                     <li><strong>この編制をリセット:</strong> 全12部隊をクリア</li>
                                 </ul>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>💾 部隊テンプレート機能</h4>
-                                <p><strong>[💾保存]ボタン:</strong> 現在の部隊構成をテンプレートとして保存</p>
+                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>部隊テンプレート機能</h4>
+                                <p><strong>[保存]ボタン:</strong> 現在の部隊構成をテンプレートとして保存</p>
                                 <p><strong>[📂呼出]ボタン:</strong> 保存したテンプレートを別の部隊に呼び出し</p>
                                 <p><strong>上書き設定:</strong></p>
                                 <ul style={{marginLeft: '20px'}}>
@@ -7108,7 +7034,7 @@ const { useState, useEffect } = React;
                                     <li><strong>★お気に入り:</strong> お気に入り登録した名宝のみ表示</li>
                                 </ul>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>💡 ヒント</h3>
+                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>ヒント</h3>
                                 <ul style={{marginLeft: '20px', lineHeight: '1.8'}}>
                                     <li><strong>データ保存:</strong> すべてのデータはブラウザに自動保存されます（localStorage使用）</li>
                                     <li><strong>重複チェック:</strong> 同じ武将・名宝を複数の部隊に配置しようとすると警告が表示されます</li>
@@ -7130,7 +7056,7 @@ const { useState, useEffect } = React;
                 <div id="update-history-modal" className="modal" style={{display: 'none'}}>
                     <div className="modal-content history-modal-content">
                         <div className="modal-header">
-                            <h2>📋 更新履歴</h2>
+                            <h2>更新履歴</h2>
                             <button 
                                 className="modal-close" 
                                 onClick={() => {
