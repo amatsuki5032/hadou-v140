@@ -1093,12 +1093,12 @@ const { useState, useEffect } = React;
             
             // 勢力タグ定義（相性値の中心±10）
             const FACTION_TAGS = [
-                { name: '董卓', center: 0, color: '#5a3a2a' },
-                { name: '張角', center: 7, color: '#4a5a6a' },
-                { name: '魏', center: 25, color: '#1e56a0' },
-                { name: '蜀', center: 75, color: '#27ae60' },
+                { name: '董卓', center: 0, color: 'var(--bordeaux-border)' },
+                { name: '張角', center: 7, color: 'var(--text-muted)' },
+                { name: '魏', center: 25, color: 'var(--accent-hover)' },
+                { name: '蜀', center: 75, color: 'var(--success)' },
                 { name: '袁紹', center: 101, color: '#f39c12' },
-                { name: '呉', center: 125, color: '#e74c3c' },
+                { name: '呉', center: 125, color: 'var(--danger)' },
                 { name: '呂布', center: 145, color: '#9b59b6' }
             ];
             
@@ -3487,10 +3487,10 @@ const { useState, useEffect } = React;
                                 onClick={exportData}
                                 style={{
                                     padding: '8px 16px',
-                                    background: '#16a085',
-                                    border: '1px solid #1abc9c',
+                                    background: 'var(--success)',
+                                    border: '1px solid var(--success)',
                                     borderRadius: '4px',
-                                    color: '#fff',
+                                    color: 'var(--text-primary)',
                                     cursor: 'pointer',
                                     fontSize: '12px',
                                     fontWeight: 'bold'
@@ -3502,10 +3502,10 @@ const { useState, useEffect } = React;
                             <label
                                 style={{
                                     padding: '8px 16px',
-                                    background: '#8e44ad',
-                                    border: '1px solid #9b59b6',
+                                    background: 'var(--accent)',
+                                    border: '1px solid var(--accent)',
                                     borderRadius: '4px',
-                                    color: '#fff',
+                                    color: 'var(--text-primary)',
                                     cursor: 'pointer',
                                     fontSize: '12px',
                                     fontWeight: 'bold'
@@ -3524,10 +3524,10 @@ const { useState, useEffect } = React;
                                 onClick={() => setShowHelpModal(true)}
                                 style={{
                                     padding: '8px 16px',
-                                    background: '#2980b9',
-                                    border: '1px solid #3498db',
+                                    background: 'var(--accent)',
+                                    border: '1px solid var(--accent)',
                                     borderRadius: '4px',
-                                    color: '#fff',
+                                    color: 'var(--text-primary)',
                                     cursor: 'pointer',
                                     fontSize: '12px',
                                     fontWeight: 'bold'
@@ -3540,10 +3540,10 @@ const { useState, useEffect } = React;
                                 onClick={() => setShowContextHelp(!showContextHelp)}
                                 style={{
                                     padding: '8px 12px',
-                                    background: showContextHelp ? '#27ae60' : '#7f8c8d',
-                                    border: `1px solid ${showContextHelp ? '#2ecc71' : '#95a5a6'}`,
+                                    background: showContextHelp ? 'var(--success)' : 'var(--text-muted)',
+                                    border: `1px solid ${showContextHelp ? 'var(--success)' : 'var(--text-muted)'}`,
                                     borderRadius: '4px',
-                                    color: '#fff',
+                                    color: 'var(--text-primary)',
                                     cursor: 'pointer',
                                     fontSize: '11px'
                                 }}
@@ -3555,10 +3555,10 @@ const { useState, useEffect } = React;
                                 onClick={() => setShowImages(!showImages)}
                                 style={{
                                     padding: '8px 12px',
-                                    background: showImages ? '#e67e22' : '#7f8c8d',
-                                    border: `1px solid ${showImages ? '#f39c12' : '#95a5a6'}`,
+                                    background: showImages ? '#e67e22' : 'var(--text-muted)',
+                                    border: `1px solid ${showImages ? '#f39c12' : 'var(--text-muted)'}`,
                                     borderRadius: '4px',
-                                    color: '#fff',
+                                    color: 'var(--text-primary)',
                                     cursor: 'pointer',
                                     fontSize: '11px',
                                     fontWeight: 'bold'
@@ -3605,7 +3605,7 @@ const { useState, useEffect } = React;
                     {viewMode === 'formation' ? (
                         <>
                             {/* 編制パターン選択タブ */}
-                            <div style={{padding: '12px 30px', background: '#1a1f2e', borderBottom: '1px solid #2a2a2a'}}>
+                            <div style={{padding: '12px 30px', background: 'var(--bg-card)', borderBottom: '1px solid var(--border-base)'}}>
                                 <div style={{display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'space-between'}}>
                                     <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
                                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(patternIndex => (
@@ -3614,10 +3614,10 @@ const { useState, useEffect } = React;
                                                     onClick={() => setActivePattern(patternIndex)}
                                                     style={{
                                                         padding: '8px 16px',
-                                                        background: activePattern === patternIndex ? '#2e7d32' : '#2a2a2a',
+                                                        background: activePattern === patternIndex ? 'var(--success-hover)' : 'var(--bg-elevated)',
                                                         border: activePattern === patternIndex ? '1px solid #4caf50' : '1px solid #3a3a3a',
                                                         borderRadius: '4px',
-                                                        color: '#fff',
+                                                        color: 'var(--text-primary)',
                                                         cursor: 'pointer',
                                                         fontWeight: activePattern === patternIndex ? 'bold' : 'normal',
                                                         fontSize: '13px',
@@ -3635,7 +3635,7 @@ const { useState, useEffect } = React;
                                                         style={{
                                                             background: 'none',
                                                             border: 'none',
-                                                            color: '#888',
+                                                            color: 'var(--text-muted)',
                                                             cursor: 'pointer',
                                                         padding: '0 4px',
                                                         fontSize: '14px'
@@ -3652,8 +3652,8 @@ const { useState, useEffect } = React;
                                                     top: '100%',
                                                     left: '0',
                                                     marginTop: '4px',
-                                                    background: '#1a1f2e',
-                                                    border: '1px solid #3a3a3a',
+                                                    background: 'var(--bg-card)',
+                                                    border: '1px solid var(--border-light)',
                                                     borderRadius: '4px',
                                                     boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
                                                     zIndex: 1000,
@@ -3666,13 +3666,13 @@ const { useState, useEffect } = React;
                                                             padding: '10px 16px',
                                                             background: 'none',
                                                             border: 'none',
-                                                            color: '#fff',
+                                                            color: 'var(--text-primary)',
                                                             textAlign: 'left',
                                                             cursor: 'pointer',
                                                             fontSize: '13px',
-                                                            borderBottom: '1px solid #2a2a2a'
+                                                            borderBottom: '1px solid var(--border-base)'
                                                         }}
-                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
                                                         編制名を変更
@@ -3690,16 +3690,16 @@ const { useState, useEffect } = React;
                                                                 padding: '10px 16px',
                                                                 background: 'none',
                                                                 border: 'none',
-                                                                color: '#fff',
+                                                                color: 'var(--text-primary)',
                                                                 textAlign: 'left',
                                                                 cursor: 'pointer',
                                                                 fontSize: '13px',
-                                                                borderBottom: '1px solid #2a2a2a',
+                                                                borderBottom: '1px solid var(--border-base)',
                                                                 display: 'flex',
                                                                 justifyContent: 'space-between',
                                                                 alignItems: 'center'
                                                             }}
-                                                            onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                            onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                             onMouseLeave={(e) => e.target.style.background = 'none'}
                                                         >
                                                             <span>他の編制からコピー</span>
@@ -3713,8 +3713,8 @@ const { useState, useEffect } = React;
                                                                 left: '100%',
                                                                 top: '0',
                                                                 marginLeft: '4px',
-                                                                background: '#1a1f2e',
-                                                                border: '1px solid #3a3a3a',
+                                                                background: 'var(--bg-card)',
+                                                                border: '1px solid var(--border-light)',
                                                                 borderRadius: '4px',
                                                                 boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
                                                                 minWidth: '120px',
@@ -3729,12 +3729,12 @@ const { useState, useEffect } = React;
                                                                             padding: '10px 16px',
                                                                             background: 'none',
                                                                             border: 'none',
-                                                                            color: '#fff',
+                                                                            color: 'var(--text-primary)',
                                                                             textAlign: 'left',
                                                                             cursor: 'pointer',
                                                                             fontSize: '13px'
                                                                         }}
-                                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                                     >
                                                                         {formationPatterns[sourceIndex]?.name || `編制${sourceIndex + 1}`}
@@ -3751,16 +3751,16 @@ const { useState, useEffect } = React;
                                                             padding: '10px 16px',
                                                             background: 'none',
                                                             border: 'none',
-                                                            color: formationPatterns[patternIndex]?.allowDuplicates ? '#4caf50' : '#fff',
+                                                            color: formationPatterns[patternIndex]?.allowDuplicates ? 'var(--success)' : 'var(--text-primary)',
                                                             textAlign: 'left',
                                                             cursor: 'pointer',
                                                             fontSize: '13px',
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             gap: '8px',
-                                                            borderBottom: '1px solid #2a2a2a'
+                                                            borderBottom: '1px solid var(--border-base)'
                                                         }}
-                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
                                                         <span>{formationPatterns[patternIndex]?.allowDuplicates ? '✓' : '□'}</span>
@@ -3777,12 +3777,12 @@ const { useState, useEffect } = React;
                                                             padding: '10px 16px',
                                                             background: 'none',
                                                             border: 'none',
-                                                            color: '#3498db',
+                                                            color: 'var(--accent)',
                                                             textAlign: 'left',
                                                             cursor: 'pointer',
                                                             fontSize: '13px'
                                                         }}
-                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
                                                         この編制をエクスポート
@@ -3802,9 +3802,9 @@ const { useState, useEffect } = React;
                                                             textAlign: 'left',
                                                             cursor: 'pointer',
                                                             fontSize: '13px',
-                                                            borderBottom: '1px solid #2a2a2a'
+                                                            borderBottom: '1px solid var(--border-base)'
                                                         }}
-                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
                                                         📂 編制をインポート
@@ -3817,12 +3817,12 @@ const { useState, useEffect } = React;
                                                             padding: '10px 16px',
                                                             background: 'none',
                                                             border: 'none',
-                                                            color: '#e74c3c',
+                                                            color: 'var(--danger)',
                                                             textAlign: 'left',
                                                             cursor: 'pointer',
                                                             fontSize: '13px'
                                                         }}
-                                                        onMouseEnter={(e) => e.target.style.background = '#2a2a2a'}
+                                                        onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
                                                         この編制をリセット
@@ -3837,10 +3837,10 @@ const { useState, useEffect } = React;
                                         <button
                                             onClick={() => setContextHelpType('pattern')}
                                             style={{
-                                                background: '#3498db',
+                                                background: 'var(--accent)',
                                                 border: 'none',
                                                 borderRadius: '50%',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '12px',
                                                 width: '24px',
@@ -3857,9 +3857,9 @@ const { useState, useEffect } = React;
                             </div>
                             
                             {/* プロファイル選択（編制画面） */}
-                            <div style={{padding: '12px 30px', background: '#0f1419', borderBottom: '1px solid #2a2a2a'}}>
+                            <div style={{padding: '12px 30px', background: 'var(--bg-base)', borderBottom: '1px solid var(--border-base)'}}>
                                 <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
-                                    <span style={{color: '#888', fontSize: '12px', marginRight: '8px'}}>プロファイル:</span>
+                                    <span style={{color: 'var(--text-muted)', fontSize: '12px', marginRight: '8px'}}>プロファイル:</span>
                                     
                                     {/* プロファイル1からコピーボタン */}
                                     <button
@@ -3867,10 +3867,10 @@ const { useState, useEffect } = React;
                                         disabled={currentProfile === 0}
                                         style={{
                                             padding: '6px 12px',
-                                            background: currentProfile !== 0 ? '#4caf50' : '#555',
+                                            background: currentProfile !== 0 ? 'var(--success)' : 'var(--text-muted)',
                                             border: currentProfile !== 0 ? '2px solid #66bb6a' : '2px solid #444',
                                             borderRadius: '4px',
-                                            color: currentProfile !== 0 ? '#fff' : '#888',
+                                            color: currentProfile !== 0 ? 'var(--text-primary)' : 'var(--text-muted)',
                                             cursor: currentProfile !== 0 ? 'pointer' : 'not-allowed',
                                             fontSize: '11px',
                                             fontWeight: 'bold',
@@ -3891,9 +3891,9 @@ const { useState, useEffect } = React;
                                             onClick={() => setCurrentProfile(index)}
                                             style={{
                                                 padding: '6px 12px',
-                                                background: currentProfile === index ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)' : '#2a2a2a',
+                                                background: currentProfile === index ? 'var(--accent)' : 'var(--bg-elevated)',
                                                 border: currentProfile === index ? '2px solid #d4af37' : '2px solid #3a3a3a',
-                                                color: currentProfile === index ? '#000' : '#fff',
+                                                color: currentProfile === index ? 'var(--text-primary)' : 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: currentProfile === index ? 'bold' : 'normal',
                                                 fontSize: '11px'
@@ -3932,7 +3932,7 @@ const { useState, useEffect } = React;
                                             setShowGDriveSetup(true);
                                             setShowResetMenu(false);
                                         }}
-                                        style={{background: '#4285f4', color: '#fff', fontWeight: 'bold'}}
+                                        style={{background: 'var(--accent)', color: 'var(--text-primary)', fontWeight: 'bold'}}
                                     >
                                         Google Drive連携
                                     </button>
@@ -3945,7 +3945,7 @@ const { useState, useEffect } = React;
                                             exportAllData();
                                             setShowResetMenu(false);
                                         }}
-                                        style={{background: '#27ae60', color: '#fff'}}
+                                        style={{background: 'var(--success)', color: 'var(--text-primary)'}}
                                     >
                                         📥 全データをエクスポート
                                     </button>
@@ -3955,7 +3955,7 @@ const { useState, useEffect } = React;
                                             importAllData();
                                             setShowResetMenu(false);
                                         }}
-                                        style={{background: '#2980b9', color: '#fff'}}
+                                        style={{background: 'var(--accent)', color: 'var(--text-primary)'}}
                                     >
                                         📤 全データをインポート
                                     </button>
@@ -4047,10 +4047,10 @@ const { useState, useEffect } = React;
                             disabled={!undoHistory}
                             style={{
                                 padding: '8px 16px',
-                                background: undoHistory ? '#3498db' : '#555',
-                                border: '1px solid ' + (undoHistory ? '#2980b9' : '#444'),
+                                background: undoHistory ? 'var(--accent)' : 'var(--text-muted)',
+                                border: '1px solid ' + (undoHistory ? 'var(--accent)' : 'var(--text-muted)'),
                                 borderRadius: '4px',
-                                color: '#fff',
+                                color: 'var(--text-primary)',
                                 cursor: undoHistory ? 'pointer' : 'not-allowed',
                                 fontSize: '13px',
                                 fontWeight: 'bold',
@@ -4086,8 +4086,8 @@ const { useState, useEffect } = React;
                                                     height: '24px',
                                                     border: recommendTargetFormation === key ? '2px solid #ffd700' : '2px solid #666',
                                                     borderRadius: '50%',
-                                                    background: recommendTargetFormation === key ? '#ffd700' : 'transparent',
-                                                    color: recommendTargetFormation === key ? '#0a0e1a' : '#666',
+                                                    background: recommendTargetFormation === key ? 'var(--rank-color)' : 'transparent',
+                                                    color: recommendTargetFormation === key ? 'var(--bg-base)' : 'var(--text-muted)',
                                                     cursor: 'pointer',
                                                     display: 'inline-flex',
                                                     alignItems: 'center',
@@ -4107,11 +4107,11 @@ const { useState, useEffect } = React;
                                                 {data.slots?.['主将'] && (
                                                     <div style={{
                                                         fontSize: '11px', 
-                                                        color: '#ffd700',
+                                                        color: 'var(--text-primary)',
                                                         padding: '2px 6px',
-                                                        background: 'rgba(255, 215, 0, 0.1)',
+                                                        background: 'rgba(37, 99, 235, 0.08)',
                                                         borderRadius: '3px',
-                                                        border: '1px solid rgba(255, 215, 0, 0.3)'
+                                                        border: '1px solid rgba(37, 99, 235, 0.15)'
                                                     }}>
                                                         {getUnitTypeName(data.slots['主将'].unit_type)}
                                                     </div>
@@ -4122,10 +4122,10 @@ const { useState, useEffect } = React;
                                             onClick={() => saveFormationTemplate(key)}
                                             style={{
                                                 padding: '4px 12px',
-                                                background: '#27ae60',
-                                                border: '1px solid #2ecc71',
+                                                background: 'var(--success)',
+                                                border: '1px solid var(--success)',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '11px',
                                                 fontWeight: 'bold',
@@ -4139,10 +4139,10 @@ const { useState, useEffect } = React;
                                             onClick={() => loadFormationTemplate(key)}
                                             style={{
                                                 padding: '4px 12px',
-                                                background: '#2980b9',
-                                                border: '1px solid #3498db',
+                                                background: 'var(--accent)',
+                                                border: '1px solid var(--accent)',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '11px',
                                                 fontWeight: 'bold',
@@ -4156,10 +4156,10 @@ const { useState, useEffect } = React;
                                             onClick={() => resetFormation(key)}
                                             style={{
                                                 padding: '4px 12px',
-                                                background: '#c0392b',
-                                                border: '1px solid #e74c3c',
+                                                background: 'var(--danger)',
+                                                border: '1px solid var(--danger)',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '11px',
                                                 fontWeight: 'bold',
@@ -4173,10 +4173,10 @@ const { useState, useEffect } = React;
                                             onClick={() => setShowSkillEffects(prev => ({...prev, [key]: !prev[key]}))}
                                             style={{
                                                 padding: '4px 12px',
-                                                background: showSkillEffects[key] ? '#27ae60' : '#34495e',
-                                                border: `1px solid ${showSkillEffects[key] ? '#2ecc71' : '#7f8c8d'}`,
+                                                background: showSkillEffects[key] ? 'var(--success)' : 'var(--bg-elevated)',
+                                                border: `1px solid ${showSkillEffects[key] ? 'var(--success)' : 'var(--text-muted)'}`,
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '11px',
                                                 fontWeight: 'bold',
@@ -4211,8 +4211,8 @@ const { useState, useEffect } = React;
                                     {/* コメント入力欄 */}
                                     <div style={{
                                         padding: '8px 12px',
-                                        borderBottom: '1px solid #2a2a2a',
-                                        background: '#151820'
+                                        borderBottom: '1px solid var(--border-base)',
+                                        background: 'var(--bg-base)'
                                     }}>
                                         <input
                                             type="text"
@@ -4230,10 +4230,10 @@ const { useState, useEffect } = React;
                                             style={{
                                                 width: '100%',
                                                 padding: '6px 10px',
-                                                background: '#0a0e1a',
-                                                border: '1px solid #2a2a2a',
+                                                background: 'var(--bg-base)',
+                                                border: '1px solid var(--border-base)',
                                                 borderRadius: '4px',
-                                                color: '#e8e6e3',
+                                                color: 'var(--text-body)',
                                                 fontSize: '12px',
                                                 fontFamily: 'inherit'
                                             }}
@@ -4247,18 +4247,18 @@ const { useState, useEffect } = React;
                                         return (
                                             <div style={{
                                                 padding: '12px',
-                                                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                                                background: 'var(--bg-card)',
                                                 borderRadius: '8px',
                                                 marginBottom: '16px',
-                                                border: '2px solid #3498db',
+                                                border: '2px solid var(--accent)',
                                                 boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
                                             }}>
                                                 <div style={{
                                                     fontSize: '14px',
                                                     fontWeight: 'bold',
-                                                    color: '#d4af37',
+                                                    color: 'var(--text-primary)',
                                                     marginBottom: '8px',
-                                                    borderBottom: '1px solid rgba(212, 175, 55, 0.3)',
+                                                    borderBottom: '1px solid rgba(37, 99, 235, 0.15)',
                                                     paddingBottom: '4px'
                                                 }}>
                                                     技能効果
@@ -4274,13 +4274,13 @@ const { useState, useEffect } = React;
                                                                 gap: '8px'
                                                             }}>
                                                                 <span style={{
-                                                                    color: '#95a5a6',
+                                                                    color: 'var(--text-muted)',
                                                                     fontSize: '13px'
                                                                 }}>
                                                                     {param}:
                                                                 </span>
                                                                 <span style={{
-                                                                    color: '#2ecc71',
+                                                                    color: 'var(--success)',
                                                                     fontSize: '16px',
                                                                     fontWeight: 'bold'
                                                                 }}>
@@ -4292,7 +4292,7 @@ const { useState, useEffect } = React;
                                                 </div>
                                                 {Object.values(effects).every(v => v === 0) && (
                                                     <div style={{
-                                                        color: '#95a5a6',
+                                                        color: 'var(--text-muted)',
                                                         fontSize: '13px',
                                                         fontStyle: 'italic'
                                                     }}>
@@ -4350,13 +4350,13 @@ const { useState, useEffect } = React;
                                                                 <div
                                                                     key={`${rowIndex}-${colIndex}`}
                                                                     style={{
-                                                                        border: cell === 1 ? '2px solid #d4af37' : (hasAttendantSlot ? '2px solid #6495ed' : '1px solid #333'),
-                                                                        background: cell === 1 ? '#1a1f2e' : (hasAttendantSlot ? '#1a1a2e' : '#0a0e14'),
+                                                                        border: cell === 1 ? '2px solid #d4af37' : (hasAttendantSlot ? '2px solid #6495ed' : '1px solid var(--border-light)'),
+                                                                        background: cell === 1 ? 'var(--bg-card)' : (hasAttendantSlot ? 'var(--bg-card)' : 'var(--bg-base)'),
                                                                         display: 'flex',
                                                                         alignItems: 'center',
                                                                         justifyContent: 'center',
                                                                         fontSize: '10px',
-                                                                        color: general ? affinityColor : (hasAttendantSlot ? '#6495ed' : '#555'),
+                                                                        color: general ? affinityColor : (hasAttendantSlot ? '#6495ed' : 'var(--text-muted)'),
                                                                         fontWeight: general || attendant ? 'bold' : 'normal',
                                                                         padding: '2px',
                                                                         textAlign: 'center',
@@ -4387,7 +4387,7 @@ const { useState, useEffect } = React;
                                                                                 />
                                                                             ) : (
                                                                                 <>
-                                                                                    <div style={{fontSize: '7px', color: '#888'}}>侍</div>
+                                                                                    <div style={{fontSize: '7px', color: 'var(--text-muted)'}}>侍</div>
                                                                                     <div style={{fontSize: '6px', color: rarityColor, opacity: 0.8}}>{attendant.rarity}</div>
                                                                                     <div style={{color: affinityColor}}>{attendant.name.substring(0, 2)}</div>
                                                                                 </>
@@ -4507,7 +4507,7 @@ const { useState, useEffect } = React;
                                                                     rarity={data.slots[slotName].rarity}
                                                                 />
                                                                 <div style={{flex: 1}}>
-                                                                    <div className="slot-general-name" style={{color: '#ffffff'}}>
+                                                                    <div className="slot-general-name" style={{color: 'var(--text-primary)'}}>
                                                                         {data.slots[slotName].name}
                                                                     </div>
                                                                     <div className="slot-general-details">
@@ -4571,7 +4571,7 @@ const { useState, useEffect } = React;
                                                                 />
                                                             ) : (
                                                                 <div style={{width: '100%'}}>
-                                                                    <div style={{fontSize: '11px', color: '#ffffff', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                                                                    <div style={{fontSize: '11px', color: 'var(--text-primary)', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                                                                         {data.attendants[slotName].name}
                                                                     </div>
                                                                     <div style={{fontSize: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
@@ -4637,7 +4637,7 @@ const { useState, useEffect } = React;
                                                                         <div 
                                                                             className="treasure-name-mini"
                                                                             style={{
-                                                                                color: isTreasureUR(equippedTreasure.id) ? '#ff6b6b' : '#e8e6e3',
+                                                                                color: isTreasureUR(equippedTreasure.id) ? 'var(--rarity-ur)' : 'var(--text-body)',
                                                                                 marginTop: '2px'
                                                                             }}
                                                                         >
@@ -4659,16 +4659,16 @@ const { useState, useEffect } = React;
                                         <div className="advisor-section" style={{
                                             marginTop: '12px',
                                             padding: '8px',
-                                            background: '#1a1f2e',
+                                            background: 'var(--bg-card)',
                                             borderRadius: '4px',
-                                            border: '1px solid #2a2a2a'
+                                            border: '1px solid var(--border-base)'
                                         }}>
                                             <div style={{
                                                 fontSize: '12px',
                                                 fontWeight: 'bold',
-                                                color: '#d4af37',
+                                                color: 'var(--text-primary)',
                                                 marginBottom: '8px',
-                                                borderBottom: '1px solid #2a2a2a',
+                                                borderBottom: '1px solid var(--border-base)',
                                                 paddingBottom: '4px'
                                             }}>
                                                 参軍配置
@@ -4680,9 +4680,9 @@ const { useState, useEffect } = React;
                                                 alignItems: 'center'
                                             }}>
                                                 {[
-                                                    { key: 'leadership', label: '統率', color: '#e74c3c' },
+                                                    { key: 'leadership', label: '統率', color: 'var(--danger)' },
                                                     { key: 'attack', label: '武力', color: '#e67e22' },
-                                                    { key: 'intelligence', label: '知力', color: '#3498db' },
+                                                    { key: 'intelligence', label: '知力', color: 'var(--accent)' },
                                                     { key: 'politics', label: '政治', color: '#9b59b6' },
                                                     { key: 'charm', label: '魅力', color: '#1abc9c' }
                                                 ].map(advisor => {
@@ -4716,8 +4716,8 @@ const { useState, useEffect } = React;
                                                                 }}
                                                                 style={{
                                                                     padding: '4px',
-                                                                    background: advisorGeneral ? 'rgba(52, 152, 219, 0.1)' : '#0a0e14',
-                                                                    border: `1px solid ${advisorGeneral ? advisor.color : '#333'}`,
+                                                                    background: advisorGeneral ? 'rgba(37, 99, 235, 0.08)' : 'var(--bg-base)',
+                                                                    border: `1px solid ${advisorGeneral ? advisor.color : 'var(--bg-elevated)'}`,
                                                                     borderRadius: '3px',
                                                                     minHeight: '52px',
                                                                     display: 'flex',
@@ -4764,7 +4764,7 @@ const { useState, useEffect } = React;
                                                                         ) : (
                                                                             <div style={{width: '100%', fontSize: '10px'}}>
                                                                                 <div style={{
-                                                                                    color: '#ffffff',
+                                                                                    color: 'var(--text-primary)',
                                                                                     fontWeight: 'bold',
                                                                                     fontSize: '11px',
                                                                                     whiteSpace: 'nowrap',
@@ -4795,7 +4795,7 @@ const { useState, useEffect } = React;
                                                                     </>
                                                                 ) : (
                                                                     <div style={{
-                                                                        color: '#555',
+                                                                        color: 'var(--text-muted)',
                                                                         fontSize: '10px',
                                                                         textAlign: 'center',
                                                                         width: '100%'
@@ -4877,7 +4877,7 @@ const { useState, useEffect } = React;
                                             padding: '2px 6px',
                                             background: 'transparent',
                                             border: 'none',
-                                            color: '#d4af37',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: 'bold'
@@ -4890,10 +4890,10 @@ const { useState, useEffect } = React;
                                         <button
                                             onClick={() => setContextHelpType('general')}
                                             style={{
-                                                background: '#3498db',
+                                                background: 'var(--accent)',
                                                 border: 'none',
                                                 borderRadius: '50%',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '10px',
                                                 width: '18px',
@@ -4913,10 +4913,10 @@ const { useState, useEffect } = React;
                                         onClick={() => setGeneralsSortOrder(prev => prev === 'unit_type' ? 'affinity' : 'unit_type')}
                                         style={{
                                             padding: '4px 8px',
-                                            background: generalsSortOrder === 'affinity' ? '#27ae60' : '#2c3e50',
-                                            border: '1px solid ' + (generalsSortOrder === 'affinity' ? '#2ecc71' : '#34495e'),
+                                            background: generalsSortOrder === 'affinity' ? 'var(--success)' : 'var(--bg-elevated)',
+                                            border: '1px solid ' + (generalsSortOrder === 'affinity' ? 'var(--success)' : 'var(--bg-elevated)'),
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '10px',
                                             fontWeight: 'bold'
@@ -4930,10 +4930,10 @@ const { useState, useEffect } = React;
                                             onClick={() => setAffinitySortDirection(prev => prev === 'desc' ? 'asc' : 'desc')}
                                             style={{
                                                 padding: '4px 8px',
-                                                background: '#8e44ad',
-                                                border: '1px solid #9b59b6',
+                                                background: 'var(--accent)',
+                                                border: '1px solid var(--accent)',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '10px',
                                                 fontWeight: 'bold'
@@ -4953,10 +4953,10 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{
                                             padding: '4px 8px',
-                                            background: '#c0392b',
-                                            border: '1px solid #e74c3c',
+                                            background: 'var(--danger)',
+                                            border: '1px solid var(--danger)',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '10px',
                                             fontWeight: 'bold'
@@ -5013,7 +5013,7 @@ const { useState, useEffect } = React;
                                                 className={`filter-chip ${factionFilter.includes(faction.name) ? 'active' : ''}`}
                                                 onClick={() => toggleFilter('faction', faction.name)}
                                                 style={{
-                                                    background: factionFilter.includes(faction.name) ? faction.color : '#2a2a2a',
+                                                    background: factionFilter.includes(faction.name) ? faction.color : 'var(--bg-elevated)',
                                                     borderColor: faction.color
                                                 }}
                                             >
@@ -5024,9 +5024,9 @@ const { useState, useEffect } = React;
                                             className={`filter-chip ${showOnlyFavorites ? 'active' : ''}`}
                                             onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
                                             style={{
-                                                background: showOnlyFavorites ? '#ffd700' : '#2a2a2a',
-                                                borderColor: '#ffd700',
-                                                color: showOnlyFavorites ? '#000' : '#fff'
+                                                background: showOnlyFavorites ? 'var(--rank-color)' : 'var(--bg-elevated)',
+                                                borderColor: 'var(--accent)',
+                                                color: showOnlyFavorites ? 'var(--text-primary)' : 'var(--text-primary)'
                                             }}
                                         >
                                             ★お気に入り
@@ -5042,9 +5042,9 @@ const { useState, useEffect } = React;
                                             }}
                                             disabled={!formations[recommendTargetFormation]?.slots?.['主将']}
                                             style={{
-                                                background: showOnlyRecommendedGenerals ? '#ff8c00' : '#2a2a2a',
-                                                borderColor: '#ff8c00',
-                                                color: showOnlyRecommendedGenerals ? '#fff' : '#999',
+                                                background: showOnlyRecommendedGenerals ? 'var(--accent)' : 'var(--bg-elevated)',
+                                                borderColor: 'var(--accent)',
+                                                color: showOnlyRecommendedGenerals ? 'var(--text-primary)' : 'var(--text-muted)',
                                                 opacity: !formations[recommendTargetFormation]?.slots?.['主将'] ? 0.5 : 1,
                                                 cursor: !formations[recommendTargetFormation]?.slots?.['主将'] ? 'not-allowed' : 'pointer'
                                             }}
@@ -5131,7 +5131,7 @@ const { useState, useEffect } = React;
                                                             justifyContent: 'space-between',
                                                             padding: '4px 12px',
                                                             background: 'rgba(26, 31, 46, 0.8)',
-                                                            borderLeft: '4px solid #d4af37',
+                                                            borderLeft: '3px solid var(--bordeaux)',
                                                             cursor: 'pointer',
                                                             marginBottom: '6px'
                                                         }}
@@ -5143,10 +5143,10 @@ const { useState, useEffect } = React;
                                                         }}
                                                     >
                                                         <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-                                                            <span style={{fontSize: '11px', color: '#888'}}>
+                                                            <span style={{fontSize: '11px', color: 'var(--text-muted)'}}>
                                                                 {expandedRarities[rarity] ? '▼' : '▶'}
                                                             </span>
-                                                            <span style={{fontWeight: 'bold', color: '#d4af37', fontSize: '12px'}}>
+                                                            <span style={{fontWeight: 'bold', color: 'var(--text-primary)', fontSize: '12px'}}>
                                                                 {rarity} ({totalCount}人)
                                                             </span>
                                                         </div>
@@ -5186,13 +5186,13 @@ const { useState, useEffect } = React;
                                                                                 <span 
                                                                                     className="general-name" 
                                                                                     style={{
-                                                                                        color: '#ffffff',
+                                                                                        color: 'var(--text-primary)',
                                                                                         flex: 1
                                                                                     }}
                                                                                 >
                                                                                     {general.name}
                                                                                 </span>
-                                                                                <span style={{fontSize: '10px', color: '#ffd700', fontWeight: 'bold'}}>
+                                                                                <span style={{fontSize: '10px', color: 'var(--text-primary)', fontWeight: 'bold'}}>
                                                                                     ☆{getGeneralStarRank(general)}
                                                                                 </span>
                                                                             </div>
@@ -5244,13 +5244,13 @@ const { useState, useEffect } = React;
                                                                     <span 
                                                                         className="general-name" 
                                                                         style={{
-                                                                            color: '#ffffff',
+                                                                            color: 'var(--text-primary)',
                                                                             flex: 1
                                                                         }}
                                                                     >
                                                                         {general.name}
                                                                     </span>
-                                                                    <span style={{fontSize: '10px', color: '#ffd700', fontWeight: 'bold'}}>
+                                                                    <span style={{fontSize: '10px', color: 'var(--text-primary)', fontWeight: 'bold'}}>
                                                                         ☆{getGeneralStarRank(general)}
                                                                     </span>
                                                                 </div>
@@ -5284,7 +5284,7 @@ const { useState, useEffect } = React;
                                             padding: '2px 6px',
                                             background: 'transparent',
                                             border: 'none',
-                                            color: '#d4af37',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: 'bold'
@@ -5297,10 +5297,10 @@ const { useState, useEffect } = React;
                                         <button
                                             onClick={() => setContextHelpType('treasure')}
                                             style={{
-                                                background: '#3498db',
+                                                background: 'var(--accent)',
                                                 border: 'none',
                                                 borderRadius: '50%',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontSize: '10px',
                                                 width: '18px',
@@ -5325,10 +5325,10 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{
                                             padding: '4px 8px',
-                                            background: '#c0392b',
-                                            border: '1px solid #e74c3c',
+                                            background: 'var(--danger)',
+                                            border: '1px solid var(--danger)',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '10px',
                                             fontWeight: 'bold'
@@ -5356,9 +5356,9 @@ const { useState, useEffect } = React;
                                                     }));
                                                 }}
                                                 style={{
-                                                    background: expandedTreasureCategories[category.name] ? category.color : '#2a2a2a',
+                                                    background: expandedTreasureCategories[category.name] ? category.color : 'var(--bg-elevated)',
                                                     borderColor: category.color,
-                                                    color: expandedTreasureCategories[category.name] ? '#0a0e1a' : '#e8e6e3'
+                                                    color: expandedTreasureCategories[category.name] ? 'var(--bg-base)' : 'var(--text-body)'
                                                 }}
                                             >
                                                 {category.name}
@@ -5375,9 +5375,9 @@ const { useState, useEffect } = React;
                                                 className={`filter-chip ${treasureWeaponFilter.includes(item.weapon) ? 'active' : ''}`}
                                                 onClick={() => toggleFilter('treasureWeapon', item.weapon)}
                                                 style={{
-                                                    background: treasureWeaponFilter.includes(item.weapon) ? item.color : '#2a2a2a',
+                                                    background: treasureWeaponFilter.includes(item.weapon) ? item.color : 'var(--bg-elevated)',
                                                     borderColor: item.color,
-                                                    color: treasureWeaponFilter.includes(item.weapon) ? '#0a0e1a' : '#e8e6e3'
+                                                    color: treasureWeaponFilter.includes(item.weapon) ? 'var(--bg-base)' : 'var(--text-body)'
                                                 }}
                                             >
                                                 {item.label}
@@ -5388,8 +5388,8 @@ const { useState, useEffect } = React;
                                     </div>
                                     <div className="filter-group" style={{display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px'}}>
                                         {[
-                                            {name: '魏', color: '#5dade2'},
-                                            {name: '蜀', color: '#52be80'},
+                                            {name: '魏', color: 'var(--accent)'},
+                                            {name: '蜀', color: 'var(--success)'},
                                             {name: '袁紹', color: '#f4d03f'},
                                             {name: '呉', color: '#ec7063'},
                                             {name: '他', color: '#f5b7b1'},
@@ -5400,9 +5400,9 @@ const { useState, useEffect } = React;
                                                 className={`filter-chip ${treasureFactionFilter.includes(faction.name) ? 'active' : ''}`}
                                                 onClick={() => toggleFilter('treasureFaction', faction.name)}
                                                 style={{
-                                                    background: treasureFactionFilter.includes(faction.name) ? faction.color : '#2a2a2a',
+                                                    background: treasureFactionFilter.includes(faction.name) ? faction.color : 'var(--bg-elevated)',
                                                     borderColor: faction.color,
-                                                    color: treasureFactionFilter.includes(faction.name) ? '#0a0e1a' : '#e8e6e3'
+                                                    color: treasureFactionFilter.includes(faction.name) ? 'var(--bg-base)' : 'var(--text-body)'
                                                 }}
                                             >
                                                 {faction.name}
@@ -5414,9 +5414,9 @@ const { useState, useEffect } = React;
                                             className={`filter-chip ${showOnlyFavoriteTreasures ? 'active' : ''}`}
                                             onClick={() => setShowOnlyFavoriteTreasures(!showOnlyFavoriteTreasures)}
                                             style={{
-                                                background: showOnlyFavoriteTreasures ? '#ffd700' : '#2a2a2a',
-                                                borderColor: '#ffd700',
-                                                color: showOnlyFavoriteTreasures ? '#0a0e1a' : '#e8e6e3'
+                                                background: showOnlyFavoriteTreasures ? 'var(--rank-color)' : 'var(--bg-elevated)',
+                                                borderColor: 'var(--accent)',
+                                                color: showOnlyFavoriteTreasures ? 'var(--bg-base)' : 'var(--text-body)'
                                             }}
                                         >
                                             ★お気に入り
@@ -5445,9 +5445,9 @@ const { useState, useEffect } = React;
                                                     (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a)));
                                             })()}
                                             style={{
-                                                background: showOnlyRecommendedTreasures ? '#ff8c00' : '#2a2a2a',
-                                                borderColor: '#ff8c00',
-                                                color: showOnlyRecommendedTreasures ? '#fff' : '#999',
+                                                background: showOnlyRecommendedTreasures ? 'var(--accent)' : 'var(--bg-elevated)',
+                                                borderColor: 'var(--accent)',
+                                                color: showOnlyRecommendedTreasures ? 'var(--text-primary)' : 'var(--text-muted)',
                                                 opacity: (() => {
                                                     const targetFormation = formations[recommendTargetFormation];
                                                     return (targetFormation?.slots?.['主将'] ||
@@ -5518,7 +5518,7 @@ const { useState, useEffect } = React;
                                                             justifyContent: 'space-between',
                                                             padding: '8px 12px',
                                                             background: 'rgba(26, 31, 46, 0.8)',
-                                                            borderLeft: '4px solid #d4af37',
+                                                            borderLeft: '3px solid var(--bordeaux)',
                                                             cursor: 'pointer',
                                                             marginBottom: '8px'
                                                         }}
@@ -5530,10 +5530,10 @@ const { useState, useEffect } = React;
                                                         }}
                                                     >
                                                         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                                                            <span style={{fontSize: '12px', color: '#888'}}>
+                                                            <span style={{fontSize: '12px', color: 'var(--text-muted)'}}>
                                                                 {expandedTreasureCategories[category] ? '▼' : '▶'}
                                                             </span>
-                                                            <span style={{fontWeight: 'bold', color: '#d4af37'}}>
+                                                            <span style={{fontWeight: 'bold', color: 'var(--text-primary)'}}>
                                                                 {category} ({treasuresByCategory[category].length}個)
                                                             </span>
                                                         </div>
@@ -5576,7 +5576,7 @@ const { useState, useEffect } = React;
                                                                                 <span 
                                                                                     className="treasure-name"
                                                                                     style={{
-                                                                                        color: isTreasureUR(treasure.id) ? '#ff6b6b' : '#ffffff',
+                                                                                        color: isTreasureUR(treasure.id) ? 'var(--rarity-ur)' : 'var(--text-primary)',
                                                                                         fontWeight: isTreasureUR(treasure.id) ? 'bold' : '700'
                                                                                     }}
                                                                                 >
@@ -5585,7 +5585,7 @@ const { useState, useEffect } = React;
                                                                             </div>
                                                                             <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
                                                                                 {treasure.weapon_type && (
-                                                                                    <span className="treasure-type" style={{color: '#888'}}>{getWeaponTypeName(treasure.weapon_type)}</span>
+                                                                                    <span className="treasure-type" style={{color: 'var(--text-muted)'}}>{getWeaponTypeName(treasure.weapon_type)}</span>
                                                                                 )}
                                                                                 {treasure.related && (
                                                                                     <span 
@@ -5593,7 +5593,7 @@ const { useState, useEffect } = React;
                                                                                         style={{
                                                                                             color: (() => {
                                                                                                 const relatedGeneral = generals.find(g => g.name === treasure.related);
-                                                                                                return relatedGeneral ? getAffinityColor(relatedGeneral.affinity) : '#888';
+                                                                                                return relatedGeneral ? getAffinityColor(relatedGeneral.affinity) : 'var(--text-muted)';
                                                                                             })(),
                                                                                             fontWeight: '600'
                                                                                         }}
@@ -5650,10 +5650,10 @@ const { useState, useEffect } = React;
                                                                 </div>
                                                                 <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
                                                                     {treasure.weapon_type && (
-                                                                        <span className="treasure-type" style={{color: '#888'}}>{getWeaponTypeName(treasure.weapon_type)}</span>
+                                                                        <span className="treasure-type" style={{color: 'var(--text-muted)'}}>{getWeaponTypeName(treasure.weapon_type)}</span>
                                                                     )}
                                                                     {treasure.related && (
-                                                                        <span className="treasure-related" style={{color: '#888'}}>
+                                                                        <span className="treasure-related" style={{color: 'var(--text-muted)'}}>
                                                                             {treasure.related}
                                                                         </span>
                                                                     )}
@@ -5693,33 +5693,33 @@ const { useState, useEffect } = React;
                             zIndex: 3000
                         }}>
                             <div style={{
-                                background: '#1a1f2e',
+                                background: 'var(--bg-card)',
                                 border: '2px solid #4285f4',
                                 borderRadius: '12px',
                                 padding: '32px',
                                 maxWidth: '600px',
                                 width: '90%'
                             }}>
-                                <h2 style={{color: '#4285f4', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px'}}>
+                                <h2 style={{color: 'var(--accent)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px'}}>
                                     Google Drive連携
                                 </h2>
                                 
-                                <div style={{marginBottom: '24px', color: '#ccc', lineHeight: '1.8'}}>
+                                <div style={{marginBottom: '24px', color: 'var(--text-secondary)', lineHeight: '1.8'}}>
                                     <p style={{marginBottom: '16px'}}>
                                         Google Driveを使ってデータを同期できます。
                                     </p>
                                     
-                                    <h3 style={{color: '#d4af37', fontSize: '16px', marginBottom: '12px'}}>使い方</h3>
+                                    <h3 style={{color: 'var(--text-primary)', fontSize: '16px', marginBottom: '12px'}}>使い方</h3>
                                     
-                                    <div style={{background: '#0f1419', padding: '16px', borderRadius: '8px', marginBottom: '16px'}}>
-                                        <p style={{marginBottom: '12px', fontWeight: 'bold', color: '#4285f4'}}>1. データを保存（家のPC）</p>
+                                    <div style={{background: 'var(--bg-base)', padding: '16px', borderRadius: '8px', marginBottom: '16px'}}>
+                                        <p style={{marginBottom: '12px', fontWeight: 'bold', color: 'var(--accent)'}}>1. データを保存（家のPC）</p>
                                         <p style={{marginBottom: '8px', paddingLeft: '20px'}}>
                                             ① 「Google Driveへ保存」をクリック<br/>
                                             ② ダウンロードされたファイル「hadou-formation-sync.json」をGoogle Driveにアップロード<br/>
                                             　（推奨：「hadou-formation」フォルダを作成）
                                         </p>
                                         
-                                        <p style={{marginBottom: '12px', marginTop: '16px', fontWeight: 'bold', color: '#4285f4'}}>2. データを読み込み（職場のPC）</p>
+                                        <p style={{marginBottom: '12px', marginTop: '16px', fontWeight: 'bold', color: 'var(--accent)'}}>2. データを読み込み（職場のPC）</p>
                                         <p style={{paddingLeft: '20px'}}>
                                             ① Google Driveから「hadou-formation-sync.json」をダウンロード<br/>
                                             ② 「Google Driveから読み込み」をクリック<br/>
@@ -5728,7 +5728,7 @@ const { useState, useEffect } = React;
                                     </div>
                                     
                                     {gdriveLastSync && (
-                                        <p style={{color: '#27ae60', fontSize: '13px', marginTop: '12px'}}>
+                                        <p style={{color: 'var(--success)', fontSize: '13px', marginTop: '12px'}}>
                                             ✓ 最終同期: {new Date(gdriveLastSync).toLocaleString('ja-JP')}
                                         </p>
                                     )}
@@ -5742,10 +5742,10 @@ const { useState, useEffect } = React;
                                         style={{
                                             flex: 1,
                                             padding: '14px 20px',
-                                            background: '#4285f4',
+                                            background: 'var(--accent)',
                                             border: 'none',
                                             borderRadius: '6px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '15px',
                                             fontWeight: 'bold'
@@ -5760,10 +5760,10 @@ const { useState, useEffect } = React;
                                         style={{
                                             flex: 1,
                                             padding: '14px 20px',
-                                            background: '#34a853',
+                                            background: 'var(--success)',
                                             border: 'none',
                                             borderRadius: '6px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '15px',
                                             fontWeight: 'bold'
@@ -5778,10 +5778,10 @@ const { useState, useEffect } = React;
                                     style={{
                                         width: '100%',
                                         padding: '12px',
-                                        background: '#2a2a2a',
-                                        border: '1px solid #3a3a3a',
+                                        background: 'var(--bg-elevated)',
+                                        border: '1px solid var(--border-light)',
                                         borderRadius: '6px',
-                                        color: '#fff',
+                                        color: 'var(--text-primary)',
                                         cursor: 'pointer',
                                         fontSize: '14px'
                                     }}
@@ -5800,21 +5800,21 @@ const { useState, useEffect } = React;
                             left: 0,
                             right: 0,
                             bottom: 0,
-                            background: 'rgba(0,0,0,0.7)',
+                            background: 'rgba(4, 4, 6, 0.8)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             zIndex: 2000
                         }}>
                             <div style={{
-                                background: '#1a1f2e',
-                                border: '2px solid #3a3a3a',
+                                background: 'var(--bg-card)',
+                                border: '2px solid var(--border-light)',
                                 borderRadius: '8px',
                                 padding: '24px',
                                 minWidth: '400px',
                                 maxWidth: '500px'
                             }}>
-                                <h3 style={{color: '#d4af37', marginBottom: '16px'}}>部隊テンプレートを保存</h3>
+                                <h3 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>部隊テンプレートを保存</h3>
                                 <input
                                     type="text"
                                     value={templateName}
@@ -5823,10 +5823,10 @@ const { useState, useEffect } = React;
                                     style={{
                                         width: '100%',
                                         padding: '10px',
-                                        background: '#0f1419',
-                                        border: '1px solid #3a3a3a',
+                                        background: 'var(--bg-base)',
+                                        border: '1px solid var(--border-light)',
                                         borderRadius: '4px',
-                                        color: '#fff',
+                                        color: 'var(--text-primary)',
                                         fontSize: '14px',
                                         marginBottom: '20px'
                                     }}
@@ -5837,10 +5837,10 @@ const { useState, useEffect } = React;
                                         onClick={() => setShowTemplateSaveDialog(null)}
                                         style={{
                                             padding: '8px 20px',
-                                            background: '#2a2a2a',
-                                            border: '1px solid #3a3a3a',
+                                            background: 'var(--bg-elevated)',
+                                            border: '1px solid var(--border-light)',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer'
                                         }}
                                     >
@@ -5850,10 +5850,10 @@ const { useState, useEffect } = React;
                                         onClick={executeSaveTemplate}
                                         style={{
                                             padding: '8px 20px',
-                                            background: '#27ae60',
-                                            border: '1px solid #2ecc71',
+                                            background: 'var(--success)',
+                                            border: '1px solid var(--success)',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontWeight: 'bold'
                                         }}
@@ -5873,24 +5873,24 @@ const { useState, useEffect } = React;
                             left: 0,
                             right: 0,
                             bottom: 0,
-                            background: 'rgba(0,0,0,0.7)',
+                            background: 'rgba(4, 4, 6, 0.8)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             zIndex: 2000
                         }}>
                             <div style={{
-                                background: '#1a1f2e',
-                                border: '2px solid #3a3a3a',
+                                background: 'var(--bg-card)',
+                                border: '2px solid var(--border-light)',
                                 borderRadius: '8px',
                                 padding: '24px',
                                 minWidth: '400px',
                                 maxWidth: '500px'
                             }}>
-                                <h3 style={{color: '#d4af37', marginBottom: '16px'}}>テンプレートを呼び出し</h3>
+                                <h3 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>テンプレートを呼び出し</h3>
                                 
                                 {Object.keys(formationTemplates).length === 0 ? (
-                                    <p style={{color: '#888', marginBottom: '20px'}}>保存されたテンプレートがありません</p>
+                                    <p style={{color: 'var(--text-muted)', marginBottom: '20px'}}>保存されたテンプレートがありません</p>
                                 ) : (
                                     <>
                                         <div style={{marginBottom: '20px', maxHeight: '300px', overflowY: 'auto'}}>
@@ -5906,7 +5906,7 @@ const { useState, useEffect } = React;
                                                     />
                                                     <label 
                                                         htmlFor={`template-${key}`}
-                                                        style={{color: '#fff', cursor: 'pointer', flex: 1}}
+                                                        style={{color: 'var(--text-primary)', cursor: 'pointer', flex: 1}}
                                                     >
                                                         {template.name}
                                                     </label>
@@ -5914,10 +5914,10 @@ const { useState, useEffect } = React;
                                                         onClick={() => deleteTemplate(key)}
                                                         style={{
                                                             padding: '4px 8px',
-                                                            background: '#c0392b',
+                                                            background: 'var(--danger)',
                                                             border: 'none',
                                                             borderRadius: '3px',
-                                                            color: '#fff',
+                                                            color: 'var(--text-primary)',
                                                             cursor: 'pointer',
                                                             fontSize: '11px'
                                                         }}
@@ -5928,9 +5928,9 @@ const { useState, useEffect } = React;
                                             ))}
                                         </div>
                                         
-                                        <div style={{marginBottom: '20px', padding: '12px', background: '#0f1419', borderRadius: '4px'}}>
+                                        <div style={{marginBottom: '20px', padding: '12px', background: 'var(--bg-base)', borderRadius: '4px'}}>
                                             <div style={{marginBottom: '8px'}}>
-                                                <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', cursor: 'pointer'}}>
+                                                <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', cursor: 'pointer'}}>
                                                     <input
                                                         type="checkbox"
                                                         checked={overwriteGenerals}
@@ -5940,7 +5940,7 @@ const { useState, useEffect } = React;
                                                 </label>
                                             </div>
                                             <div>
-                                                <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', cursor: 'pointer'}}>
+                                                <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', cursor: 'pointer'}}>
                                                     <input
                                                         type="checkbox"
                                                         checked={overwriteTreasures}
@@ -5958,10 +5958,10 @@ const { useState, useEffect } = React;
                                         onClick={() => setShowTemplateLoadDialog(null)}
                                         style={{
                                             padding: '8px 20px',
-                                            background: '#2a2a2a',
-                                            border: '1px solid #3a3a3a',
+                                            background: 'var(--bg-elevated)',
+                                            border: '1px solid var(--border-light)',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer'
                                         }}
                                     >
@@ -5972,10 +5972,10 @@ const { useState, useEffect } = React;
                                             onClick={executeLoadTemplate}
                                             style={{
                                                 padding: '8px 20px',
-                                                background: '#2980b9',
-                                                border: '1px solid #3498db',
+                                                background: 'var(--accent)',
+                                                border: '1px solid var(--accent)',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: 'bold'
                                             }}
@@ -5992,18 +5992,18 @@ const { useState, useEffect } = React;
             ) : (
                     <div className="rank-settings-container" style={{padding: '20px', maxWidth: '1200px', margin: '0 auto'}}>
                         {/* プロファイル選択 */}
-                        <div style={{marginBottom: '24px', padding: '16px', background: '#1a1f2e', border: '2px solid #3a3a3a', borderRadius: '4px'}}>
+                        <div style={{marginBottom: '24px', padding: '16px', background: 'var(--bg-card)', border: '2px solid var(--border-light)', borderRadius: '4px'}}>
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px'}}>
-                                <h3 style={{color: '#d4af37', margin: 0, fontSize: '16px'}}>プロファイル選択</h3>
+                                <h3 style={{color: 'var(--text-primary)', margin: 0, fontSize: '16px'}}>プロファイル選択</h3>
                                 <div style={{display: 'flex', gap: '8px'}}>
                                     <button
                                         onClick={exportProfile}
                                         style={{
                                             padding: '6px 12px',
-                                            background: '#16a085',
-                                            border: '1px solid #1abc9c',
+                                            background: 'var(--success)',
+                                            border: '1px solid var(--success)',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '11px',
                                             fontWeight: 'bold'
@@ -6015,10 +6015,10 @@ const { useState, useEffect } = React;
                                     <label
                                         style={{
                                             padding: '6px 12px',
-                                            background: '#8e44ad',
-                                            border: '1px solid #9b59b6',
+                                            background: 'var(--accent)',
+                                            border: '1px solid var(--accent)',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontSize: '11px',
                                             fontWeight: 'bold'
@@ -6042,9 +6042,9 @@ const { useState, useEffect } = React;
                                             onClick={() => setCurrentProfile(index)}
                                             style={{
                                                 padding: '8px 16px',
-                                                background: currentProfile === index ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)' : '#2a2a2a',
+                                                background: currentProfile === index ? 'var(--accent)' : 'var(--bg-elevated)',
                                                 border: currentProfile === index ? '2px solid #d4af37' : '2px solid #3a3a3a',
-                                                color: currentProfile === index ? '#000' : '#fff',
+                                                color: currentProfile === index ? 'var(--text-primary)' : 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: currentProfile === index ? 'bold' : 'normal',
                                                 fontSize: '13px',
@@ -6063,9 +6063,9 @@ const { useState, useEffect } = React;
                                             }}
                                             style={{
                                                 padding: '6px 8px',
-                                                background: '#1a1f2e',
-                                                border: '1px solid #3a3a3a',
-                                                color: '#fff',
+                                                background: 'var(--bg-card)',
+                                                border: '1px solid var(--border-light)',
+                                                color: 'var(--text-primary)',
                                                 fontSize: '11px',
                                                 width: '100px'
                                             }}
@@ -6093,7 +6093,7 @@ const { useState, useEffect } = React;
                         
                         {rankTab === 'general' ? (
                             <div>
-                                <h2 style={{color: '#d4af37', marginBottom: '16px'}}>武将の将星ランク設定</h2>
+                                <h2 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>武将の将星ランク設定</h2>
                                 
                                 {/* 一括操作ボタン */}
                                 <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
@@ -6114,10 +6114,10 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{
                                             padding: '8px 16px',
-                                            background: '#2a5298',
+                                            background: 'var(--accent-hover)',
                                             border: 'none',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontWeight: 'bold'
                                         }}
@@ -6136,10 +6136,10 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{
                                             padding: '8px 16px',
-                                            background: '#5a5a5a',
+                                            background: 'var(--bg-hover)',
                                             border: 'none',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontWeight: 'bold'
                                         }}
@@ -6149,8 +6149,8 @@ const { useState, useEffect } = React;
                                 </div>
                                 
                                 {/* プロファイル機能 */}
-                                <div style={{marginBottom: '16px', padding: '12px', background: '#1a1f2e', borderRadius: '4px', border: '1px solid #3a3a3a'}}>
-                                    <div style={{color: '#d4af37', marginBottom: '8px', fontWeight: 'bold'}}>プロファイル</div>
+                                <div style={{marginBottom: '16px', padding: '12px', background: 'var(--bg-card)', borderRadius: '4px', border: '1px solid var(--border-light)'}}>
+                                    <div style={{color: 'var(--text-primary)', marginBottom: '8px', fontWeight: 'bold'}}>プロファイル</div>
                                     <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                                         <button
                                             onClick={() => {
@@ -6164,10 +6164,10 @@ const { useState, useEffect } = React;
                                             }}
                                             style={{
                                                 padding: '8px 16px',
-                                                background: '#27ae60',
+                                                background: 'var(--success)',
                                                 border: 'none',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: 'bold'
                                             }}
@@ -6195,10 +6195,10 @@ const { useState, useEffect } = React;
                                             }}
                                             style={{
                                                 padding: '8px 16px',
-                                                background: '#2980b9',
+                                                background: 'var(--accent)',
                                                 border: 'none',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: 'bold'
                                             }}
@@ -6216,9 +6216,9 @@ const { useState, useEffect } = React;
                                         onChange={(e) => setRankSearchTerm(e.target.value)}
                                         style={{
                                             padding: '8px 12px',
-                                            background: '#1a1f2e',
-                                            border: '1px solid #3a3a3a',
-                                            color: '#fff',
+                                            background: 'var(--bg-card)',
+                                            border: '1px solid var(--border-light)',
+                                            color: 'var(--text-primary)',
                                             flex: '1',
                                             minWidth: '200px'
                                         }}
@@ -6262,7 +6262,7 @@ const { useState, useEffect } = React;
                                                     alignItems: 'center',
                                                     gap: '8px'
                                                 }}>
-                                                    <span style={{fontSize: '12px', color: '#888'}}>
+                                                    <span style={{fontSize: '12px', color: 'var(--text-muted)'}}>
                                                         {expandedRarities[rarity] ? '▼' : '▶'}
                                                     </span>
                                                     {rarity} ({filteredGenerals.length}名)
@@ -6287,10 +6287,10 @@ const { useState, useEffect } = React;
                                                         }}
                                                         style={{
                                                             padding: '6px 12px',
-                                                            background: '#5a5a5a',
+                                                            background: 'var(--bg-hover)',
                                                             border: 'none',
                                                             borderRadius: '4px',
-                                                            color: '#fff',
+                                                            color: 'var(--text-primary)',
                                                             cursor: 'pointer',
                                                             fontWeight: 'bold',
                                                             fontSize: '12px',
@@ -6322,7 +6322,7 @@ const { useState, useEffect } = React;
                                                             background: getRarityColor(rarity),
                                                             border: 'none',
                                                             borderRadius: '4px',
-                                                            color: '#000',
+                                                            color: 'var(--bg-base)',
                                                             cursor: 'pointer',
                                                             fontWeight: 'bold',
                                                             fontSize: '12px',
@@ -6344,8 +6344,8 @@ const { useState, useEffect } = React;
                                                 <div 
                                                     key={`${general.id}-${general.rarity}-${general.name}`}
                                                     style={{
-                                                        background: '#1a1f2e',
-                                                        border: '1px solid #3a3a3a',
+                                                        background: 'var(--bg-card)',
+                                                        border: '1px solid var(--border-light)',
                                                         padding: '12px',
                                                         display: 'grid',
                                                         gridTemplateColumns: '1fr 60px 130px auto',
@@ -6360,10 +6360,10 @@ const { useState, useEffect } = React;
                                                             rarity={general.rarity}
                                                         />
                                                         <div>
-                                                            <div style={{color: '#fff', fontWeight: 'bold'}}>
+                                                            <div style={{color: 'var(--text-primary)', fontWeight: 'bold'}}>
                                                                 {general.name}
                                                             </div>
-                                                            <div style={{color: '#888', fontSize: '12px'}}>
+                                                            <div style={{color: 'var(--text-muted)', fontSize: '12px'}}>
                                                                 {general.rarity} - {getUnitTypeName(general.unit_type)}
                                                             </div>
                                                         </div>
@@ -6377,7 +6377,7 @@ const { useState, useEffect } = React;
                                                                 border: 'none',
                                                                 cursor: 'pointer',
                                                                 fontSize: '16px',
-                                                                color: isFav ? '#ffd700' : '#555'
+                                                                color: isFav ? 'var(--rank-color)' : 'var(--text-muted)'
                                                             }}
                                                             title="お気に入り"
                                                         >
@@ -6397,7 +6397,7 @@ const { useState, useEffect } = React;
                                                                 border: 'none',
                                                                 cursor: 'pointer',
                                                                 fontSize: '16px',
-                                                                color: isDisabled ? '#e74c3c' : '#555'
+                                                                color: isDisabled ? 'var(--danger)' : 'var(--text-muted)'
                                                             }}
                                                             title="不使用"
                                                         >
@@ -6406,7 +6406,7 @@ const { useState, useEffect } = React;
                                                     </div>
                                                     <div style={{textAlign: 'center', minWidth: '130px'}}>
                                                         {Array.from({length: 7}, (_, i) => (
-                                                            <span key={i} style={{color: i < currentRank ? '#ffd700' : '#333'}}>
+                                                            <span key={i} style={{color: i < currentRank ? 'var(--rank-color)' : 'var(--bg-elevated)'}}>
                                                                 ☆
                                                             </span>
                                                         ))}
@@ -6418,9 +6418,9 @@ const { useState, useEffect } = React;
                                                                 onClick={() => setGeneralStar(general, rank)}
                                                                 style={{
                                                                     padding: '6px 12px',
-                                                                    background: currentRank === rank ? '#d4af37' : '#2a2a2a',
-                                                                    border: '1px solid #3a3a3a',
-                                                                    color: currentRank === rank ? '#000' : '#fff',
+                                                                    background: currentRank === rank ? 'var(--accent)' : 'var(--bg-elevated)',
+                                                                    border: '1px solid var(--border-light)',
+                                                                    color: currentRank === rank ? 'var(--text-primary)' : 'var(--text-primary)',
                                                                     cursor: 'pointer',
                                                                     fontWeight: currentRank === rank ? 'bold' : 'normal'
                                                                 }}
@@ -6440,7 +6440,7 @@ const { useState, useEffect } = React;
                             </div>
                         ) : (
                             <div>
-                                <h2 style={{color: '#d4af37', marginBottom: '16px'}}>名宝の鍛錬ランク設定</h2>
+                                <h2 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>名宝の鍛錬ランク設定</h2>
                                 
                                 {/* 一括操作ボタン */}
                                 <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
@@ -6461,10 +6461,10 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{
                                             padding: '8px 16px',
-                                            background: '#2a5298',
+                                            background: 'var(--accent-hover)',
                                             border: 'none',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontWeight: 'bold'
                                         }}
@@ -6483,10 +6483,10 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{
                                             padding: '8px 16px',
-                                            background: '#5a5a5a',
+                                            background: 'var(--bg-hover)',
                                             border: 'none',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontWeight: 'bold'
                                         }}
@@ -6522,10 +6522,10 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{
                                             padding: '8px 16px',
-                                            background: '#8b4513',
+                                            background: 'var(--bordeaux)',
                                             border: 'none',
                                             borderRadius: '4px',
-                                            color: '#fff',
+                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
                                             fontWeight: 'bold'
                                         }}
@@ -6535,8 +6535,8 @@ const { useState, useEffect } = React;
                                 </div>
                                 
                                 {/* プロファイル機能 */}
-                                <div style={{marginBottom: '16px', padding: '12px', background: '#1a1f2e', borderRadius: '4px', border: '1px solid #3a3a3a'}}>
-                                    <div style={{color: '#d4af37', marginBottom: '8px', fontWeight: 'bold'}}>プロファイル</div>
+                                <div style={{marginBottom: '16px', padding: '12px', background: 'var(--bg-card)', borderRadius: '4px', border: '1px solid var(--border-light)'}}>
+                                    <div style={{color: 'var(--text-primary)', marginBottom: '8px', fontWeight: 'bold'}}>プロファイル</div>
                                     <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                                         <button
                                             onClick={() => {
@@ -6550,10 +6550,10 @@ const { useState, useEffect } = React;
                                             }}
                                             style={{
                                                 padding: '8px 16px',
-                                                background: '#27ae60',
+                                                background: 'var(--success)',
                                                 border: 'none',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: 'bold'
                                             }}
@@ -6581,10 +6581,10 @@ const { useState, useEffect } = React;
                                             }}
                                             style={{
                                                 padding: '8px 16px',
-                                                background: '#2980b9',
+                                                background: 'var(--accent)',
                                                 border: 'none',
                                                 borderRadius: '4px',
-                                                color: '#fff',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: 'bold'
                                             }}
@@ -6609,7 +6609,7 @@ const { useState, useEffect } = React;
                                                     marginBottom: '12px',
                                                     padding: '8px 12px',
                                                     background: 'rgba(26, 31, 46, 0.5)',
-                                                    borderLeft: '4px solid #d4af37',
+                                                    borderLeft: '3px solid var(--bordeaux)',
                                                     cursor: 'pointer'
                                                 }}
                                                 onClick={() => {
@@ -6620,7 +6620,7 @@ const { useState, useEffect } = React;
                                                 }}
                                             >
                                                 <h3 style={{
-                                                    color: '#d4af37',
+                                                    color: 'var(--text-primary)',
                                                     margin: 0,
                                                     fontSize: '16px',
                                                     fontWeight: 'bold',
@@ -6628,7 +6628,7 @@ const { useState, useEffect } = React;
                                                     alignItems: 'center',
                                                     gap: '8px'
                                                 }}>
-                                                    <span style={{fontSize: '12px', color: '#888'}}>
+                                                    <span style={{fontSize: '12px', color: 'var(--text-muted)'}}>
                                                         {expandedTreasureCategories[category] ? '▼' : '▶'}
                                                     </span>
                                                     {category} ({categoryTreasures.length}個)
@@ -6645,8 +6645,8 @@ const { useState, useEffect } = React;
                                             <div 
                                                 key={treasure.id}
                                                 style={{
-                                                    background: '#1a1f2e',
-                                                    border: '1px solid #3a3a3a',
+                                                    background: 'var(--bg-card)',
+                                                    border: '1px solid var(--border-light)',
                                                     padding: '12px',
                                                     display: 'grid',
                                                     gridTemplateColumns: '1fr 60px 90px 180px auto',
@@ -6661,11 +6661,11 @@ const { useState, useEffect } = React;
                                                         rarity={isUR ? 'UR' : 'normal'}
                                                     />
                                                     <div>
-                                                        <div style={{color: '#fff', fontWeight: 'bold'}}>
+                                                        <div style={{color: 'var(--text-primary)', fontWeight: 'bold'}}>
                                                             {treasure.name}
                                                         </div>
-                                                        <div style={{color: '#888', fontSize: '12px'}}>
-                                                            {treasure.category} {isUR && <span style={{color: '#ff6b6b'}}>[UR]</span>}
+                                                        <div style={{color: 'var(--text-muted)', fontSize: '12px'}}>
+                                                            {treasure.category} {isUR && <span style={{color: 'var(--rarity-ur)'}}>[UR]</span>}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -6678,7 +6678,7 @@ const { useState, useEffect } = React;
                                                             border: 'none',
                                                             cursor: 'pointer',
                                                             fontSize: '16px',
-                                                            color: isFav ? '#ffd700' : '#555'
+                                                            color: isFav ? 'var(--rank-color)' : 'var(--text-muted)'
                                                         }}
                                                         title="お気に入り"
                                                     >
@@ -6698,7 +6698,7 @@ const { useState, useEffect } = React;
                                                             border: 'none',
                                                             cursor: 'pointer',
                                                             fontSize: '16px',
-                                                            color: isDisabled ? '#e74c3c' : '#555'
+                                                            color: isDisabled ? 'var(--danger)' : 'var(--text-muted)'
                                                         }}
                                                         title="不使用"
                                                     >
@@ -6709,9 +6709,9 @@ const { useState, useEffect } = React;
                                                     onClick={() => toggleTreasureUR(treasure.id)}
                                                     style={{
                                                         padding: '6px 12px',
-                                                        background: isUR ? 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%)' : '#2a2a2a',
+                                                        background: isUR ? 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%)' : 'var(--bg-elevated)',
                                                         border: isUR ? '1px solid #ff6b6b' : '1px solid #3a3a3a',
-                                                        color: '#fff',
+                                                        color: 'var(--text-primary)',
                                                         cursor: 'pointer',
                                                         fontWeight: 'bold',
                                                         fontSize: '11px',
@@ -6730,7 +6730,7 @@ const { useState, useEffect } = React;
                                                             <span 
                                                                 key={i} 
                                                                 style={{
-                                                                    color: isDimmed ? '#222' : (isColored ? (isUR ? '#ff6b6b' : '#ffd700') : '#333')
+                                                                    color: isDimmed ? 'var(--bg-card)' : (isColored ? (isUR ? 'var(--rarity-ur)' : 'var(--rank-color)') : 'var(--bg-elevated)')
                                                                 }}
                                                             >
                                                                 {isUR ? '★' : '☆'}
@@ -6747,9 +6747,9 @@ const { useState, useEffect } = React;
                                                                 onClick={() => !isDisabled && setTreasureForge(treasure.id, rank)}
                                                                 style={{
                                                                     padding: '6px 12px',
-                                                                    background: currentRank === rank ? '#d4af37' : (isDisabled ? '#1a1a1a' : '#2a2a2a'),
-                                                                    border: '1px solid #3a3a3a',
-                                                                    color: isDisabled ? '#444' : (currentRank === rank ? '#000' : '#fff'),
+                                                                    background: currentRank === rank ? 'var(--accent)' : (isDisabled ? 'var(--bg-base)' : 'var(--bg-elevated)'),
+                                                                    border: '1px solid var(--border-light)',
+                                                                    color: isDisabled ? 'var(--text-muted)' : (currentRank === rank ? 'var(--text-primary)' : 'var(--text-primary)'),
                                                                     cursor: isDisabled ? 'not-allowed' : 'pointer',
                                                                     fontWeight: currentRank === rank ? 'bold' : 'normal',
                                                                     opacity: isDisabled ? 0.3 : 1
@@ -6783,7 +6783,7 @@ const { useState, useEffect } = React;
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: 'rgba(0,0,0,0.7)',
+                        background: 'rgba(4, 4, 6, 0.8)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -6791,15 +6791,15 @@ const { useState, useEffect } = React;
                         padding: '20px'
                     }} onClick={() => setContextHelpType(null)}>
                         <div style={{
-                            background: '#1a1f2e',
-                            border: '2px solid #3498db',
+                            background: 'var(--bg-card)',
+                            border: '2px solid var(--accent)',
                             borderRadius: '8px',
                             padding: '20px',
                             maxWidth: '600px',
-                            color: '#fff'
+                            color: 'var(--text-primary)'
                         }} onClick={(e) => e.stopPropagation()}>
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
-                                <h3 style={{color: '#3498db', margin: 0}}>
+                                <h3 style={{color: 'var(--accent)', margin: 0}}>
                                     {contextHelpType === 'general' && '🎯 武将の配置方法'}
                                     {contextHelpType === 'treasure' && '💎 名宝の配置方法'}
                                     {contextHelpType === 'pattern' && '📁 編制パターンの使い方'}
@@ -6808,10 +6808,10 @@ const { useState, useEffect } = React;
                                 <button
                                     onClick={() => setContextHelpType(null)}
                                     style={{
-                                        background: '#c0392b',
+                                        background: 'var(--danger)',
                                         border: 'none',
                                         borderRadius: '4px',
-                                        color: '#fff',
+                                        color: 'var(--text-primary)',
                                         cursor: 'pointer',
                                         fontSize: '18px',
                                         width: '28px',
@@ -6824,21 +6824,21 @@ const { useState, useEffect } = React;
                             
                             {contextHelpType === 'general' && (
                                 <div style={{lineHeight: '1.8', fontSize: '14px'}}>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>ドラッグ&ドロップ</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>ドラッグ&ドロップ</p>
                                         <p style={{margin: '4px 0'}}>武将を左パネルから部隊の枠にドラッグして配置</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>ダブルクリック</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>ダブルクリック</p>
                                         <p style={{margin: '4px 0'}}>• 武将をダブルクリック → 空きスロットに自動配置</p>
                                         <p style={{margin: '4px 0'}}>• 配置済み武将をダブルクリック → 削除</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>入れ替え</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>入れ替え</p>
                                         <p style={{margin: '4px 0'}}>武将同士をドラッグ&ドロップで入れ替え可能</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>侍従配置</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>侍従配置</p>
                                         <p style={{margin: '4px 0'}}>LR武将のみ侍従として配置可能。ダブルクリックで自動配置</p>
                                     </div>
                                 </div>
@@ -6846,22 +6846,22 @@ const { useState, useEffect } = React;
                             
                             {contextHelpType === 'treasure' && (
                                 <div style={{lineHeight: '1.8', fontSize: '14px'}}>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>配置可能な場所</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>配置可能な場所</p>
                                         <p style={{margin: '4px 0'}}>• 主将：武器・防具・文物を各1つずつ（最大3つ）</p>
                                         <p style={{margin: '4px 0'}}>• 副将1：武器・防具・文物を各1つずつ（最大3つ）</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>ドラッグ&ドロップ</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>ドラッグ&ドロップ</p>
                                         <p style={{margin: '4px 0'}}>名宝を左パネルから装備枠にドラッグして配置</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>ダブルクリック</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>ダブルクリック</p>
                                         <p style={{margin: '4px 0'}}>• 名宝をダブルクリック → 種類に応じた空きスロットに自動配置</p>
                                         <p style={{margin: '4px 0'}}>• 配置済み名宝をダブルクリック → 削除</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ff6b6b'}}>注意</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--rarity-ur)'}}>注意</p>
                                         <p style={{margin: '4px 0'}}>同じ名宝は1つの部隊にしか配置できません</p>
                                     </div>
                                 </div>
@@ -6869,19 +6869,19 @@ const { useState, useEffect } = React;
                             
                             {contextHelpType === 'pattern' && (
                                 <div style={{lineHeight: '1.8', fontSize: '14px'}}>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>5つの編制パターン</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>5つの編制パターン</p>
                                         <p style={{margin: '4px 0'}}>各編制は独立した12部隊を管理。用途別に使い分けが可能</p>
-                                        <p style={{margin: '4px 0', fontSize: '12px', color: '#888'}}>例：編制1=攻撃用、編制2=防御用、編制3=イベント用</p>
+                                        <p style={{margin: '4px 0', fontSize: '12px', color: 'var(--text-muted)'}}>例：編制1=攻撃用、編制2=防御用、編制3=イベント用</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>[...]メニュー</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>[...]メニュー</p>
                                         <p style={{margin: '4px 0'}}>• <strong>編制名を変更：</strong>分かりやすい名前を付ける</p>
                                         <p style={{margin: '4px 0'}}>• <strong>他の編制からコピー：</strong>別の編制の内容をコピー</p>
                                         <p style={{margin: '4px 0'}}>• <strong>この編制をリセット：</strong>全12部隊をクリア</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>切り替え</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>切り替え</p>
                                         <p style={{margin: '4px 0'}}>タブをクリックで編制を切り替え。データは自動保存</p>
                                     </div>
                                 </div>
@@ -6889,19 +6889,19 @@ const { useState, useEffect } = React;
                             
                             {contextHelpType === 'template' && (
                                 <div style={{lineHeight: '1.8', fontSize: '14px'}}>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>保存</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>保存</p>
                                         <p style={{margin: '4px 0'}}>部隊の[保存]ボタンで現在の構成をテンプレートとして保存</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>📂 呼出</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>📂 呼出</p>
                                         <p style={{margin: '4px 0'}}>部隊の[📂呼出]ボタンで保存したテンプレートを呼び出し</p>
-                                        <p style={{margin: '4px 0', fontSize: '12px', color: '#888'}}>上書き設定：武将・名宝の上書き有無を選択可能</p>
+                                        <p style={{margin: '4px 0', fontSize: '12px', color: 'var(--text-muted)'}}>上書き設定：武将・名宝の上書き有無を選択可能</p>
                                     </div>
-                                    <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: '#ffd700'}}>重複削除</p>
+                                    <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px'}}>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>重複削除</p>
                                         <p style={{margin: '4px 0'}}>テンプレート呼び出し時、同じ武将・名宝が他の部隊にあれば自動削除</p>
-                                        <p style={{margin: '4px 0', fontSize: '12px', color: '#888'}}>例：部隊1の張飛を部隊2に呼び出すと、部隊1の張飛は自動削除</p>
+                                        <p style={{margin: '4px 0', fontSize: '12px', color: 'var(--text-muted)'}}>例：部隊1の張飛を部隊2に呼び出すと、部隊1の張飛は自動削除</p>
                                     </div>
                                 </div>
                             )}
@@ -6925,24 +6925,24 @@ const { useState, useEffect } = React;
                         padding: '20px'
                     }} onClick={() => setShowHelpModal(false)}>
                         <div style={{
-                            background: '#1a1f2e',
-                            border: '2px solid #3a3a3a',
+                            background: 'var(--bg-card)',
+                            border: '2px solid var(--border-light)',
                             borderRadius: '8px',
                             padding: '24px',
                             maxWidth: '900px',
                             maxHeight: '90vh',
                             overflowY: 'auto',
-                            color: '#fff'
+                            color: 'var(--text-primary)'
                         }} onClick={(e) => e.stopPropagation()}>
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
-                                <h2 style={{color: '#d4af37', margin: 0}}>三国志覇道 編成支援ツール 使い方ガイド</h2>
+                                <h2 style={{color: 'var(--text-primary)', margin: 0}}>三国志覇道 編成支援ツール 使い方ガイド</h2>
                                 <button
                                     onClick={() => setShowHelpModal(false)}
                                     style={{
-                                        background: '#c0392b',
+                                        background: 'var(--danger)',
                                         border: 'none',
                                         borderRadius: '4px',
-                                        color: '#fff',
+                                        color: 'var(--text-primary)',
                                         cursor: 'pointer',
                                         fontSize: '20px',
                                         width: '32px',
@@ -6954,50 +6954,50 @@ const { useState, useEffect } = React;
                             </div>
                             
                             <div style={{lineHeight: '1.8'}}>
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px'}}>基本操作</h3>
+                                <h3 style={{color: 'var(--success)', borderBottom: '2px solid var(--success)', paddingBottom: '8px'}}>基本操作</h3>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>武将・名宝の配置</h4>
-                                <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>武将・名宝の配置</h4>
+                                <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                     <p style={{margin: '4px 0'}}><strong>ドラッグ&ドロップ:</strong> 武将/名宝を左パネルから部隊エリアにドラッグして配置</p>
                                     <p style={{margin: '4px 0'}}><strong>ダブルクリック:</strong> 武将/名宝をダブルクリックで自動的に空きスロットに配置</p>
                                     <p style={{margin: '4px 0'}}><strong>削除:</strong> 配置済みの武将/名宝をダブルクリックで削除</p>
                                     <p style={{margin: '4px 0'}}><strong>入れ替え:</strong> 武将同士、名宝同士をドラッグ&ドロップで入れ替え可能</p>
                                 </div>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>武将配置の詳細</h4>
-                                <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>武将配置の詳細</h4>
+                                <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                     <p style={{margin: '4px 0'}}><strong>主将:</strong> 各部隊に1名必須。ダブルクリックで主将エリアに配置</p>
                                     <p style={{margin: '4px 0'}}><strong>副将:</strong> 副将1、副将2の2つのスロット。ダブルクリックで空きスロットに配置</p>
                                     <p style={{margin: '4px 0'}}><strong>補佐:</strong> 補佐1、補佐2の2つのスロット。ダブルクリックで空きスロットに配置</p>
                                     <p style={{margin: '4px 0'}}><strong>侍従:</strong> LR武将のみ配置可能。ダブルクリックで自動配置</p>
                                 </div>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>名宝配置の詳細</h4>
-                                <div style={{background: '#2a2a2a', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>名宝配置の詳細</h4>
+                                <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
                                     <p style={{margin: '4px 0'}}><strong>主将の名宝:</strong> 武器・防具・文物を各1つずつ、最大3つまで配置可能</p>
                                     <p style={{margin: '4px 0'}}><strong>副将1の名宝:</strong> 武器・防具・文物を各1つずつ、最大3つまで配置可能</p>
                                     <p style={{margin: '4px 0'}}><strong>自動配置:</strong> 名宝をダブルクリックすると、種類に応じた空きスロットに自動配置</p>
-                                    <p style={{margin: '4px 0', color: '#ff6b6b'}}><strong>注意:</strong> 同じ名宝は1つの部隊にしか配置できません</p>
+                                    <p style={{margin: '4px 0', color: 'var(--rarity-ur)'}}><strong>注意:</strong> 同じ名宝は1つの部隊にしか配置できません</p>
                                 </div>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>基本機能</h3>
+                                <h3 style={{color: 'var(--success)', borderBottom: '2px solid var(--success)', paddingBottom: '8px', marginTop: '24px'}}>基本機能</h3>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>🎯 編成画面</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>🎯 編成画面</h4>
                                 <p><strong>部隊タブ:</strong> 主城部隊(6)、分城部隊(3)、出城部隊(3)の合計12部隊を管理</p>
                                 <p><strong>武将配置:</strong> 武将パネルから武将をドラッグ&ドロップで配置。主将・副将・補佐の3種類</p>
                                 <p><strong>侍従配置:</strong> LR武将は自動で侍従エリアが表示。侍従を配置可能</p>
                                 <p><strong>名宝配置:</strong> 主将と副将1に最大3つずつ名宝を装備可能（武器・防具・文物）</p>
                                 <p><strong>陣形選択:</strong> 各部隊の陣形タイプを選択可能</p>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>⭐ ランク設定画面</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>⭐ ランク設定画面</h4>
                                 <p><strong>プロファイル機能:</strong> 5つのプロファイル(P0-P4)で異なるランク設定を保存可能</p>
                                 <p><strong>武将ランク:</strong> 各武将の星ランク(0-7)を設定</p>
                                 <p><strong>名宝ランク:</strong> 各名宝の精錬ランク(0-7)とUR化状態を設定</p>
                                 <p><strong>お気に入り・不使用:</strong> [★]ボタンでお気に入り登録、[×]ボタンで不使用設定</p>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>🔧 高度な機能</h3>
+                                <h3 style={{color: 'var(--success)', borderBottom: '2px solid var(--success)', paddingBottom: '8px', marginTop: '24px'}}>🔧 高度な機能</h3>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>📁 編制パターン管理（10パターン）</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>📁 編制パターン管理（10パターン）</h4>
                                 <p><strong>編制タブ:</strong> 画面上部に10個の編制タブ（編制1-10）を表示</p>
                                 <p><strong>編制切り替え:</strong> タブをクリックして編制を切り替え。各編制は独立した12部隊を持つ</p>
                                 <p><strong>[...]メニュー:</strong></p>
@@ -7007,7 +7007,7 @@ const { useState, useEffect } = React;
                                     <li><strong>この編制をリセット:</strong> 全12部隊をクリア</li>
                                 </ul>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>部隊テンプレート機能</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>部隊テンプレート機能</h4>
                                 <p><strong>[保存]ボタン:</strong> 現在の部隊構成をテンプレートとして保存</p>
                                 <p><strong>[📂呼出]ボタン:</strong> 保存したテンプレートを別の部隊に呼び出し</p>
                                 <p><strong>上書き設定:</strong></p>
@@ -7017,7 +7017,7 @@ const { useState, useEffect } = React;
                                 </ul>
                                 <p><strong>重複削除:</strong> テンプレート呼び出し時、同じ武将・名宝が他の部隊にあれば自動削除</p>
                                 
-                                <h4 style={{color: '#ffd700', marginTop: '16px'}}>🔍 フィルタ機能</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>🔍 フィルタ機能</h4>
                                 <p><strong>武将フィルタ:</strong></p>
                                 <ul style={{marginLeft: '20px'}}>
                                     <li><strong>レア度:</strong> LR / UR</li>
@@ -7034,7 +7034,7 @@ const { useState, useEffect } = React;
                                     <li><strong>★お気に入り:</strong> お気に入り登録した名宝のみ表示</li>
                                 </ul>
                                 
-                                <h3 style={{color: '#4caf50', borderBottom: '2px solid #4caf50', paddingBottom: '8px', marginTop: '24px'}}>ヒント</h3>
+                                <h3 style={{color: 'var(--success)', borderBottom: '2px solid var(--success)', paddingBottom: '8px', marginTop: '24px'}}>ヒント</h3>
                                 <ul style={{marginLeft: '20px', lineHeight: '1.8'}}>
                                     <li><strong>データ保存:</strong> すべてのデータはブラウザに自動保存されます（localStorage使用）</li>
                                     <li><strong>重複チェック:</strong> 同じ武将・名宝を複数の部隊に配置しようとすると警告が表示されます</li>
@@ -7044,7 +7044,7 @@ const { useState, useEffect } = React;
                                     <li><strong>テンプレート活用:</strong> よく使う部隊構成はテンプレート保存しておくと効率的</li>
                                 </ul>
                                 
-                                <div style={{marginTop: '24px', padding: '12px', background: '#2a2a2a', borderRadius: '4px', borderLeft: '4px solid #d4af37'}}>
+                                <div style={{marginTop: '24px', padding: '12px', background: 'var(--bg-elevated)', borderRadius: '4px', borderLeft: '3px solid var(--bordeaux)'}}>
                                     <p style={{margin: 0}}><strong>バージョン情報:</strong> SANGOKUSHI HADOU v3 (v140)</p>
                                 </div>
                             </div>
