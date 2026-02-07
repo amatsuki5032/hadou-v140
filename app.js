@@ -3497,7 +3497,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title="全データをJSONファイルでエクスポート"
                             >
-                                📥エクスポート
+                                エクスポート
                             </button>
                             <label
                                 style={{
@@ -3512,7 +3512,7 @@ const { useState, useEffect } = React;
                                 }}
                                 title="JSONファイルからインポート"
                             >
-                                📤インポート
+                                インポート
                                 <input
                                     type="file"
                                     accept=".json"
@@ -3807,7 +3807,7 @@ const { useState, useEffect } = React;
                                                         onMouseEnter={(e) => e.target.style.background = 'var(--bg-elevated)'}
                                                         onMouseLeave={(e) => e.target.style.background = 'none'}
                                                     >
-                                                        📂 編制をインポート
+                                                        編制をインポート
                                                     </button>
                                                     
                                                     <button
@@ -3947,7 +3947,7 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{background: 'var(--success)', color: 'var(--text-primary)'}}
                                     >
-                                        📥 全データをエクスポート
+                                        全データをエクスポート
                                     </button>
                                     <button 
                                         className="reset-dropdown-item"
@@ -3957,7 +3957,7 @@ const { useState, useEffect } = React;
                                         }}
                                         style={{background: 'var(--accent)', color: 'var(--text-primary)'}}
                                     >
-                                        📤 全データをインポート
+                                        全データをインポート
                                     </button>
                                     
                                     <div className="reset-dropdown-separator"></div>
@@ -4150,7 +4150,7 @@ const { useState, useEffect } = React;
                                             }}
                                             title="テンプレートから呼び出し"
                                         >
-                                            📂呼出
+                                            呼出
                                         </button>
                                         <button
                                             onClick={() => resetFormation(key)}
@@ -4813,7 +4813,7 @@ const { useState, useEffect } = React;
                                         {/* 戦闘パラメータパネル */}
                                         <div className="combat-parameters-panel">
                                             <div className="combat-params-header">
-                                                <span>📊 部隊パラメータ</span>
+                                                <span>部隊パラメータ</span>
                                             </div>
                                             <div className="combat-params-content">
                                                 {(() => {
@@ -5050,7 +5050,7 @@ const { useState, useEffect } = React;
                                             }}
                                             title={!formations[recommendTargetFormation]?.slots?.['主将'] ? '対象部隊に主将を配置してください' : 'おススメ武将のみ表示'}
                                         >
-                                            🎯おススメ
+                                            おススメ
                                         </button>
                                     </div>
                                     <div className="filter-group" style={{marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px'}}>
@@ -5479,7 +5479,7 @@ const { useState, useEffect } = React;
                                                     : '対象部隊に武将を配置してください';
                                             })()}
                                         >
-                                            🎯おススメ
+                                            おススメ
                                         </button>
                                     </div>
                                 </div>
@@ -6010,7 +6010,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title="現在のプロファイルをエクスポート"
                                     >
-                                        📥プロファイル保存
+                                        プロファイル保存
                                     </button>
                                     <label
                                         style={{
@@ -6025,7 +6025,7 @@ const { useState, useEffect } = React;
                                         }}
                                         title="プロファイルをインポート"
                                     >
-                                        📤プロファイル読込
+                                        プロファイル読込
                                         <input
                                             type="file"
                                             accept=".json"
@@ -6203,7 +6203,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            📂 呼び出し
+                                            呼び出し
                                         </button>
                                     </div>
                                 </div>
@@ -6589,7 +6589,7 @@ const { useState, useEffect } = React;
                                                 fontWeight: 'bold'
                                             }}
                                         >
-                                            📂 呼び出し
+                                            呼び出し
                                         </button>
                                     </div>
                                 </div>
@@ -6800,9 +6800,9 @@ const { useState, useEffect } = React;
                         }} onClick={(e) => e.stopPropagation()}>
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
                                 <h3 style={{color: 'var(--accent)', margin: 0}}>
-                                    {contextHelpType === 'general' && '🎯 武将の配置方法'}
-                                    {contextHelpType === 'treasure' && '💎 名宝の配置方法'}
-                                    {contextHelpType === 'pattern' && '📁 編制パターンの使い方'}
+                                    {contextHelpType === 'general' && '武将の配置方法'}
+                                    {contextHelpType === 'treasure' && '名宝の配置方法'}
+                                    {contextHelpType === 'pattern' && '編制パターンの使い方'}
                                     {contextHelpType === 'template' && 'テンプレートの使い方'}
                                 </h3>
                                 <button
@@ -6894,8 +6894,8 @@ const { useState, useEffect } = React;
                                         <p style={{margin: '4px 0'}}>部隊の[保存]ボタンで現在の構成をテンプレートとして保存</p>
                                     </div>
                                     <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px', marginBottom: '12px'}}>
-                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>📂 呼出</p>
-                                        <p style={{margin: '4px 0'}}>部隊の[📂呼出]ボタンで保存したテンプレートを呼び出し</p>
+                                        <p style={{margin: '4px 0', fontWeight: 'bold', color: 'var(--text-primary)'}}>呼出</p>
+                                        <p style={{margin: '4px 0'}}>部隊の[呼出]ボタンで保存したテンプレートを呼び出し</p>
                                         <p style={{margin: '4px 0', fontSize: '12px', color: 'var(--text-muted)'}}>上書き設定：武将・名宝の上書き有無を選択可能</p>
                                     </div>
                                     <div style={{background: 'var(--bg-elevated)', padding: '12px', borderRadius: '4px'}}>
@@ -6982,7 +6982,7 @@ const { useState, useEffect } = React;
                                 
                                 <h3 style={{color: 'var(--success)', borderBottom: '2px solid var(--success)', paddingBottom: '8px', marginTop: '24px'}}>基本機能</h3>
                                 
-                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>🎯 編成画面</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>編成画面</h4>
                                 <p><strong>部隊タブ:</strong> 主城部隊(6)、分城部隊(3)、出城部隊(3)の合計12部隊を管理</p>
                                 <p><strong>武将配置:</strong> 武将パネルから武将をドラッグ&ドロップで配置。主将・副将・補佐の3種類</p>
                                 <p><strong>侍従配置:</strong> LR武将は自動で侍従エリアが表示。侍従を配置可能</p>
@@ -6997,7 +6997,7 @@ const { useState, useEffect } = React;
                                 
                                 <h3 style={{color: 'var(--success)', borderBottom: '2px solid var(--success)', paddingBottom: '8px', marginTop: '24px'}}>🔧 高度な機能</h3>
                                 
-                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>📁 編制パターン管理（10パターン）</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>編制パターン管理（10パターン）</h4>
                                 <p><strong>編制タブ:</strong> 画面上部に10個の編制タブ（編制1-10）を表示</p>
                                 <p><strong>編制切り替え:</strong> タブをクリックして編制を切り替え。各編制は独立した12部隊を持つ</p>
                                 <p><strong>[...]メニュー:</strong></p>
@@ -7009,7 +7009,7 @@ const { useState, useEffect } = React;
                                 
                                 <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>部隊テンプレート機能</h4>
                                 <p><strong>[保存]ボタン:</strong> 現在の部隊構成をテンプレートとして保存</p>
-                                <p><strong>[📂呼出]ボタン:</strong> 保存したテンプレートを別の部隊に呼び出し</p>
+                                <p><strong>[呼出]ボタン:</strong> 保存したテンプレートを別の部隊に呼び出し</p>
                                 <p><strong>上書き設定:</strong></p>
                                 <ul style={{marginLeft: '20px'}}>
                                     <li>☑ 武将・侍従を上書き: チェックを入れると既存の武将を置き換え</li>
@@ -7017,7 +7017,7 @@ const { useState, useEffect } = React;
                                 </ul>
                                 <p><strong>重複削除:</strong> テンプレート呼び出し時、同じ武将・名宝が他の部隊にあれば自動削除</p>
                                 
-                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>🔍 フィルタ機能</h4>
+                                <h4 style={{color: 'var(--text-primary)', marginTop: '16px'}}>フィルタ機能</h4>
                                 <p><strong>武将フィルタ:</strong></p>
                                 <ul style={{marginLeft: '20px'}}>
                                     <li><strong>レア度:</strong> LR / UR</li>
