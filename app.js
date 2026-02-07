@@ -13,6 +13,7 @@ const { useState, useEffect } = React;
         // convertOldDataFormat → utils.js に移動済み
         
         function App() {
+            // ─── 画面制御 ───
             const [viewMode, setViewMode] = useState('formation'); // 'formation' or 'rank'
             const [activeTab, setActiveTab] = useState('main');
             const [rankTab, setRankTab] = useState('general'); // 'general' or 'treasure'
@@ -33,7 +34,7 @@ const { useState, useEffect } = React;
             }); // 名宝カテゴリごとの折りたたみ状態
             const [showSkillEffects, setShowSkillEffects] = useState({}); // 技能効果表示状態
             
-            // おススメフィルタ用の状態
+            // ─── おススメフィルタ ───
             const [recommendTargetFormation, setRecommendTargetFormation] = useState(() => {
                 const saved = localStorage.getItem('recommendTargetFormation');
                 // 有効な部隊キーかチェック
@@ -50,7 +51,7 @@ const { useState, useEffect } = React;
             const [showOnlyRecommendedGenerals, setShowOnlyRecommendedGenerals] = useState(false);
             const [showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures] = useState(false);
             
-            // プロファイル機能
+            // ─── プロファイル ───
             const [currentProfile, setCurrentProfile] = useState(0); // 0-4
             const [profileNames, setProfileNames] = useState(['プロファイル1', 'プロファイル2', 'プロファイル3', 'プロファイル4', 'プロファイル5']);
             const [profileData, setProfileData] = useState({
@@ -61,10 +62,11 @@ const { useState, useEffect } = React;
                 4: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}}
             });
             
+            // ─── 武将・名宝データ ───
             const [generals, setGenerals] = useState([]);
             const [treasures, setTreasures] = useState([]);
             
-            // 編制パターン（10パターン）
+            // ─── 編制パターン ───
             const [formationPatterns, setFormationPatterns] = useState(() => {
                 const saved = localStorage.getItem('formationPatterns');
                 let migratedData = null;
@@ -113,7 +115,7 @@ const { useState, useEffect } = React;
                 };
             });
             
-            // プロファイル別の独立編制（プロファイル2〜5）
+            // ─── プロファイル別編制 ───
             const [profileFormations, setProfileFormations] = useState(() => {
                 const saved = localStorage.getItem('profileFormations');
                 
@@ -296,6 +298,7 @@ const { useState, useEffect } = React;
             };
             
             const [loading, setLoading] = useState(true);
+            // ─── D&D状態 ───
             const [draggedGeneral, setDraggedGeneral] = useState(null);
             const [draggedTreasure, setDraggedTreasure] = useState(null);
             
@@ -309,7 +312,7 @@ const { useState, useEffect } = React;
                 return saved ? JSON.parse(saved) : {};
             });
             
-            // テンプレート保存・呼び出しダイアログの状態
+            // ─── テンプレートダイアログ ───
             const [showTemplateSaveDialog, setShowTemplateSaveDialog] = useState(null); // formationKey or null
             const [showTemplateLoadDialog, setShowTemplateLoadDialog] = useState(null); // formationKey or null
             const [templateName, setTemplateName] = useState('');
@@ -376,7 +379,7 @@ const { useState, useEffect } = React;
             // 画像設定モーダル
             // ImageSettingsModal → components-modals.js に移動済み
 
-            // ヘルプモーダル
+            // ─── 画像・ヘルプ表示 ───
             const [showHelpModal, setShowHelpModal] = useState(false);
             // 画像URL設定
             const [showImageSettings, setShowImageSettings] = useState(false);
@@ -399,18 +402,18 @@ const { useState, useEffect } = React;
                 localStorage.setItem('showContextHelp', JSON.stringify(showContextHelp));
             }, [showContextHelp]);
             
-            // フィルター
+            // ─── 武将フィルタ ───
             const [unitTypeFilter, setUnitTypeFilter] = useState([]);
             const [factionFilter, setFactionFilter] = useState([]);
             const [attendantFilter, setAttendantFilter] = useState([]);
             const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
             
-            // 名宝フィルター
+            // ─── 名宝フィルタ ───
             const [treasureWeaponFilter, setTreasureWeaponFilter] = useState([]);
             const [treasureFactionFilter, setTreasureFactionFilter] = useState([]);
             const [showOnlyFavoriteTreasures, setShowOnlyFavoriteTreasures] = useState(false);
             
-            // お気に入り武将（localStorage保存）
+            // ─── お気に入り ───
             const [favoriteGenerals, setFavoriteGenerals] = useState(() => {
                 const saved = localStorage.getItem('favoriteGenerals');
                 return saved ? JSON.parse(saved) : [];
@@ -431,23 +434,23 @@ const { useState, useEffect } = React;
             // 設定画面用の検索
             const [rankSearchTerm, setRankSearchTerm] = useState('');
             
-            // パネル表示フラグ
+            // ─── パネル表示制御 ───
             const [showGeneralsPanel, setShowGeneralsPanel] = useState(true);
             const [showTreasuresPanel, setShowTreasuresPanel] = useState(true);
             const [showPendingPanel, setShowPendingPanel] = useState(true);
             
-            // 武将の並び順（unit_type: 兵科順、affinity: 相性順）
+            // ─── ソート設定 ───
             const [generalsSortOrder, setGeneralsSortOrder] = useState('affinity');
             
             // 相性順のソート方向（desc: 降順、asc: 昇順）
             const [affinitySortDirection, setAffinitySortDirection] = useState('asc');
             
-            // Google Drive連携
+            // ─── Google Drive連携 ───
             const [showGDriveSetup, setShowGDriveSetup] = useState(false);
             const [gdriveEnabled, setGdriveEnabled] = useState(false);
             const [gdriveLastSync, setGdriveLastSync] = useState(null);
             
-            // 武将タブ（使用可能 / 不使用）
+            // ─── 使用可能/不使用タブ ───
             const [activeGeneralsTab, setActiveGeneralsTab] = useState('active');
             
             // 不使用武将リスト
@@ -967,9 +970,9 @@ const { useState, useEffect } = React;
                 { name: '張角', center: 7, color: 'var(--text-muted)' },
                 { name: '魏', center: 25, color: 'var(--accent-hover)' },
                 { name: '蜀', center: 75, color: 'var(--success)' },
-                { name: '袁紹', center: 101, color: '#f39c12' },
+                { name: '袁紹', center: 101, color: 'var(--faction-yuan)' },
                 { name: '呉', center: 125, color: 'var(--danger)' },
-                { name: '呂布', center: 145, color: '#9b59b6' }
+                { name: '呂布', center: 145, color: 'var(--stat-politics)' }
             ];
             
             // 相性値から勢力タグを取得（循環考慮、0-149で150=0）
@@ -3160,8 +3163,8 @@ const { useState, useEffect } = React;
                                 onClick={() => setShowImages(!showImages)}
                                 style={{
                                     padding: '8px 12px',
-                                    background: showImages ? '#e67e22' : 'var(--text-muted)',
-                                    border: `1px solid ${showImages ? '#f39c12' : 'var(--text-muted)'}`,
+                                    background: showImages ? 'var(--stat-attack)' : 'var(--text-muted)',
+                                    border: `1px solid ${showImages ? 'var(--faction-yuan)' : 'var(--text-muted)'}`,
                                     borderRadius: '4px',
                                     color: 'var(--text-primary)',
                                     cursor: 'pointer',
@@ -3220,7 +3223,7 @@ const { useState, useEffect } = React;
                                                     style={{
                                                         padding: '8px 16px',
                                                         background: activePattern === patternIndex ? 'var(--success-hover)' : 'var(--bg-elevated)',
-                                                        border: activePattern === patternIndex ? '1px solid #4caf50' : '1px solid #3a3a3a',
+                                                        border: activePattern === patternIndex ? '1px solid var(--success)' : '1px solid var(--border-dim)',
                                                         borderRadius: '4px',
                                                         color: 'var(--text-primary)',
                                                         cursor: 'pointer',
@@ -3403,7 +3406,7 @@ const { useState, useEffect } = React;
                                                             padding: '10px 16px',
                                                             background: 'none',
                                                             border: 'none',
-                                                            color: '#9b59b6',
+                                                            color: 'var(--stat-politics)',
                                                             textAlign: 'left',
                                                             cursor: 'pointer',
                                                             fontSize: '13px',
@@ -3473,7 +3476,7 @@ const { useState, useEffect } = React;
                                         style={{
                                             padding: '6px 12px',
                                             background: currentProfile !== 0 ? 'var(--success)' : 'var(--text-muted)',
-                                            border: currentProfile !== 0 ? '2px solid #66bb6a' : '2px solid #444',
+                                            border: currentProfile !== 0 ? '2px solid var(--success)' : '2px solid var(--border-dim)',
                                             borderRadius: '4px',
                                             color: currentProfile !== 0 ? 'var(--text-primary)' : 'var(--text-muted)',
                                             cursor: currentProfile !== 0 ? 'pointer' : 'not-allowed',
@@ -3497,8 +3500,8 @@ const { useState, useEffect } = React;
                                             style={{
                                                 padding: '6px 12px',
                                                 background: currentProfile === index ? 'var(--accent)' : 'var(--bg-elevated)',
-                                                border: currentProfile === index ? '2px solid #d4af37' : '2px solid #3a3a3a',
-                                                color: currentProfile === index ? 'var(--text-primary)' : 'var(--text-primary)',
+                                                border: currentProfile === index ? '2px solid var(--gold)' : '2px solid var(--border-dim)',
+                                                color: 'var(--text-primary)',
                                                 cursor: 'pointer',
                                                 fontWeight: currentProfile === index ? 'bold' : 'normal',
                                                 fontSize: '11px'
@@ -3670,807 +3673,39 @@ const { useState, useEffect } = React;
                     
                     <div className="main-content">
                         {/* 部隊エリア（左） */}
-                        <div className="formations-area">
-                            {currentFormations.map(({ key, number, data }) => (
-                                <div key={key} className="formation-card">
-                                    <div className="formation-header">
-                                        <div style={{display: 'flex', alignItems: 'center', gap: '12px', flex: 1}}>
-                                            <input
-                                                type="checkbox"
-                                                id={`collapse-${key}`}
-                                                checked={!collapsedFormations[key]}
-                                                onChange={() => toggleFormationCollapse(key)}
-                                                style={{width: '16px', height: '16px', cursor: 'pointer'}}
-                                            />
-                                            <button
-                                                className={`recommend-target-radio ${recommendTargetFormation === key ? 'selected' : ''}`}
-                                                onClick={() => setRecommendTargetFormation(key)}
-                                                title="おススメフィルタの対象部隊に設定"
-                                                style={{
-                                                    width: '24px',
-                                                    height: '24px',
-                                                    border: recommendTargetFormation === key ? '2px solid #ffd700' : '2px solid #666',
-                                                    borderRadius: '50%',
-                                                    background: recommendTargetFormation === key ? 'var(--rank-color)' : 'transparent',
-                                                    color: recommendTargetFormation === key ? 'var(--bg-base)' : 'var(--text-muted)',
-                                                    cursor: 'pointer',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    fontSize: recommendTargetFormation === key ? '12px' : '14px',
-                                                    padding: '0',
-                                                    transition: 'all 0.3s'
-                                                }}
-                                            >
-                                                {recommendTargetFormation === key ? '🎯' : '○'}
-                                            </button>
-                                            <label 
-                                                htmlFor={`collapse-${key}`}
-                                                style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'}}
-                                            >
-                                                <div className="formation-number">部隊 {number}</div>
-                                                {data.slots?.['主将'] && (
-                                                    <div style={{
-                                                        fontSize: '11px', 
-                                                        color: 'var(--text-primary)',
-                                                        padding: '2px 6px',
-                                                        background: 'rgba(37, 99, 235, 0.08)',
-                                                        borderRadius: '3px',
-                                                        border: '1px solid rgba(37, 99, 235, 0.15)'
-                                                    }}>
-                                                        {getUnitTypeName(data.slots['主将'].unit_type)}
-                                                    </div>
-                                                )}
-                                            </label>
-                                        </div>
-                                        <button
-                                            onClick={() => saveFormationTemplate(key)}
-                                            style={{
-                                                padding: '4px 12px',
-                                                background: 'var(--success)',
-                                                border: '1px solid var(--success)',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontSize: '11px',
-                                                fontWeight: 'bold',
-                                                marginRight: '8px'
-                                            }}
-                                            title="この部隊をテンプレートとして保存"
-                                        >
-                                            保存
-                                        </button>
-                                        <button
-                                            onClick={() => loadFormationTemplate(key)}
-                                            style={{
-                                                padding: '4px 12px',
-                                                background: 'var(--accent)',
-                                                border: '1px solid var(--accent)',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontSize: '11px',
-                                                fontWeight: 'bold',
-                                                marginRight: '8px'
-                                            }}
-                                            title="テンプレートから呼び出し"
-                                        >
-                                            呼出
-                                        </button>
-                                        <button
-                                            onClick={() => resetFormation(key)}
-                                            style={{
-                                                padding: '4px 12px',
-                                                background: 'var(--danger)',
-                                                border: '1px solid var(--danger)',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontSize: '11px',
-                                                fontWeight: 'bold',
-                                                marginRight: '8px'
-                                            }}
-                                            title="この部隊をリセット"
-                                        >
-                                            リセット
-                                        </button>
-                                        <button
-                                            onClick={() => setShowSkillEffects(prev => ({...prev, [key]: !prev[key]}))}
-                                            style={{
-                                                padding: '4px 12px',
-                                                background: showSkillEffects[key] ? 'var(--success)' : 'var(--bg-elevated)',
-                                                border: `1px solid ${showSkillEffects[key] ? 'var(--success)' : 'var(--text-muted)'}`,
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontSize: '11px',
-                                                fontWeight: 'bold',
-                                                marginRight: '8px'
-                                            }}
-                                            title="技能効果を表示"
-                                        >
-                                            {showSkillEffects[key] ? '技能効果▲' : '技能効果▼'}
-                                        </button>
-                                        <select
-                                            className="formation-select"
-                                            value={data.formationType || '基本陣形'}
-                                            onChange={(e) => {
-                                                setFormations(prev => ({
-                                                    ...prev,
-                                                    [key]: {
-                                                        ...prev[key],
-                                                        formationType: e.target.value
-                                                    }
-                                                }));
-                                            }}
-                                        >
-                                            {Object.keys(FORMATIONS_TYPES).map(type => (
-                                                <option key={type} value={type}>{type}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    
-                                    {/* 折りたたみ時は非表示 */}
-                                    {!collapsedFormations[key] && (
-                                    <div>
-                                    {/* コメント入力欄 */}
-                                    <div style={{
-                                        padding: '8px 12px',
-                                        borderBottom: '1px solid var(--border-base)',
-                                        background: 'var(--bg-base)'
-                                    }}>
-                                        <input
-                                            type="text"
-                                            placeholder="メモを入力..."
-                                            value={data.comment || ''}
-                                            onChange={(e) => {
-                                                setFormations(prev => ({
-                                                    ...prev,
-                                                    [key]: {
-                                                        ...prev[key],
-                                                        comment: e.target.value
-                                                    }
-                                                }));
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                padding: '6px 10px',
-                                                background: 'var(--bg-base)',
-                                                border: '1px solid var(--border-base)',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-body)',
-                                                fontSize: '12px',
-                                                fontFamily: 'inherit'
-                                            }}
-                                        />
-                                    </div>
-                                    {/* 技能効果表示 */}
-                                    {showSkillEffects[key] && (() => {
-                                        const effects = calcSkillEffects(key);
-                                        if (!effects) return null;
-                                        
-                                        return (
-                                            <div style={{
-                                                padding: '12px',
-                                                background: 'var(--bg-card)',
-                                                borderRadius: '8px',
-                                                marginBottom: '16px',
-                                                border: '2px solid var(--accent)',
-                                                boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
-                                            }}>
-                                                <div style={{
-                                                    fontSize: '14px',
-                                                    fontWeight: 'bold',
-                                                    color: 'var(--text-primary)',
-                                                    marginBottom: '8px',
-                                                    borderBottom: '1px solid rgba(37, 99, 235, 0.15)',
-                                                    paddingBottom: '4px'
-                                                }}>
-                                                    技能効果
-                                                </div>
-                                                <div style={{display: 'flex', gap: '24px', flexWrap: 'wrap'}}>
-                                                    {['攻撃速度', '会心発生', '戦法速度'].map(param => {
-                                                        const value = effects[param];
-                                                        if (value === 0) return null;
-                                                        return (
-                                                            <div key={param} style={{
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                gap: '8px'
-                                                            }}>
-                                                                <span style={{
-                                                                    color: 'var(--text-muted)',
-                                                                    fontSize: '13px'
-                                                                }}>
-                                                                    {param}:
-                                                                </span>
-                                                                <span style={{
-                                                                    color: 'var(--success)',
-                                                                    fontSize: '16px',
-                                                                    fontWeight: 'bold'
-                                                                }}>
-                                                                    +{(value * 100).toFixed(1)}%
-                                                                </span>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                                {Object.values(effects).every(v => v === 0) && (
-                                                    <div style={{
-                                                        color: 'var(--text-muted)',
-                                                        fontSize: '13px',
-                                                        fontStyle: 'italic'
-                                                    }}>
-                                                        対象パラメータの技能効果なし
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })()}
-                                    {/* 陣形と編制枠を横並び */}
-                                    <div style={{display: 'flex', gap: '16px', position: 'relative'}}>
-                                        {/* 左：陣形グリッド（相対位置指定でSVGオーバーレイ用） */}
-                                        <div style={{flex: '0 0 auto', position: 'relative'}}>
-                                            {/* グリッド */}
-                                            <div style={{
-                                                display: 'grid',
-                                                gridTemplateColumns: 'repeat(3, 60px)',
-                                                gridTemplateRows: 'repeat(3, 60px)',
-                                                gap: '4px'
-                                            }}>
-                                                {(() => {
-                                                    const formationType = data.formationType || '基本陣形';
-                                                    const formationData = FORMATIONS_TYPES[formationType];
-                                                    const attendantPlacements = resolveAttendantConflicts(formationType, data.slots);
-                                                    
-                                                    return formationData.positions.map((row, rowIndex) =>
-                                                        row.map((cell, colIndex) => {
-                                                            let slotName = null;
-                                                            for (const [slot, [r, c]] of Object.entries(formationData.mapping)) {
-                                                                if (r === rowIndex && c === colIndex) {
-                                                                    slotName = slot;
-                                                                    break;
-                                                                }
-                                                            }
-                                                            const general = slotName ? data.slots[slotName] : null;
-                                                            
-                                                            // 侍従枠がこの位置にあるかチェック
-                                                            let attendantSlot = null;
-                                                            for (const [slot, coords] of Object.entries(attendantPlacements)) {
-                                                                if (coords && coords[0] === rowIndex && coords[1] === colIndex) {
-                                                                    attendantSlot = slot;
-                                                                    break;
-                                                                }
-                                                            }
-                                                            const hasAttendantSlot = attendantSlot !== null;
-                                                            const attendant = attendantSlot ? data.attendants?.[attendantSlot] : null;
-                                                            
-                                                            // 武将の勢力色とレア度色を取得
-                                                            const affinityColor = general ? getAffinityColor(general.affinity) : 
-                                                                                (attendant ? getAffinityColor(attendant.affinity) : null);
-                                                            const rarityColor = general ? getRarityColor(general.rarity) : 
-                                                                              (attendant ? getRarityColor(attendant.rarity) : null);
-                                                            
-                                                            return (
-                                                                <div
-                                                                    key={`${rowIndex}-${colIndex}`}
-                                                                    style={{
-                                                                        border: cell === 1 ? '2px solid #d4af37' : (hasAttendantSlot ? '2px solid #6495ed' : '1px solid var(--border-light)'),
-                                                                        background: cell === 1 ? 'var(--bg-card)' : (hasAttendantSlot ? 'var(--bg-card)' : 'var(--bg-base)'),
-                                                                        display: 'flex',
-                                                                        alignItems: 'center',
-                                                                        justifyContent: 'center',
-                                                                        fontSize: '10px',
-                                                                        color: general ? affinityColor : (hasAttendantSlot ? '#6495ed' : 'var(--text-muted)'),
-                                                                        fontWeight: general || attendant ? 'bold' : 'normal',
-                                                                        padding: '2px',
-                                                                        textAlign: 'center',
-                                                                        flexDirection: 'column',
-                                                                        gap: '1px'
-                                                                    }}
-                                                                >
-                                                                    {general ? (
-                                                                        showImages ? (
-                                                                            <ItemImage 
-                                                                                src={getImageUrl('general', general.id, general.rarity, general.name)}
-                                                                                alt={general.name}
-                                                                                rarity={general.rarity}
-                                                                            />
-                                                                        ) : (
-                                                                            <>
-                                                                                <div style={{fontSize: '7px', color: rarityColor, opacity: 0.8}}>{general.rarity}</div>
-                                                                                <div>{general.name.substring(0, 2)}</div>
-                                                                            </>
-                                                                        )
-                                                                    ) : hasAttendantSlot ? (
-                                                                        attendant ? (
-                                                                            showImages ? (
-                                                                                <ItemImage 
-                                                                                    src={getImageUrl('general', attendant.id, attendant.rarity, attendant.name)}
-                                                                                    alt={attendant.name}
-                                                                                    rarity={attendant.rarity}
-                                                                                />
-                                                                            ) : (
-                                                                                <>
-                                                                                    <div style={{fontSize: '7px', color: 'var(--text-muted)'}}>侍</div>
-                                                                                    <div style={{fontSize: '6px', color: rarityColor, opacity: 0.8}}>{attendant.rarity}</div>
-                                                                                    <div style={{color: affinityColor}}>{attendant.name.substring(0, 2)}</div>
-                                                                                </>
-                                                                            )
-                                                                        ) : (
-                                                                            <div style={{fontSize: '9px', color: '#6495ed'}}>侍従</div>
-                                                                        )
-                                                                    ) : (
-                                                                        slotName || ''
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        })
-                                                    ).flat();
-                                                })()}
-                                            </div>
-                                            
-                                            {/* SVG接続線（グリッドの上にオーバーレイ） */}
-                                            <svg 
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: 0,
-                                                    left: 0,
-                                                    width: '196px',  // 60*3 + 4*2
-                                                    height: '196px',
-                                                    pointerEvents: 'none'
-                                                }}
-                                            >
-                                                {(() => {
-                                                    const formationType = data.formationType || '基本陣形';
-                                                    const formationData = FORMATIONS_TYPES[formationType];
-                                                    const attendantPlacements = resolveAttendantConflicts(formationType, data.slots);
-                                                    const lines = [];
-                                                    
-                                                    // 各侍従枠について、LR武将との接続線を描画
-                                                    Object.entries(attendantPlacements).forEach(([slotName, attendantCoords]) => {
-                                                        if (!attendantCoords) return;
-                                                        
-                                                        const generalCoords = formationData.mapping[slotName];
-                                                        if (!generalCoords) return;
-                                                        
-                                                        // 座標を計算（セルの中心）
-                                                        const cellSize = 60;
-                                                        const gap = 4;
-                                                        
-                                                        const generalX = generalCoords[1] * (cellSize + gap) + cellSize / 2;
-                                                        const generalY = generalCoords[0] * (cellSize + gap) + cellSize / 2;
-                                                        
-                                                        const attendantX = attendantCoords[1] * (cellSize + gap) + cellSize / 2;
-                                                        const attendantY = attendantCoords[0] * (cellSize + gap) + cellSize / 2;
-                                                        
-                                                        lines.push(
-                                                            <line
-                                                                key={slotName}
-                                                                x1={generalX}
-                                                                y1={generalY}
-                                                                x2={attendantX}
-                                                                y2={attendantY}
-                                                                stroke="#6495ed"
-                                                                strokeWidth="1.5"
-                                                                strokeDasharray="3,3"
-                                                                opacity="0.5"
-                                                            />
-                                                        );
-                                                    });
-                                                    
-                                                    return lines;
-                                                })()}
-                                            </svg>
-                                        </div>
-                                        
-                                        {/* 右：編制枠 */}
-                                        <div className="template-slots" style={{flex: '1'}}>
-                                        {['主将', '副将1', '副将2', '補佐1', '補佐2'].map(slotName => (
-                                            <div key={slotName} className="slot-row">
-                                                <div className="slot-label">{slotName}</div>
-                                                
-                                                {/* 武将枠 */}
-                                                <div
-                                                    className={`slot-drop-zone ${data.slots[slotName] ? 'filled' : ''}`}
-                                                    data-rarity={data.slots[slotName]?.rarity}
-                                                    onDragOver={(e) => {
-                                                        e.preventDefault();
-                                                        e.currentTarget.classList.add('drag-over');
-                                                    }}
-                                                    onDragLeave={(e) => {
-                                                        e.currentTarget.classList.remove('drag-over');
-                                                    }}
-                                                    onDrop={(e) => {
-                                                        e.currentTarget.classList.remove('drag-over');
-                                                        handleDrop(e, key, slotName);
-                                                    }}
-                                                >
-                                                    {data.slots[slotName] ? (
-                                                        <div 
-                                                            className="slot-content"
-                                                            data-rarity={data.slots[slotName].rarity}
-                                                            draggable={true}
-                                                            onDragStart={(e) => handleSlotDragStart(e, data.slots[slotName], key, slotName)}
-                                                            onDoubleClick={() => handleRemoveGeneral(key, slotName)}
-                                                            style={{cursor: 'grab'}}
-                                                            title="ダブルクリックで削除"
-                                                        >
-                                                            <button
-                                                                className="mini-remove-btn"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleRemoveGeneral(key, slotName);
-                                                                }}
-                                                            >
-                                                                ×
-                                                            </button>
-                                                            <div className="slot-general-info" style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                                                                <ItemImage 
-                                                                    src={getImageUrl('general', data.slots[slotName].id, data.slots[slotName].rarity, data.slots[slotName].name)}
-                                                                    alt={data.slots[slotName].name}
-                                                                    rarity={data.slots[slotName].rarity}
-                                                                />
-                                                                <div style={{flex: 1}}>
-                                                                    <div className="slot-general-name" style={{color: 'var(--text-primary)'}}>
-                                                                        {data.slots[slotName].name}
-                                                                    </div>
-                                                                    <div className="slot-general-details">
-                                                                    <span style={{color: getRarityColor(data.slots[slotName].rarity), fontWeight: 'bold'}}>
-                                                                        {data.slots[slotName].rarity}
-                                                                    </span>
-                                                                    {' '}- {getUnitTypeName(data.slots[slotName].unit_type)}
-                                                                    {' '}
-                                                                    <span style={{
-                                                                        color: getAffinityColor(data.slots[slotName].affinity),
-                                                                        fontWeight: 'bold',
-                                                                        fontSize: '11px'
-                                                                    }}>
-                                                                        相性{data.slots[slotName].affinity}
-                                                                    </span>
-                                                                    <span className="star-rank">
-                                                                        {' '}{(() => {
-                                                                            const rank = getGeneralStarRank(data.slots[slotName]);
-                                                                            return '★'.repeat(rank) + '☆'.repeat(7 - rank);
-                                                                        })()}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="slot-empty">武将</div>
-                                                    )}
-                                                </div>
-                                                
-                                                {/* 侍従枠 */}
-                                                <div 
-                                                    className={`attendant-zone ${data.attendants?.[slotName] ? 'filled' : ''}`}
-                                                    data-rarity={data.attendants?.[slotName]?.rarity}
-                                                    onDragOver={(e) => e.preventDefault()}
-                                                    onDrop={(e) => handleAttendantDrop(e, key, slotName)}
-                                                >
-                                                    {data.attendants?.[slotName] ? (
-                                                        <div 
-                                                            className="slot-general-info"
-                                                            draggable={true}
-                                                            onDragStart={(e) => handleAttendantDragStart(e, data.attendants[slotName], key, slotName)}
-                                                            onDoubleClick={() => handleRemoveAttendant(key, slotName)}
-                                                            style={{cursor: 'grab', width: '100%', height: '100%', padding: '4px', position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
-                                                            title="ドラッグで移動、ダブルクリックで削除"
-                                                        >
-                                                            <button
-                                                                className="mini-remove-btn"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleRemoveAttendant(key, slotName);
-                                                                }}
-                                                            >
-                                                                ×
-                                                            </button>
-                                                            {showImages ? (
-                                                                <ItemImage 
-                                                                    src={getImageUrl('general', data.attendants[slotName].id, data.attendants[slotName].rarity, data.attendants[slotName].name)}
-                                                                    alt={data.attendants[slotName].name}
-                                                                    rarity={data.attendants[slotName].rarity}
-                                                                />
-                                                            ) : (
-                                                                <div style={{width: '100%'}}>
-                                                                    <div style={{fontSize: '11px', color: 'var(--text-primary)', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                                                        {data.attendants[slotName].name}
-                                                                    </div>
-                                                                    <div style={{fontSize: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                                                        <span style={{color: getRarityColor(data.attendants[slotName].rarity), fontWeight: 'bold'}}>
-                                                                            {data.attendants[slotName].rarity}
-                                                                        </span>
-                                                                        {' '}
-                                                                        <span style={{
-                                                                            color: getAffinityColor(data.attendants[slotName].affinity),
-                                                                            fontWeight: 'bold'
-                                                                        }}>
-                                                                            相性{data.attendants[slotName].affinity}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ) : (
-                                                        '侍従'
-                                                    )}
-                                                </div>
-                                                
-                                                {/* 名宝枠 */}
-                                                <div className="treasures-zone">
-                                                    {['weapon', 'armor', 'artifact'].map((treasureSlot, idx) => {
-                                                        const treasureKey = `${slotName}-${treasureSlot}`;
-                                                        const equippedTreasure = data.treasures?.[treasureKey];
-                                                        const labels = ['武器', '防具', '文物'];
-                                                        
-                                                        return (
-                                                            <div 
-                                                                key={treasureSlot}
-                                                                className={`treasure-mini-slot ${equippedTreasure ? 'filled' : ''}`}
-                                                                onDragOver={(e) => e.preventDefault()}
-                                                                onDrop={(e) => handleTreasureDrop(e, key, slotName, treasureSlot)}
-                                                                draggable={!!equippedTreasure}
-                                                                onDragStart={(e) => {
-                                                                    if (equippedTreasure) {
-                                                                        handleTreasureSlotDragStart(e, equippedTreasure, key, slotName, treasureSlot);
-                                                                    }
-                                                                }}
-                                                                onDoubleClick={(e) => {
-                                                                    if (equippedTreasure) {
-                                                                        e.stopPropagation();
-                                                                        handleRemoveTreasure(key, slotName, treasureSlot);
-                                                                    }
-                                                                }}
-                                                                style={equippedTreasure ? {cursor: 'grab'} : {}}
-                                                                title={equippedTreasure ? "ダブルクリックで削除" : ""}
-                                                            >
-                                                                {equippedTreasure ? (
-                                                                    <>
-                                                                        {getTreasureForgeRank(equippedTreasure.id) >= 0 && (
-                                                                            <div className={`forge-rank ${isTreasureUR(equippedTreasure.id) ? 'ur' : ''}`} style={{fontSize: '6px', top: '1px', left: '1px'}}>
-                                                                                {isTreasureUR(equippedTreasure.id) ? '★' : '☆'}{getTreasureForgeRank(equippedTreasure.id)}
-                                                                            </div>
-                                                                        )}
-                                                                        <ItemImage 
-                                                                            src={getImageUrl('treasure', equippedTreasure.id, null, equippedTreasure.name)}
-                                                                            alt={equippedTreasure.name}
-                                                                            rarity={isTreasureUR(equippedTreasure.id) ? 'UR' : 'normal'}
-                                                                        />
-                                                                        <div 
-                                                                            className="treasure-name-mini"
-                                                                            style={{
-                                                                                color: isTreasureUR(equippedTreasure.id) ? 'var(--rarity-ur)' : 'var(--text-body)',
-                                                                                marginTop: '2px'
-                                                                            }}
-                                                                        >
-                                                                            {equippedTreasure.name}{isTreasureUR(equippedTreasure.id) ? '(UR)' : ''}
-                                                                        </div>
-                                                                    </>
-                                                                ) : (
-                                                                    labels[idx]
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        ))}
-                                        </div>
-                                        
-                                        {/* 参軍配置エリア */}
-                                        <div className="advisor-section" style={{
-                                            marginTop: '12px',
-                                            padding: '8px',
-                                            background: 'var(--bg-card)',
-                                            borderRadius: '4px',
-                                            border: '1px solid var(--border-base)'
-                                        }}>
-                                            <div style={{
-                                                fontSize: '12px',
-                                                fontWeight: 'bold',
-                                                color: 'var(--text-primary)',
-                                                marginBottom: '8px',
-                                                borderBottom: '1px solid var(--border-base)',
-                                                paddingBottom: '4px'
-                                            }}>
-                                                参軍配置
-                                            </div>
-                                            <div style={{
-                                                display: 'grid',
-                                                gridTemplateColumns: '50px 1fr',
-                                                gap: '6px',
-                                                alignItems: 'center'
-                                            }}>
-                                                {[
-                                                    { key: 'leadership', label: '統率', color: 'var(--danger)' },
-                                                    { key: 'attack', label: '武力', color: '#e67e22' },
-                                                    { key: 'intelligence', label: '知力', color: 'var(--accent)' },
-                                                    { key: 'politics', label: '政治', color: '#9b59b6' },
-                                                    { key: 'charm', label: '魅力', color: '#1abc9c' }
-                                                ].map(advisor => {
-                                                    const advisorGeneral = data.advisors?.[advisor.key];
-                                                    return (
-                                                        <React.Fragment key={advisor.key}>
-                                                            <div style={{
-                                                                fontSize: '10px',
-                                                                fontWeight: 'bold',
-                                                                color: advisor.color,
-                                                                padding: '4px 8px',
-                                                                background: 'rgba(0,0,0,0.3)',
-                                                                borderRadius: '3px',
-                                                                textAlign: 'center',
-                                                                minWidth: '40px'
-                                                            }}>
-                                                                {advisor.label}
-                                                            </div>
-                                                            <div
-                                                                className={`advisor-drop-zone ${advisorGeneral ? 'filled' : ''}`}
-                                                                onDragOver={(e) => {
-                                                                    e.preventDefault();
-                                                                    e.currentTarget.classList.add('drag-over');
-                                                                }}
-                                                                onDragLeave={(e) => {
-                                                                    e.currentTarget.classList.remove('drag-over');
-                                                                }}
-                                                                onDrop={(e) => {
-                                                                    e.currentTarget.classList.remove('drag-over');
-                                                                    handleAdvisorDrop(e, key, advisor.key);
-                                                                }}
-                                                                style={{
-                                                                    padding: '4px',
-                                                                    background: advisorGeneral ? 'rgba(37, 99, 235, 0.08)' : 'var(--bg-base)',
-                                                                    border: `1px solid ${advisorGeneral ? advisor.color : 'var(--bg-elevated)'}`,
-                                                                    borderRadius: '3px',
-                                                                    minHeight: '52px',
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'center',
-                                                                    cursor: advisorGeneral ? 'grab' : 'default',
-                                                                    position: 'relative'
-                                                                }}
-                                                                draggable={!!advisorGeneral}
-                                                                onDragStart={(e) => {
-                                                                    if (advisorGeneral) {
-                                                                        handleAdvisorDragStart(e, advisorGeneral, key, advisor.key);
-                                                                    }
-                                                                }}
-                                                                onDoubleClick={() => {
-                                                                    if (advisorGeneral) {
-                                                                        handleRemoveAdvisor(key, advisor.key);
-                                                                    }
-                                                                }}
-                                                                title={advisorGeneral ? "ダブルクリックで削除" : ""}
-                                                            >
-                                                                {advisorGeneral ? (
-                                                                    <>
-                                                                        <button
-                                                                            className="mini-remove-btn"
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                handleRemoveAdvisor(key, advisor.key);
-                                                                            }}
-                                                                            style={{
-                                                                                position: 'absolute',
-                                                                                top: '2px',
-                                                                                right: '2px'
-                                                                            }}
-                                                                        >
-                                                                            ×
-                                                                        </button>
-                                                                        {showImages ? (
-                                                                            <ItemImage 
-                                                                                src={getImageUrl('general', advisorGeneral.id, advisorGeneral.rarity, advisorGeneral.name)}
-                                                                                alt={advisorGeneral.name}
-                                                                                rarity={advisorGeneral.rarity}
-                                                                            />
-                                                                        ) : (
-                                                                            <div style={{width: '100%', fontSize: '10px'}}>
-                                                                                <div style={{
-                                                                                    color: 'var(--text-primary)',
-                                                                                    fontWeight: 'bold',
-                                                                                    fontSize: '11px',
-                                                                                    whiteSpace: 'nowrap',
-                                                                                    overflow: 'hidden',
-                                                                                    textOverflow: 'ellipsis'
-                                                                                }}>
-                                                                                    {advisorGeneral.name}
-                                                                                </div>
-                                                                                <div style={{
-                                                                                    display: 'flex',
-                                                                                    gap: '6px',
-                                                                                    fontSize: '9px'
-                                                                                }}>
-                                                                                    <span style={{
-                                                                                        color: getRarityColor(advisorGeneral.rarity),
-                                                                                        fontWeight: 'bold'
-                                                                                    }}>
-                                                                                        {advisorGeneral.rarity}
-                                                                                    </span>
-                                                                                    <span style={{
-                                                                                        color: getAffinityColor(advisorGeneral.affinity)
-                                                                                    }}>
-                                                                                        相性{advisorGeneral.affinity}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        )}
-                                                                    </>
-                                                                ) : (
-                                                                    <div style={{
-                                                                        color: 'var(--text-muted)',
-                                                                        fontSize: '10px',
-                                                                        textAlign: 'center',
-                                                                        width: '100%'
-                                                                    }}>
-                                                                        参軍
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </React.Fragment>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                        
-                                        {/* 戦闘パラメータパネル */}
-                                        <div className="combat-parameters-panel">
-                                            <div className="combat-params-header">
-                                                <span>部隊パラメータ</span>
-                                            </div>
-                                            <div className="combat-params-content">
-                                                {(() => {
-                                                    const params = calcCombatParams(key);
-                                                    if (!params) return <div className="no-data">データなし</div>;
-                                                    
-                                                    return (
-                                                        <>
-                                                            <div className="param-row">
-                                                                <span className="param-icon">⚡</span>
-                                                                <span className="param-label">出陣ゲージ:</span>
-                                                                <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
-                                                            </div>
-                                                            <div className="param-row">
-                                                                <span className="param-icon">🎯</span>
-                                                                <span className="param-label">戦法速度:</span>
-                                                                <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
-                                                            </div>
-                                                            <div className="param-row">
-                                                                <span className="param-icon">🛡️</span>
-                                                                <span className="param-label">致死耐性:</span>
-                                                                <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
-                                                                    {params.lethalResist ? 'ON' : 'OFF'}
-                                                                </span>
-                                                            </div>
-                                                            <div className="param-row">
-                                                                <span className="param-icon">⏱️</span>
-                                                                <span className="param-label">戦法短縮:</span>
-                                                                <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
-                                                            </div>
-                                                            <div className="param-row">
-                                                                <span className="param-icon">⚔️</span>
-                                                                <span className="param-label">攻撃速度:</span>
-                                                                <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
-                                                            </div>
-                                                            <div className="param-row">
-                                                                <span className="param-icon">💥</span>
-                                                                <span className="param-label">会心発生:</span>
-                                                                <span className="param-value">+{params.critical.toFixed(1)}%</span>
-                                                            </div>
-                                                        </>
-                                                    );
-                                                })()}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                )}
-                            </div>
-                            ))}
-                        </div>
-                        
+                        <FormationsArea
+                            currentFormations={currentFormations}
+                            treasures={treasures}
+                            showImages={showImages}
+                            showSkillEffects={showSkillEffects}
+                            setShowSkillEffects={setShowSkillEffects}
+                            recommendTargetFormation={recommendTargetFormation}
+                            setRecommendTargetFormation={setRecommendTargetFormation}
+                            handleDrop={handleDrop}
+                            handleTreasureDrop={handleTreasureDrop}
+                            handleSlotDragStart={handleSlotDragStart}
+                            handleAttendantDragStart={handleAttendantDragStart}
+                            handleAttendantDrop={handleAttendantDrop}
+                            handleAdvisorDragStart={handleAdvisorDragStart}
+                            handleAdvisorDrop={handleAdvisorDrop}
+                            handleTreasureSlotDragStart={handleTreasureSlotDragStart}
+                            handleRemoveGeneral={handleRemoveGeneral}
+                            handleRemoveAttendant={handleRemoveAttendant}
+                            handleRemoveAdvisor={handleRemoveAdvisor}
+                            handleRemoveTreasure={handleRemoveTreasure}
+                            resetFormation={resetFormation}
+                            toggleFormationCollapse={toggleFormationCollapse}
+                            saveFormationTemplate={saveFormationTemplate}
+                            loadFormationTemplate={loadFormationTemplate}
+                            getImageUrl={getImageUrl}
+                            getGeneralStarRank={getGeneralStarRank}
+                            getTreasureForgeRank={getTreasureForgeRank}
+                            isTreasureUR={isTreasureUR}
+                            calcCombatParams={calcCombatParams}
+                            calcSkillEffects={calcSkillEffects}
+                            ItemImage={ItemImage}
+                        />
+
                         {/* 武将リスト（右1） */}
                         <GeneralsPanel
                             generals={generals} formations={formations}
@@ -4562,788 +3797,41 @@ const { useState, useEffect } = React;
                     
                     </>
             ) : (
-                    <div className="rank-settings-container" style={{padding: '20px', maxWidth: '1200px', margin: '0 auto'}}>
-                        {/* プロファイル選択 */}
-                        <div style={{marginBottom: '24px', padding: '16px', background: 'var(--bg-card)', border: '2px solid var(--border-light)', borderRadius: '4px'}}>
-                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px'}}>
-                                <h3 style={{color: 'var(--text-primary)', margin: 0, fontSize: '16px'}}>プロファイル選択</h3>
-                                <div style={{display: 'flex', gap: '8px'}}>
-                                    <button
-                                        onClick={exportProfile}
-                                        style={{
-                                            padding: '6px 12px',
-                                            background: 'var(--success)',
-                                            border: '1px solid var(--success)',
-                                            borderRadius: '4px',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            fontSize: '11px',
-                                            fontWeight: 'bold'
-                                        }}
-                                        title="現在のプロファイルをエクスポート"
-                                    >
-                                        プロファイル保存
-                                    </button>
-                                    <label
-                                        style={{
-                                            padding: '6px 12px',
-                                            background: 'var(--accent)',
-                                            border: '1px solid var(--accent)',
-                                            borderRadius: '4px',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            fontSize: '11px',
-                                            fontWeight: 'bold'
-                                        }}
-                                        title="プロファイルをインポート"
-                                    >
-                                        プロファイル読込
-                                        <input
-                                            type="file"
-                                            accept=".json"
-                                            onChange={importProfile}
-                                            style={{display: 'none'}}
-                                        />
-                                    </label>
-                                </div>
-                            </div>
-                            <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
-                                {profileNames.map((name, index) => (
-                                    <div key={index} style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
-                                        <button
-                                            onClick={() => setCurrentProfile(index)}
-                                            style={{
-                                                padding: '8px 16px',
-                                                background: currentProfile === index ? 'var(--accent)' : 'var(--bg-elevated)',
-                                                border: currentProfile === index ? '2px solid #d4af37' : '2px solid #3a3a3a',
-                                                color: currentProfile === index ? 'var(--text-primary)' : 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontWeight: currentProfile === index ? 'bold' : 'normal',
-                                                fontSize: '13px',
-                                                minWidth: '120px'
-                                            }}
-                                        >
-                                            {name}
-                                        </button>
-                                        <input
-                                            type="text"
-                                            value={name}
-                                            onChange={(e) => {
-                                                const newNames = [...profileNames];
-                                                newNames[index] = e.target.value;
-                                                setProfileNames(newNames);
-                                            }}
-                                            style={{
-                                                padding: '6px 8px',
-                                                background: 'var(--bg-card)',
-                                                border: '1px solid var(--border-light)',
-                                                color: 'var(--text-primary)',
-                                                fontSize: '11px',
-                                                width: '100px'
-                                            }}
-                                            placeholder="名前を編集"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        
-                        <div style={{marginBottom: '20px', display: 'flex', gap: '12px', borderBottom: '2px solid #3a3a3a', paddingBottom: '12px'}}>
-                            <button
-                                className={`tab-button ${rankTab === 'general' ? 'active' : ''}`}
-                                onClick={() => setRankTab('general')}
-                            >
-                                武将の将星ランク
-                            </button>
-                            <button
-                                className={`tab-button ${rankTab === 'treasure' ? 'active' : ''}`}
-                                onClick={() => setRankTab('treasure')}
-                            >
-                                名宝の鍛錬ランク
-                            </button>
-                        </div>
-                        
-                        {rankTab === 'general' ? (
-                            <div>
-                                <h2 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>武将の将星ランク設定</h2>
-                                
-                                {/* 一括操作ボタン */}
-                                <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-                                    <button
-                                        onClick={() => {
-                                            const newRanks = {...generalStarRank};
-                                            generals.forEach(g => {
-                                                const key = `${g.id}-${g.rarity}-${g.name}`;
-                                                newRanks[key] = 7;
-                                            });
-                                            setProfileData(prev => ({
-                                                ...prev,
-                                                [currentProfile]: {
-                                                    ...prev[currentProfile],
-                                                    generalStarRank: newRanks
-                                                }
-                                            }));
-                                        }}
-                                        style={{
-                                            padding: '8px 16px',
-                                            background: 'var(--accent-hover)',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        全武将☆7
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setProfileData(prev => ({
-                                                ...prev,
-                                                [currentProfile]: {
-                                                    ...prev[currentProfile],
-                                                    generalStarRank: {}
-                                                }
-                                            }));
-                                        }}
-                                        style={{
-                                            padding: '8px 16px',
-                                            background: 'var(--bg-hover)',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        全武将☆0
-                                    </button>
-                                </div>
-                                
-                                {/* プロファイル機能 */}
-                                <div style={{marginBottom: '16px', padding: '12px', background: 'var(--bg-card)', borderRadius: '4px', border: '1px solid var(--border-light)'}}>
-                                    <div style={{color: 'var(--text-primary)', marginBottom: '8px', fontWeight: 'bold'}}>プロファイル</div>
-                                    <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-                                        <button
-                                            onClick={() => {
-                                                const profile = {
-                                                    generalStarRank: generalStarRank,
-                                                    treasureForgeRank: treasureForgeRank,
-                                                    treasureURStatus: treasureURStatus
-                                                };
-                                                localStorage.setItem('hadou-rank-profile-backup', JSON.stringify(profile));
-                                                alert('現在の設定を保存しました');
-                                            }}
-                                            style={{
-                                                padding: '8px 16px',
-                                                background: 'var(--success)',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontWeight: 'bold'
-                                            }}
-                                        >
-                                            保存
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                const saved = localStorage.getItem('hadou-rank-profile-backup');
-                                                if (saved) {
-                                                    const profile = JSON.parse(saved);
-                                                    setProfileData(prev => ({
-                                                        ...prev,
-                                                        [currentProfile]: {
-                                                            ...prev[currentProfile],
-                                                            generalStarRank: profile.generalStarRank || {},
-                                                            treasureForgeRank: profile.treasureForgeRank || {},
-                                                            treasureURStatus: profile.treasureURStatus || {}
-                                                        }
-                                                    }));
-                                                    alert('保存された設定を呼び出しました');
-                                                } else {
-                                                    alert('保存された設定がありません');
-                                                }
-                                            }}
-                                            style={{
-                                                padding: '8px 16px',
-                                                background: 'var(--accent)',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontWeight: 'bold'
-                                            }}
-                                        >
-                                            呼び出し
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-                                    <input 
-                                        type="text" 
-                                        placeholder="武将名で検索..."
-                                        value={rankSearchTerm}
-                                        onChange={(e) => setRankSearchTerm(e.target.value)}
-                                        style={{
-                                            padding: '8px 12px',
-                                            background: 'var(--bg-card)',
-                                            border: '1px solid var(--border-light)',
-                                            color: 'var(--text-primary)',
-                                            flex: '1',
-                                            minWidth: '200px'
-                                        }}
-                                    />
-                                </div>
-                                
-                                {/* レアリティごとにグループ分け */}
-                                {['LR', 'UR', 'SSR', 'SR', 'R'].map(rarity => {
-                                    const filteredGenerals = generals
-                                        .filter(g => g.rarity === rarity)
-                                        .filter(g => rankSearchTerm === '' || g.name.includes(rankSearchTerm));
-                                    
-                                    if (filteredGenerals.length === 0) return null;
-                                    
-                                    return (
-                                        <div key={rarity} style={{marginBottom: '24px'}}>
-                                            <div 
-                                                style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: '12px',
-                                                    padding: '8px 12px',
-                                                    background: 'rgba(26, 31, 46, 0.5)',
-                                                    borderLeft: `4px solid ${getRarityColor(rarity)}`,
-                                                    cursor: 'pointer'
-                                                }}
-                                                onClick={() => {
-                                                    setExpandedRarities(prev => ({
-                                                        ...prev,
-                                                        [rarity]: !prev[rarity]
-                                                    }));
-                                                }}
-                                            >
-                                                <h3 style={{
-                                                    color: getRarityColor(rarity),
-                                                    margin: 0,
-                                                    fontSize: '16px',
-                                                    fontWeight: 'bold',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '8px'
-                                                }}>
-                                                    <span style={{fontSize: '12px', color: 'var(--text-muted)'}}>
-                                                        {expandedRarities[rarity] ? '▼' : '▶'}
-                                                    </span>
-                                                    {rarity} ({filteredGenerals.length}名)
-                                                </h3>
-                                                <div style={{display: 'flex', gap: '8px'}} onClick={(e) => e.stopPropagation()}>
-                                                    <button
-                                                        onClick={() => {
-                                                            const newRanks = {...generalStarRank};
-                                                            generals
-                                                                .filter(g => g.rarity === rarity)
-                                                                .forEach(g => {
-                                                                    const key = `${g.id}-${g.rarity}-${g.name}`;
-                                                                    delete newRanks[key];
-                                                                });
-                                                            setProfileData(prev => ({
-                                                                ...prev,
-                                                                [currentProfile]: {
-                                                                    ...prev[currentProfile],
-                                                                    generalStarRank: newRanks
-                                                                }
-                                                            }));
-                                                        }}
-                                                        style={{
-                                                            padding: '6px 12px',
-                                                            background: 'var(--bg-hover)',
-                                                            border: 'none',
-                                                            borderRadius: '4px',
-                                                            color: 'var(--text-primary)',
-                                                            cursor: 'pointer',
-                                                            fontWeight: 'bold',
-                                                            fontSize: '12px',
-                                                            boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                                                        }}
-                                                        title={`${rarity}武将を全て☆0にする`}
-                                                    >
-                                                        {rarity}☆0
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            const newRanks = {...generalStarRank};
-                                                            generals
-                                                                .filter(g => g.rarity === rarity)
-                                                                .forEach(g => {
-                                                                    const key = `${g.id}-${g.rarity}-${g.name}`;
-                                                                    newRanks[key] = 7;
-                                                                });
-                                                            setProfileData(prev => ({
-                                                                ...prev,
-                                                                [currentProfile]: {
-                                                                    ...prev[currentProfile],
-                                                                    generalStarRank: newRanks
-                                                                }
-                                                            }));
-                                                        }}
-                                                        style={{
-                                                            padding: '6px 12px',
-                                                            background: getRarityColor(rarity),
-                                                            border: 'none',
-                                                            borderRadius: '4px',
-                                                            color: 'var(--bg-base)',
-                                                            cursor: 'pointer',
-                                                            fontWeight: 'bold',
-                                                            fontSize: '12px',
-                                                            boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                                                        }}
-                                                        title={`${rarity}武将を全て☆7にする`}
-                                                    >
-                                                        {rarity}☆7
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            {expandedRarities[rarity] && (
-                                            <div style={{display: 'grid', gap: '12px'}}>
-                                                {filteredGenerals.map(general => {
-                                            const currentRank = getGeneralStarRank(general);
-                                            const isFav = isFavorite(general);
-                                            const isDisabled = isGeneralDisabled(general);
-                                            return (
-                                                <div 
-                                                    key={`${general.id}-${general.rarity}-${general.name}`}
-                                                    style={{
-                                                        background: 'var(--bg-card)',
-                                                        border: '1px solid var(--border-light)',
-                                                        padding: '12px',
-                                                        display: 'grid',
-                                                        gridTemplateColumns: '1fr 60px 130px auto',
-                                                        alignItems: 'center',
-                                                        gap: '12px'
-                                                    }}
-                                                >
-                                                    <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                                                        <ItemImage 
-                                                            src={getImageUrl('general', general.id, general.rarity, general.name)}
-                                                            alt={general.name}
-                                                            rarity={general.rarity}
-                                                        />
-                                                        <div>
-                                                            <div style={{color: 'var(--text-primary)', fontWeight: 'bold'}}>
-                                                                {general.name}
-                                                            </div>
-                                                            <div style={{color: 'var(--text-muted)', fontSize: '12px'}}>
-                                                                {general.rarity} - {getUnitTypeName(general.unit_type)}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div style={{display: 'flex', gap: '4px'}}>
-                                                        <button
-                                                            onClick={() => toggleFavorite(general)}
-                                                            style={{
-                                                                padding: '4px 8px',
-                                                                background: 'none',
-                                                                border: 'none',
-                                                                cursor: 'pointer',
-                                                                fontSize: '16px',
-                                                                color: isFav ? 'var(--rank-color)' : 'var(--text-muted)'
-                                                            }}
-                                                            title="お気に入り"
-                                                        >
-                                                            ★
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                if (isDisabled) {
-                                                                    setDisabledGenerals(prev => prev.filter(g => !(g.id === general.id && g.rarity === general.rarity)));
-                                                                } else {
-                                                                    setDisabledGenerals(prev => [...prev, general]);
-                                                                }
-                                                            }}
-                                                            style={{
-                                                                padding: '4px 8px',
-                                                                background: 'none',
-                                                                border: 'none',
-                                                                cursor: 'pointer',
-                                                                fontSize: '16px',
-                                                                color: isDisabled ? 'var(--danger)' : 'var(--text-muted)'
-                                                            }}
-                                                            title="不使用"
-                                                        >
-                                                            ×
-                                                        </button>
-                                                    </div>
-                                                    <div style={{textAlign: 'center', minWidth: '130px'}}>
-                                                        {Array.from({length: 7}, (_, i) => (
-                                                            <span key={i} style={{color: i < currentRank ? 'var(--rank-color)' : 'var(--bg-elevated)'}}>
-                                                                ☆
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                    <div style={{display: 'flex', gap: '4px'}}>
-                                                        {[0,1,2,3,4,5,6,7].map(rank => (
-                                                            <button
-                                                                key={rank}
-                                                                onClick={() => setGeneralStar(general, rank)}
-                                                                style={{
-                                                                    padding: '6px 12px',
-                                                                    background: currentRank === rank ? 'var(--accent)' : 'var(--bg-elevated)',
-                                                                    border: '1px solid var(--border-light)',
-                                                                    color: currentRank === rank ? 'var(--text-primary)' : 'var(--text-primary)',
-                                                                    cursor: 'pointer',
-                                                                    fontWeight: currentRank === rank ? 'bold' : 'normal'
-                                                                }}
-                                                            >
-                                                                {rank}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                            </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ) : (
-                            <div>
-                                <h2 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>名宝の鍛錬ランク設定</h2>
-                                
-                                {/* 一括操作ボタン */}
-                                <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-                                    <button
-                                        onClick={() => {
-                                            const newRanks = {...treasureForgeRank};
-                                            treasures.forEach(t => {
-                                                const maxRank = treasureURStatus[t.id] ? 10 : 7;
-                                                newRanks[t.id] = maxRank;
-                                            });
-                                            setProfileData(prev => ({
-                                                ...prev,
-                                                [currentProfile]: {
-                                                    ...prev[currentProfile],
-                                                    treasureForgeRank: newRanks
-                                                }
-                                            }));
-                                        }}
-                                        style={{
-                                            padding: '8px 16px',
-                                            background: 'var(--accent-hover)',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        一括MAX（☆7/☆10）
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setProfileData(prev => ({
-                                                ...prev,
-                                                [currentProfile]: {
-                                                    ...prev[currentProfile],
-                                                    treasureForgeRank: {}
-                                                }
-                                            }));
-                                        }}
-                                        style={{
-                                            padding: '8px 16px',
-                                            background: 'var(--bg-hover)',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        一括☆0
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            // 全てUR化されているかチェック
-                                            const allUR = treasures.every(t => treasureURStatus[t.id]);
-                                            
-                                            const newURStatus = {...treasureURStatus};
-                                            
-                                            if (allUR) {
-                                                // 全てUR化されている → 全て解除（鍛錬ランクはそのまま）
-                                                treasures.forEach(t => {
-                                                    newURStatus[t.id] = false;
-                                                });
-                                            } else {
-                                                // 一部またはなし → 全てUR化（鍛錬ランクはそのまま）
-                                                treasures.forEach(t => {
-                                                    newURStatus[t.id] = true;
-                                                });
-                                            }
-                                            
-                                            setProfileData(prev => ({
-                                                ...prev,
-                                                [currentProfile]: {
-                                                    ...prev[currentProfile],
-                                                    treasureURStatus: newURStatus
-                                                }
-                                            }));
-                                        }}
-                                        style={{
-                                            padding: '8px 16px',
-                                            background: 'var(--bordeaux)',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold'
-                                        }}
-                                    >
-                                        {treasures.every(t => treasureURStatus[t.id]) ? '一括UR解除' : '一括UR化'}
-                                    </button>
-                                </div>
-                                
-                                {/* プロファイル機能 */}
-                                <div style={{marginBottom: '16px', padding: '12px', background: 'var(--bg-card)', borderRadius: '4px', border: '1px solid var(--border-light)'}}>
-                                    <div style={{color: 'var(--text-primary)', marginBottom: '8px', fontWeight: 'bold'}}>プロファイル</div>
-                                    <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-                                        <button
-                                            onClick={() => {
-                                                const profile = {
-                                                    generalStarRank: generalStarRank,
-                                                    treasureForgeRank: treasureForgeRank,
-                                                    treasureURStatus: treasureURStatus
-                                                };
-                                                localStorage.setItem('hadou-rank-profile-backup', JSON.stringify(profile));
-                                                alert('現在の設定を保存しました');
-                                            }}
-                                            style={{
-                                                padding: '8px 16px',
-                                                background: 'var(--success)',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontWeight: 'bold'
-                                            }}
-                                        >
-                                            保存
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                const saved = localStorage.getItem('hadou-rank-profile-backup');
-                                                if (saved) {
-                                                    const profile = JSON.parse(saved);
-                                                    setProfileData(prev => ({
-                                                        ...prev,
-                                                        [currentProfile]: {
-                                                            ...prev[currentProfile],
-                                                            generalStarRank: profile.generalStarRank || {},
-                                                            treasureForgeRank: profile.treasureForgeRank || {},
-                                                            treasureURStatus: profile.treasureURStatus || {}
-                                                        }
-                                                    }));
-                                                    alert('保存された設定を呼び出しました');
-                                                } else {
-                                                    alert('保存された設定がありません');
-                                                }
-                                            }}
-                                            style={{
-                                                padding: '8px 16px',
-                                                background: 'var(--accent)',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                color: 'var(--text-primary)',
-                                                cursor: 'pointer',
-                                                fontWeight: 'bold'
-                                            }}
-                                        >
-                                            呼び出し
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                {/* カテゴリごとに折りたたみ */}
-                                {['武器', '防具', '文物'].map(category => {
-                                    const categoryTreasures = treasures.filter(t => t.category === category);
-                                    if (categoryTreasures.length === 0) return null;
-                                    
-                                    return (
-                                        <div key={category} style={{marginBottom: '24px'}}>
-                                            <div 
-                                                style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: '12px',
-                                                    padding: '8px 12px',
-                                                    background: 'rgba(26, 31, 46, 0.5)',
-                                                    borderLeft: '3px solid var(--bordeaux)',
-                                                    cursor: 'pointer'
-                                                }}
-                                                onClick={() => {
-                                                    setExpandedTreasureCategories(prev => ({
-                                                        ...prev,
-                                                        [category]: !prev[category]
-                                                    }));
-                                                }}
-                                            >
-                                                <h3 style={{
-                                                    color: 'var(--text-primary)',
-                                                    margin: 0,
-                                                    fontSize: '16px',
-                                                    fontWeight: 'bold',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '8px'
-                                                }}>
-                                                    <span style={{fontSize: '12px', color: 'var(--text-muted)'}}>
-                                                        {expandedTreasureCategories[category] ? '▼' : '▶'}
-                                                    </span>
-                                                    {category} ({categoryTreasures.length}個)
-                                                </h3>
-                                            </div>
-                                            {expandedTreasureCategories[category] && (
-                                            <div style={{display: 'grid', gap: '12px'}}>{categoryTreasures.map(treasure => {
-                                        const currentRank = getTreasureForgeRank(treasure.id);
-                                        const isUR = isTreasureUR(treasure.id);
-                                        const maxRank = isUR ? 10 : 7;
-                                        const isFav = isFavoriteTreasure(treasure);
-                                        const isDisabled = isTreasureDisabled(treasure);
-                                        return (
-                                            <div 
-                                                key={treasure.id}
-                                                style={{
-                                                    background: 'var(--bg-card)',
-                                                    border: '1px solid var(--border-light)',
-                                                    padding: '12px',
-                                                    display: 'grid',
-                                                    gridTemplateColumns: '1fr 60px 90px 180px auto',
-                                                    alignItems: 'center',
-                                                    gap: '12px'
-                                                }}
-                                            >
-                                                <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                                                    <ItemImage 
-                                                        src={getImageUrl('treasure', treasure.id, null, treasure.name)}
-                                                        alt={treasure.name}
-                                                        rarity={isUR ? 'UR' : 'normal'}
-                                                    />
-                                                    <div>
-                                                        <div style={{color: 'var(--text-primary)', fontWeight: 'bold'}}>
-                                                            {treasure.name}
-                                                        </div>
-                                                        <div style={{color: 'var(--text-muted)', fontSize: '12px'}}>
-                                                            {treasure.category} {isUR && <span style={{color: 'var(--rarity-ur)'}}>[UR]</span>}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div style={{display: 'flex', gap: '4px'}}>
-                                                    <button
-                                                        onClick={() => toggleFavoriteTreasure(treasure)}
-                                                        style={{
-                                                            padding: '4px 8px',
-                                                            background: 'none',
-                                                            border: 'none',
-                                                            cursor: 'pointer',
-                                                            fontSize: '16px',
-                                                            color: isFav ? 'var(--rank-color)' : 'var(--text-muted)'
-                                                        }}
-                                                        title="お気に入り"
-                                                    >
-                                                        ★
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            if (isDisabled) {
-                                                                setDisabledTreasures(prev => prev.filter(t => t.id !== treasure.id));
-                                                            } else {
-                                                                setDisabledTreasures(prev => [...prev, treasure]);
-                                                            }
-                                                        }}
-                                                        style={{
-                                                            padding: '4px 8px',
-                                                            background: 'none',
-                                                            border: 'none',
-                                                            cursor: 'pointer',
-                                                            fontSize: '16px',
-                                                            color: isDisabled ? 'var(--danger)' : 'var(--text-muted)'
-                                                        }}
-                                                        title="不使用"
-                                                    >
-                                                        ×
-                                                    </button>
-                                                </div>
-                                                <button
-                                                    onClick={() => toggleTreasureUR(treasure.id)}
-                                                    style={{
-                                                        padding: '6px 12px',
-                                                        background: isUR ? 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%)' : 'var(--bg-elevated)',
-                                                        border: isUR ? '1px solid #ff6b6b' : '1px solid #3a3a3a',
-                                                        color: 'var(--text-primary)',
-                                                        cursor: 'pointer',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '11px',
-                                                        width: '90px',
-                                                        textAlign: 'center'
-                                                    }}
-                                                >
-                                                    {isUR ? '✓ UR化' : 'UR化'}
-                                                </button>
-                                                <div style={{textAlign: 'center', minWidth: '180px'}}>
-                                                    {Array.from({length: 10}, (_, i) => {
-                                                        const maxColoredRank = isUR ? 10 : 7;
-                                                        const isColored = i < currentRank;
-                                                        const isDimmed = i >= maxColoredRank;
-                                                        return (
-                                                            <span 
-                                                                key={i} 
-                                                                style={{
-                                                                    color: isDimmed ? 'var(--bg-card)' : (isColored ? (isUR ? 'var(--rarity-ur)' : 'var(--rank-color)') : 'var(--bg-elevated)')
-                                                                }}
-                                                            >
-                                                                {isUR ? '★' : '☆'}
-                                                            </span>
-                                                        );
-                                                    })}
-                                                </div>
-                                                <div style={{display: 'flex', gap: '4px', flexWrap: 'wrap'}}>
-                                                    {Array.from({length: 11}, (_, rank) => {
-                                                        const isDisabled = !isUR && rank > 7;
-                                                        return (
-                                                            <button
-                                                                key={rank}
-                                                                onClick={() => !isDisabled && setTreasureForge(treasure.id, rank)}
-                                                                style={{
-                                                                    padding: '6px 12px',
-                                                                    background: currentRank === rank ? 'var(--accent)' : (isDisabled ? 'var(--bg-base)' : 'var(--bg-elevated)'),
-                                                                    border: '1px solid var(--border-light)',
-                                                                    color: isDisabled ? 'var(--text-muted)' : (currentRank === rank ? 'var(--text-primary)' : 'var(--text-primary)'),
-                                                                    cursor: isDisabled ? 'not-allowed' : 'pointer',
-                                                                    fontWeight: currentRank === rank ? 'bold' : 'normal',
-                                                                    opacity: isDisabled ? 0.3 : 1
-                                                                }}
-                                                                disabled={isDisabled}
-                                                            >
-                                                                {rank}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                                )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </div>
+                    <RankSettingsPanel
+                        generals={generals}
+                        treasures={treasures}
+                        currentProfile={currentProfile}
+                        setCurrentProfile={setCurrentProfile}
+                        profileNames={profileNames}
+                        setProfileNames={setProfileNames}
+                        setProfileData={setProfileData}
+                        rankTab={rankTab}
+                        setRankTab={setRankTab}
+                        rankSearchTerm={rankSearchTerm}
+                        setRankSearchTerm={setRankSearchTerm}
+                        expandedRarities={expandedRarities}
+                        setExpandedRarities={setExpandedRarities}
+                        expandedTreasureCategories={expandedTreasureCategories}
+                        setExpandedTreasureCategories={setExpandedTreasureCategories}
+                        setDisabledGenerals={setDisabledGenerals}
+                        setDisabledTreasures={setDisabledTreasures}
+                        getGeneralStarRank={getGeneralStarRank}
+                        setGeneralStar={setGeneralStar}
+                        getTreasureForgeRank={getTreasureForgeRank}
+                        setTreasureForge={setTreasureForge}
+                        isTreasureUR={isTreasureUR}
+                        toggleTreasureUR={toggleTreasureUR}
+                        isFavorite={isFavorite}
+                        toggleFavorite={toggleFavorite}
+                        isFavoriteTreasure={isFavoriteTreasure}
+                        toggleFavoriteTreasure={toggleFavoriteTreasure}
+                        isGeneralDisabled={isGeneralDisabled}
+                        isTreasureDisabled={isTreasureDisabled}
+                        getImageUrl={getImageUrl}
+                        ItemImage={ItemImage}
+                        exportProfile={exportProfile}
+                        importProfile={importProfile}
+                    />
                 )}
                 
                 

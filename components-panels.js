@@ -537,9 +537,9 @@ function TreasuresPanel({
                 <div className="filter-section">
                     <div className="filter-group" style={{display: 'flex', gap: '6px', flexWrap: 'wrap'}}>
                         {[
-                            {name: '武器', color: '#f5b7b1'},
-                            {name: '防具', color: '#fadbd8'},
-                            {name: '文物', color: '#d7bde2'}
+                            {name: '武器', color: 'var(--filter-weapon)'},
+                            {name: '防具', color: 'var(--filter-armor)'},
+                            {name: '文物', color: 'var(--filter-artifact)'}
                         ].map(category => (
                             <button
                                 key={category.name}
@@ -560,10 +560,10 @@ function TreasuresPanel({
                             </button>
                         ))}
                         {[
-                            {weapon: '槍', label: '歩兵', color: '#f5b7b1'},
-                            {weapon: '弓', label: '弓兵', color: '#fadbd8'},
-                            {weapon: '馬', label: '騎兵', color: '#d7bde2'},
-                            {weapon: '全', label: '全兵科', color: '#f8c471'}
+                            {weapon: '槍', label: '歩兵', color: 'var(--filter-weapon)'},
+                            {weapon: '弓', label: '弓兵', color: 'var(--filter-armor)'},
+                            {weapon: '馬', label: '騎兵', color: 'var(--filter-artifact)'},
+                            {weapon: '全', label: '全兵科', color: 'var(--filter-all)'}
                         ].map(item => (
                             <button
                                 key={item.weapon}
@@ -585,10 +585,10 @@ function TreasuresPanel({
                         {[
                             {name: '魏', color: 'var(--accent)'},
                             {name: '蜀', color: 'var(--success)'},
-                            {name: '袁紹', color: '#f4d03f'},
-                            {name: '呉', color: '#ec7063'},
-                            {name: '他', color: '#f5b7b1'},
-                            {name: 'イベント', color: '#fadbd8'}
+                            {name: '袁紹', color: 'var(--filter-yuan)'},
+                            {name: '呉', color: 'var(--filter-wu)'},
+                            {name: '他', color: 'var(--filter-weapon)'},
+                            {name: 'イベント', color: 'var(--filter-armor)'}
                         ].map(faction => (
                             <button
                                 key={faction.name}

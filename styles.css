@@ -34,6 +34,26 @@
             --rarity-r: #74b9ff;
             --rarity-n: #b2bec3;
             --rank-color: #c9a84c;
+
+            /* UI状態カラー */
+            --border-dim: #3a3a3a;
+            --gold: #d4af37;
+            --gold-bright: #ffd700;
+            --attendant: #6495ed;
+
+            /* ステータスカラー（ゲーム固有） */
+            --stat-attack: #e67e22;
+            --stat-politics: #9b59b6;
+            --stat-charm: #1abc9c;
+            --faction-yuan: #f39c12;
+
+            /* フィルタチップカラー */
+            --filter-weapon: #f5b7b1;
+            --filter-armor: #fadbd8;
+            --filter-artifact: #d7bde2;
+            --filter-all: #f8c471;
+            --filter-yuan: #f4d03f;
+            --filter-wu: #ec7063;
         }
 
         [data-theme="light"] {
@@ -62,6 +82,26 @@
             --bordeaux-bg: #fdf0f3;
             --scrollbar-track: #e8eaf0;
             --scrollbar-thumb: #c8ccd8;
+
+            /* UI状態カラー（ライト） */
+            --border-dim: #c8ccd8;
+            --gold: #9a7b0a;
+            --gold-bright: #b8960f;
+            --attendant: #4a7ec8;
+
+            /* ステータスカラー（ライト） */
+            --stat-attack: #c45e10;
+            --stat-politics: #6b4090;
+            --stat-charm: #108a6e;
+            --faction-yuan: #c47a08;
+
+            /* フィルタチップカラー（ライト） */
+            --filter-weapon: #e0877e;
+            --filter-armor: #e8a8a0;
+            --filter-artifact: #b090c0;
+            --filter-all: #d89840;
+            --filter-yuan: #c4a018;
+            --filter-wu: #c84838;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1387,4 +1427,305 @@
     color: var(--text-secondary);
     padding: 20px;
     font-size: 13px;
+}
+
+/* ============================================
+   モーダル共通
+   ============================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(4, 4, 6, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-overlay--high {
+    z-index: 2500;
+    padding: 20px;
+}
+
+.modal-overlay--top {
+    z-index: 3000;
+    padding: 20px;
+}
+
+.modal-panel {
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 24px;
+    min-width: 400px;
+    max-width: 500px;
+    color: var(--text-primary);
+}
+
+.modal-panel--accent {
+    border-color: var(--accent);
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 600px;
+    width: 90%;
+    min-width: auto;
+}
+
+.modal-panel--help {
+    padding: 20px;
+    max-width: 600px;
+    min-width: auto;
+}
+
+.modal-panel--large {
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    min-width: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.modal-header h2,
+.modal-header h3 {
+    margin: 0;
+}
+
+.modal-header--accent h2,
+.modal-header--accent h3 {
+    color: var(--accent);
+}
+
+.modal-close-btn {
+    background: var(--danger);
+    border: none;
+    border-radius: 4px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.modal-close-btn--lg {
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.modal-actions--spread {
+    margin-bottom: 20px;
+    justify-content: stretch;
+}
+
+.modal-btn {
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.modal-btn--primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    font-weight: bold;
+}
+
+.modal-btn--success {
+    background: var(--success);
+    border-color: var(--success);
+    font-weight: bold;
+}
+
+.modal-btn--danger-sm {
+    padding: 4px 8px;
+    background: var(--danger);
+    border: none;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.modal-btn--full {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.modal-btn--action {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* ============================================
+   ヘルプモーダル
+   ============================================ */
+.help-content {
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.help-section {
+    background: var(--bg-elevated);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.help-section:last-child {
+    margin-bottom: 0;
+}
+
+.help-item {
+    margin: 4px 0;
+}
+
+.help-item-title {
+    margin: 4px 0;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.help-item-note {
+    margin: 4px 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.help-item--warn {
+    color: var(--rarity-ur);
+}
+
+.help-category {
+    color: var(--success);
+    border-bottom: 2px solid var(--success);
+    padding-bottom: 8px;
+}
+
+.help-category--spaced {
+    margin-top: 24px;
+}
+
+.help-subtitle {
+    color: var(--text-primary);
+    margin-top: 16px;
+}
+
+.help-indent {
+    margin-left: 20px;
+}
+
+.help-body {
+    line-height: 1.8;
+}
+
+.help-body p {
+    margin: 4px 0;
+}
+
+.help-info-box {
+    margin-bottom: 24px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.help-instructions {
+    background: var(--bg-base);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.help-step-title {
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.help-step-title--spaced {
+    margin-top: 16px;
+}
+
+.help-step-content {
+    padding-left: 20px;
+}
+
+.help-version {
+    margin-top: 24px;
+    padding: 12px;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    border-left: 3px solid var(--bordeaux);
+}
+
+.help-version p {
+    margin: 0;
+}
+
+/* テンプレート呼び出しダイアログ */
+.template-list {
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.template-item {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.template-options {
+    margin-bottom: 20px;
+    padding: 12px;
+    background: var(--bg-base);
+    border-radius: 4px;
+}
+
+.template-option-row {
+    margin-bottom: 8px;
+}
+
+.template-option-row:last-child {
+    margin-bottom: 0;
+}
+
+.template-option-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+/* GDrive同期情報 */
+.sync-status {
+    color: var(--success);
+    font-size: 13px;
+    margin-top: 12px;
 }
