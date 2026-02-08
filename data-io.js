@@ -12,6 +12,7 @@ function createDataIO({
     disabledGenerals, disabledTreasures,
     pendingSets, formationTemplates,
     gdriveLastSync, collapsedFormations,
+    generalStarRank, treasureForgeRank,
     setFormations, setFormationPatterns, setProfileFormations,
     setActivePattern, setCurrentProfile,
     setProfileData, setProfileNames,
@@ -19,10 +20,7 @@ function createDataIO({
     setDisabledGenerals, setDisabledTreasures,
     setPendingSets, setFormationTemplates,
     setGdriveLastSync,
-    getCurrentFormationPatterns,
-    // レガシー互換（旧形式v112以前のインポート用）
-    generalRanks, treasureRanks, favorites,
-    setGeneralRanks = () => {}, setTreasureRanks = () => {}, setFavorites = () => {}
+    getCurrentFormationPatterns
 }) {
 
     // 全データのエクスポート
@@ -33,9 +31,9 @@ function createDataIO({
                 formationTemplates: formationTemplates,
                 disabledGenerals: disabledGenerals,
                 disabledTreasures: disabledTreasures,
-                generalRanks: generalRanks,
-                treasureRanks: treasureRanks,
-                favorites: favorites,
+                generalRanks: generalStarRank,
+                treasureRanks: treasureForgeRank,
+                favorites: favoriteGenerals,
                 favoriteTreasures: favoriteTreasures,
                 exportDate: new Date().toISOString(),
                 version: 'v112'
@@ -94,14 +92,20 @@ function createDataIO({
                     if (convertedData.disabledTreasures && Array.isArray(convertedData.disabledTreasures)) {
                         setDisabledTreasures(convertedData.disabledTreasures);
                     }
-                    if (convertedData.generalRanks) {
-                        setGeneralRanks(convertedData.generalRanks);
+                    // 旧形式: generalRanks/treasureRanks → profileDataに変換
+                    if (convertedData.generalRanks || convertedData.treasureRanks) {
+                        setProfileData(prev => ({
+                            ...prev,
+                            [currentProfile]: {
+                                generalStarRank: convertedData.generalRanks || prev[currentProfile].generalStarRank,
+                                treasureForgeRank: convertedData.treasureRanks || prev[currentProfile].treasureForgeRank,
+                                treasureURStatus: prev[currentProfile].treasureURStatus
+                            }
+                        }));
                     }
-                    if (convertedData.treasureRanks) {
-                        setTreasureRanks(convertedData.treasureRanks);
-                    }
+                    // 旧形式: favorites → favoriteGenerals
                     if (convertedData.favorites && Array.isArray(convertedData.favorites)) {
-                        setFavorites(convertedData.favorites);
+                        setFavoriteGenerals(convertedData.favorites);
                     }
                     if (convertedData.favoriteTreasures && Array.isArray(convertedData.favoriteTreasures)) {
                         setFavoriteTreasures(convertedData.favoriteTreasures);
@@ -130,7 +134,7 @@ function createDataIO({
                 disabledTreasures: disabledTreasures,
                 generalStarRank: generalStarRank,
                 treasureForgeRank: treasureForgeRank,
-                favorites: favorites,
+                favoriteGenerals: favoriteGenerals,
                 favoriteTreasures: favoriteTreasures,
                 lastSync: new Date().toISOString(),
                 version: 'v114'
@@ -197,7 +201,9 @@ function createDataIO({
                             }
                         }));
                     }
-                    if (importedData.favorites) setFavorites(importedData.favorites);
+                    // お気に入り復元（新旧形式対応）
+                    const favData = importedData.favoriteGenerals || importedData.favorites;
+                    if (favData) setFavoriteGenerals(favData);
                     if (importedData.favoriteTreasures) setFavoriteTreasures(importedData.favoriteTreasures);
 
                     const syncTime = importedData.lastSync || new Date().toISOString();
