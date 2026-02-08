@@ -268,20 +268,7 @@ function createDataIO({
                 // データ検証
                 // プロファイルファイルの自動検知
                 if (data.type === 'profile' && data.profileData && !data.formationPatterns) {
-                    const targetProfile = currentProfile;
-                    if (!confirm(`これはプロファイルファイルです。\nプロファイル「${profileNames[targetProfile]}」に上書きしますか？\n（インポート元: ${data.profileName || '不明'}）`)) {
-                        event.target.value = '';
-                        return;
-                    }
-                    setProfileData(prev => ({
-                        ...prev,
-                        [targetProfile]: data.profileData
-                    }));
-                    if (data.favoriteGenerals) setFavoriteGenerals(data.favoriteGenerals);
-                    if (data.favoriteTreasures) setFavoriteTreasures(data.favoriteTreasures);
-                    if (data.disabledGenerals) setDisabledGenerals(data.disabledGenerals);
-                    if (data.disabledTreasures) setDisabledTreasures(data.disabledTreasures);
-                    alert(`プロファイル「${profileNames[targetProfile]}」にインポートしました`);
+                    alert('これはプロファイルデータです。\nランク設定画面の「プロファイルインポート」から読み込んでください。');
                     event.target.value = '';
                     return;
                 }
