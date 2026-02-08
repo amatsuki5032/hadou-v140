@@ -52,14 +52,24 @@ const { useState, useEffect } = React;
             const [showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures] = useState(false);
             
             // ─── プロファイル ───
-            const [currentProfile, setCurrentProfile] = useState(0); // 0-4
-            const [profileNames, setProfileNames] = useState(['プロファイル1', 'プロファイル2', 'プロファイル3', 'プロファイル4', 'プロファイル5']);
-            const [profileData, setProfileData] = useState({
-                0: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                1: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                2: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                3: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                4: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}}
+            const [currentProfile, setCurrentProfile] = useState(() => {
+                const saved = localStorage.getItem('currentProfile');
+                return saved ? parseInt(saved) : 0;
+            });
+            const [profileNames, setProfileNames] = useState(() => {
+                const saved = localStorage.getItem('profileNames');
+                return saved ? JSON.parse(saved) : ['プロファイル1', 'プロファイル2', 'プロファイル3', 'プロファイル4', 'プロファイル5'];
+            });
+            const [profileData, setProfileData] = useState(() => {
+                const saved = localStorage.getItem('profileData');
+                if (saved) return JSON.parse(saved);
+                return {
+                    0: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    1: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    2: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    3: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    4: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}}
+                };
             });
             
             // ─── 武将・名宝データ ───
@@ -454,13 +464,19 @@ const { useState, useEffect } = React;
             const [activeGeneralsTab, setActiveGeneralsTab] = useState('active');
             
             // 不使用武将リスト
-            const [disabledGenerals, setDisabledGenerals] = useState([]);
+            const [disabledGenerals, setDisabledGenerals] = useState(() => {
+                const saved = localStorage.getItem('disabledGenerals');
+                return saved ? JSON.parse(saved) : [];
+            });
             
             // 名宝タブ（使用可能 / 不使用）
             const [activeTreasuresTab, setActiveTreasuresTab] = useState('active');
             
             // 不使用名宝リスト
-            const [disabledTreasures, setDisabledTreasures] = useState([]);
+            const [disabledTreasures, setDisabledTreasures] = useState(() => {
+                const saved = localStorage.getItem('disabledTreasures');
+                return saved ? JSON.parse(saved) : [];
+            });
             
             // 現在のプロファイルのランクデータを取得するヘルパー
             const generalStarRank = profileData[currentProfile].generalStarRank;
@@ -560,40 +576,8 @@ const { useState, useEffect } = React;
                     }));
                 }
                 
-                // localStorageから保存データを読み込み
-                try {
-                    // プロファイルデータを読み込み
-                    const savedProfileData = localStorage.getItem('profileData');
-                    if (savedProfileData) {
-                        setProfileData(JSON.parse(savedProfileData));
-                    }
-                    
-                    // プロファイル名を読み込み
-                    const savedProfileNames = localStorage.getItem('profileNames');
-                    if (savedProfileNames) {
-                        setProfileNames(JSON.parse(savedProfileNames));
-                    }
-                    
-                    // 現在のプロファイル番号を読み込み
-                    const savedCurrentProfile = localStorage.getItem('currentProfile');
-                    if (savedCurrentProfile) {
-                        setCurrentProfile(parseInt(savedCurrentProfile));
-                    }
-                    
-                    // 不使用武将リスト
-                    const savedDisabledGenerals = localStorage.getItem('disabledGenerals');
-                    if (savedDisabledGenerals) {
-                        setDisabledGenerals(JSON.parse(savedDisabledGenerals));
-                    }
-                    
-                    // 不使用名宝リスト
-                    const savedDisabledTreasures = localStorage.getItem('disabledTreasures');
-                    if (savedDisabledTreasures) {
-                        setDisabledTreasures(JSON.parse(savedDisabledTreasures));
-                    }
-                } catch (e) {
-                    console.error('Failed to load saved data:', e);
-                }
+                // ※ profileData, profileNames, currentProfile, disabledGenerals, disabledTreasures は
+                // useState の lazy init で直接 localStorage から読み込み済み
                 
                 setLoading(false);
             }, []);
@@ -1044,6 +1028,7 @@ const { useState, useEffect } = React;
                 disabledGenerals, disabledTreasures,
                 pendingSets, formationTemplates,
                 gdriveLastSync, collapsedFormations,
+                generalStarRank, treasureForgeRank,
                 setFormations, setFormationPatterns, setProfileFormations,
                 setActivePattern, setCurrentProfile,
                 setProfileData, setProfileNames,
