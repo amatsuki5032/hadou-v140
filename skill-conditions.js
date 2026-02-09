@@ -342,23 +342,13 @@ function checkSkillCondition(rawCondition, ctx) {
         }
 
         // === ステータス条件（編制時点）===
-        case 'MAIN_ATK_2500': {
-            if (!isMain) return { active: false, reason: '主将でない', checkable: true };
-            if (ctx.formationAttack == null) return { active: false, reason: '攻撃値不明', checkable: false };
-            const match = ctx.formationAttack >= 2500;
-            return { active: match, reason: match ? `攻撃${ctx.formationAttack}≥2500` : `攻撃${ctx.formationAttack}<2500`, checkable: true };
-        }
-        case 'MAIN_ATK_2750': {
-            if (!isMain) return { active: false, reason: '主将でない', checkable: true };
-            if (ctx.formationAttack == null) return { active: false, reason: '攻撃値不明', checkable: false };
-            const match = ctx.formationAttack >= 2750;
-            return { active: match, reason: match ? `攻撃${ctx.formationAttack}≥2750` : `攻撃${ctx.formationAttack}<2750`, checkable: true };
-        }
+        // TODO: 将来は2パス方式（基礎ステータス計算→条件判定→再計算）に移行
+        // 現状は主将であれば条件を満たす前提で常にON
+        case 'MAIN_ATK_2500':
+        case 'MAIN_ATK_2750':
         case 'MAIN_DEF_2750': {
             if (!isMain) return { active: false, reason: '主将でない', checkable: true };
-            if (ctx.formationDefense == null) return { active: false, reason: '防御値不明', checkable: false };
-            const match = ctx.formationDefense >= 2750;
-            return { active: match, reason: match ? `防御${ctx.formationDefense}≥2750` : `防御${ctx.formationDefense}<2750`, checkable: true };
+            return { active: true, reason: 'ステータス条件（主将前提でON）', checkable: true };
         }
 
         // === 戦闘中・特殊条件（編制画面では判定不可）===
