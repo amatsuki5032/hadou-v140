@@ -132,6 +132,7 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
 
     // 一括操作: 全アクティブ項目を解除（チェックON）
     const handleUnlockAll = () => {
+        if (!confirm('有効な研究項目をすべて解除（チェックON）します。\nよろしいですか？')) return;
         setProfileConfig(prev => {
             const newItems = { ...(prev.research?.items || {}) };
             for (const item of RESEARCH_DATA) {
@@ -147,6 +148,7 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
 
     // 一括操作: 全ロック（チェックOFF）
     const handleLockAll = () => {
+        if (!confirm('すべての研究項目をロック（チェックOFF）します。\nよろしいですか？')) return;
         setProfileConfig(prev => {
             const newItems = { ...(prev.research?.items || {}) };
             for (const key of Object.keys(newItems)) {

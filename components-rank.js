@@ -151,6 +151,7 @@ function RankSettingsPanel({
                     <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                         <button
                             onClick={() => {
+                                if (!confirm('全武将の将星ランクを☆7に変更します。\nよろしいですか？')) return;
                                 const newRanks = {...generalStarRank};
                                 generals.forEach(g => {
                                     const key = `${g.id}-${g.rarity}-${g.name}`;
@@ -178,6 +179,7 @@ function RankSettingsPanel({
                         </button>
                         <button
                             onClick={() => {
+                                if (!confirm('全武将の将星ランクを☆0にリセットします。\nよろしいですか？')) return;
                                 setProfileData(prev => ({
                                     ...prev,
                                     [currentProfile]: {
@@ -498,6 +500,7 @@ function RankSettingsPanel({
                     <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                         <button
                             onClick={() => {
+                                if (!confirm('全名宝の鍛錬ランクを最大（☆7/★10）に変更します。\nよろしいですか？')) return;
                                 const newRanks = {...treasureForgeRank};
                                 treasures.forEach(t => {
                                     const maxRank = treasureURStatus[t.id] ? 10 : 7;
@@ -525,6 +528,7 @@ function RankSettingsPanel({
                         </button>
                         <button
                             onClick={() => {
+                                if (!confirm('全名宝の鍛錬ランクを☆0にリセットします。\nよろしいですか？')) return;
                                 setProfileData(prev => ({
                                     ...prev,
                                     [currentProfile]: {
@@ -549,6 +553,10 @@ function RankSettingsPanel({
                             onClick={() => {
                                 // 全てUR化されているかチェック
                                 const allUR = treasures.every(t => treasureURStatus[t.id]);
+                                const msg = allUR
+                                    ? '全名宝のUR化を解除します。\nよろしいですか？'
+                                    : '全名宝をUR化します。\nよろしいですか？';
+                                if (!confirm(msg)) return;
                                 
                                 const newURStatus = {...treasureURStatus};
                                 
