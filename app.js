@@ -1056,6 +1056,11 @@ const { useState, useEffect } = React;
                 return calculateCombatParameters(formations[formationKey], getGeneralStarRank);
             };
             
+            // 部隊ステータス計算（stat-calculator.js のラッパー）
+            const calcFormationStats = (formationKey) => {
+                return calculateFormationStats(formations[formationKey], getGeneralStarRank);
+            };
+            
             // 部隊をリセット
             const resetFormation = (formationKey) => {
                 if (confirm('この部隊の全データ（武将・侍従・名宝・参軍）をリセットしますか？')) {
@@ -2048,6 +2053,7 @@ const { useState, useEffect } = React;
                             isTreasureUR={isTreasureUR}
                             calcCombatParams={calcCombatParams}
                             calcSkillEffects={calcSkillEffects}
+                            calcFormationStats={calcFormationStats}
                             ItemImage={ItemImage}
                         />
 
