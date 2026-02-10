@@ -44,6 +44,19 @@ const FORMATION_RATES = {
     '斬心陣':     { main: 0.624, sub: 0.276, advisor: 0.188 },
 };
 
+// === 参軍反映率テーブル ===
+// 参軍レベル別の反映率（Lv1=6%, 以降+1%ずつ, Lv10=15%）
+const ADVISOR_LEVEL_RATES = [0, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15];
+
+// 参軍スロット → 参照ステータス → 加算先の対応
+const ADVISOR_SLOT_MAP = {
+    leadership:   { statKey: 'leadership',   targetKey: 'defense' },      // 統率 → 防御
+    attack:       { statKey: 'attack',        targetKey: 'attack' },       // 武力 → 攻撃
+    intelligence: { statKey: 'intelligence',  targetKey: 'intelligence' }, // 知力 → 知力
+    // politics → 輸送（戦闘無関係、将来実装）
+    // charm → 探索（戦闘無関係、将来実装）
+};
+
 // === 個人ステータス計算 ===
 
 /**
@@ -167,6 +180,42 @@ function calcFormationBaseStats(formation, getStarRankFn) {
 }
 
 /**
+ * 参軍武将のステータス貢献を計算する
+ * @param {Object} formation - 部隊データ（formation.advisors を参照）
+ * @param {Function} getStarRankFn - 武将の星ランク取得関数
+ * @param {number} advisorLevel - 参軍レベル（0-10）。デフォルト10
+ * @param {number} facilityBonus - 参軍府ボーナス（0-0.10）。デフォルト0
+ * @returns {Object} { attack, defense, intelligence } の加算値
+ */
+function calcAdvisorContribution(formation, getStarRankFn, advisorLevel, facilityBonus) {
+    const contribution = { attack: 0, defense: 0, intelligence: 0 };
+    if (!formation?.advisors) return contribution;
+
+    const lvRate = ADVISOR_LEVEL_RATES[Math.min(Math.max(advisorLevel || 0, 0), 10)] || 0;
+    const rate = lvRate + (facilityBonus || 0);
+    if (rate <= 0) return contribution;
+
+    for (const [slotKey, mapping] of Object.entries(ADVISOR_SLOT_MAP)) {
+        const advisorData = formation.advisors[slotKey];
+        if (!advisorData) continue;
+
+        const generalId = typeof advisorData === 'object' ? advisorData.id : advisorData;
+        const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
+        if (!general) continue;
+
+        const starRank = getStarRankFn(general);
+        const stats = calcGeneralStats(general, starRank);
+        if (!stats) continue;
+
+        // TODO: 名宝ステータス加算（鍛錬JS化後に追加）
+        const refStat = stats[mapping.statKey] || 0;
+        contribution[mapping.targetKey] += Math.floor(refStat * rate);
+    }
+
+    return contribution;
+}
+
+/**
  * 技能によるステータス加算を集計する
  * type2='基礎' の効果から %加算と固定値加算を分離して返す
  */
@@ -219,10 +268,19 @@ function collectSkillStatBonuses(allEntries, fmtCtx) {
 
 /**
  * 部隊ステータスをまとめて計算する（メインAPI）
+ * @param {Object} formation - 部隊データ
+ * @param {Function} getStarRankFn - 武将の星ランク取得関数
+ * @param {Object} [advisorConfig] - 参軍設定 { level: 0-10, facilityBonus: 0-0.10 }
  */
-function calculateFormationStats(formation, getStarRankFn) {
+function calculateFormationStats(formation, getStarRankFn, advisorConfig) {
     const base = calcFormationBaseStats(formation, getStarRankFn);
     if (!base) return null;
+
+    // 参軍加算
+    const advCfg = advisorConfig || { level: 10, facilityBonus: 0 };
+    const advisorBonus = calcAdvisorContribution(
+        formation, getStarRankFn, advCfg.level, advCfg.facilityBonus
+    );
 
     // 技能加算
     let pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
@@ -239,6 +297,13 @@ function calculateFormationStats(formation, getStarRankFn) {
         }
     }
 
+    // 基礎 + 参軍を合算してから技能%を適用
+    const baseWithAdvisor = {
+        attack: base.attack + advisorBonus.attack,
+        defense: base.defense + advisorBonus.defense,
+        intelligence: base.intelligence + advisorBonus.intelligence,
+    };
+
     return {
         // 基礎（天賦×将星＋陣形反映率のみ）
         base: {
@@ -246,11 +311,13 @@ function calculateFormationStats(formation, getStarRankFn) {
             defense: base.defense,
             intelligence: base.intelligence,
         },
-        // 技能加算後
+        // 参軍加算
+        advisor: advisorBonus,
+        // 技能加算後（基礎+参軍 に技能%適用 + 固定値）
         withSkills: {
-            attack: Math.floor(base.attack * (1 + pctBonuses.attack)) + fixBonuses.attack,
-            defense: Math.floor(base.defense * (1 + pctBonuses.defense)) + fixBonuses.defense,
-            intelligence: Math.floor(base.intelligence * (1 + pctBonuses.intelligence)) + fixBonuses.intelligence,
+            attack: Math.floor(baseWithAdvisor.attack * (1 + pctBonuses.attack)) + fixBonuses.attack,
+            defense: Math.floor(baseWithAdvisor.defense * (1 + pctBonuses.defense)) + fixBonuses.defense,
+            intelligence: Math.floor(baseWithAdvisor.intelligence * (1 + pctBonuses.intelligence)) + fixBonuses.intelligence,
         },
         // 技能ボーナス詳細
         bonuses: { pct: pctBonuses, fix: fixBonuses },

@@ -20,7 +20,7 @@ function FormationsArea({
     saveFormationTemplate, loadFormationTemplate,
     // 計算・ユーティリティ
     getImageUrl, getGeneralStarRank, getTreasureForgeRank,
-    isTreasureUR, calcCombatParams, calcSkillEffects,
+    isTreasureUR, calcCombatParams, calcFormationStats, calcSkillEffects,
     ItemImage
 }) {
     return (
@@ -835,6 +835,77 @@ function FormationsArea({
                                         </React.Fragment>
                                     );
                                 })}
+                            </div>
+                        </div>
+                        
+                        {/* 部隊ステータスパネル */}
+                        <div className="combat-parameters-panel" style={{marginBottom: '8px'}}>
+                            <div className="combat-params-header">
+                                <span>部隊ステータス</span>
+                            </div>
+                            <div className="combat-params-content">
+                                {(() => {
+                                    const fStats = calcFormationStats(key);
+                                    if (!fStats) return <div className="no-data">主将を配置してください</div>;
+                                    
+                                    const statRows = [
+                                        { label: '攻撃', key: 'attack',       color: 'var(--stat-attack, #ef4444)' },
+                                        { label: '防御', key: 'defense',      color: 'var(--danger, #dc2626)' },
+                                        { label: '知力', key: 'intelligence', color: 'var(--accent, #2563eb)' },
+                                    ];
+                                    
+                                    return (
+                                        <>
+                                            {statRows.map(row => {
+                                                const baseVal = fStats.base[row.key];
+                                                const advVal = fStats.advisor[row.key];
+                                                const finalVal = fStats.withSkills[row.key];
+                                                const pctBonus = fStats.bonuses.pct[row.key] || 0;
+                                                
+                                                return (
+                                                    <div key={row.key} className="param-row" style={{
+                                                        display: 'flex',
+                                                        alignItems: 'baseline',
+                                                        gap: '6px'
+                                                    }}>
+                                                        <span className="param-label" style={{
+                                                            color: row.color,
+                                                            fontWeight: 'bold',
+                                                            minWidth: '36px'
+                                                        }}>
+                                                            {row.label}:
+                                                        </span>
+                                                        <span style={{
+                                                            color: 'var(--text-primary)',
+                                                            fontSize: '16px',
+                                                            fontWeight: 'bold',
+                                                            fontFamily: 'monospace'
+                                                        }}>
+                                                            {finalVal.toLocaleString()}
+                                                        </span>
+                                                        <span style={{
+                                                            color: 'var(--text-muted)',
+                                                            fontSize: '10px'
+                                                        }}>
+                                                            ({baseVal.toLocaleString()}
+                                                            {advVal > 0 && <span style={{color: 'var(--success, #22c55e)'}}>+{advVal}</span>}
+                                                            {pctBonus > 0 && <span style={{color: 'var(--accent)'}}>+{(pctBonus * 100).toFixed(0)}%</span>})
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })}
+                                            <div style={{
+                                                fontSize: '9px',
+                                                color: 'var(--text-muted)',
+                                                marginTop: '4px',
+                                                borderTop: '1px solid var(--border-base)',
+                                                paddingTop: '4px'
+                                            }}>
+                                                {fStats.formationName} / 参軍Lv10
+                                            </div>
+                                        </>
+                                    );
+                                })()}
                             </div>
                         </div>
                         

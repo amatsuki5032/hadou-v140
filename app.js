@@ -1136,6 +1136,15 @@ const { useState, useEffect } = React;
                 return calculateCombatParameters(formations[formationKey], getGeneralStarRank);
             };
             
+            // 部隊ステータスを計算（stat-calculator.js のラッパー）
+            const calcFormationStats = (formationKey) => {
+                if (typeof calculateFormationStats !== 'function') return null;
+                return calculateFormationStats(formations[formationKey], getGeneralStarRank, {
+                    level: 10,          // TODO: プロファイルから取得
+                    facilityBonus: 0    // TODO: プロファイル参軍府設定から取得
+                });
+            };
+            
             // 部隊をリセット
             const resetFormation = (formationKey) => {
                 if (confirm('この部隊の全データ（武将・侍従・名宝・参軍）をリセットしますか？')) {
@@ -2173,6 +2182,7 @@ const { useState, useEffect } = React;
                             getTreasureForgeRank={getTreasureForgeRank}
                             isTreasureUR={isTreasureUR}
                             calcCombatParams={calcCombatParams}
+                            calcFormationStats={calcFormationStats}
                             calcSkillEffects={calcSkillEffects}
                             ItemImage={ItemImage}
                         />
