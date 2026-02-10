@@ -64,11 +64,11 @@ const { useState, useEffect } = React;
                 const saved = localStorage.getItem('profileData');
                 if (saved) return JSON.parse(saved);
                 return {
-                    0: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                    1: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                    2: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                    3: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}},
-                    4: {generalStarRank: {}, treasureForgeRank: {}, treasureURStatus: {}}
+                    0: {generalStarRank: {}, generalProfiles: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    1: {generalStarRank: {}, generalProfiles: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    2: {generalStarRank: {}, generalProfiles: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    3: {generalStarRank: {}, generalProfiles: {}, treasureForgeRank: {}, treasureURStatus: {}},
+                    4: {generalStarRank: {}, generalProfiles: {}, treasureForgeRank: {}, treasureURStatus: {}}
                 };
             });
             
@@ -495,6 +495,7 @@ const { useState, useEffect } = React;
             
             // 現在のプロファイルのランクデータを取得するヘルパー
             const generalStarRank = profileData[currentProfile].generalStarRank;
+            const generalProfiles = profileData[currentProfile].generalProfiles || {};
             const treasureForgeRank = profileData[currentProfile].treasureForgeRank;
             const treasureURStatus = profileData[currentProfile].treasureURStatus;
             
@@ -880,6 +881,18 @@ const { useState, useEffect } = React;
                 return generalStarRank[key] || 0;
             };
             
+            // 武将の育成プロファイルを取得（stat-calculator用）
+            const getGeneralProfile = (general) => {
+                const key = `${general.id}-${general.rarity}-${general.name}`;
+                const star = generalStarRank[key] || 0;
+                const prof = generalProfiles[key] || {};
+                return {
+                    star,
+                    level: prof.level,   // undefined → calcActualStatでデフォルト適用
+                    grade: prof.grade,   // undefined → calcActualStatで30
+                };
+            };
+            
             // 武将の将星ランクを設定
             const setGeneralStar = (general, rank) => {
                 const key = `${general.id}-${general.rarity}-${general.name}`;
@@ -890,6 +903,42 @@ const { useState, useEffect } = React;
                         generalStarRank: {
                             ...prev[currentProfile].generalStarRank,
                             [key]: rank
+                        }
+                    }
+                }));
+            };
+            
+            // 武将のレベルを設定
+            const setGeneralLevel = (general, level) => {
+                const key = `${general.id}-${general.rarity}-${general.name}`;
+                setProfileData(prev => ({
+                    ...prev,
+                    [currentProfile]: {
+                        ...prev[currentProfile],
+                        generalProfiles: {
+                            ...(prev[currentProfile].generalProfiles || {}),
+                            [key]: {
+                                ...(prev[currentProfile].generalProfiles || {})[key],
+                                level
+                            }
+                        }
+                    }
+                }));
+            };
+            
+            // 武将のグレードを設定
+            const setGeneralGrade = (general, grade) => {
+                const key = `${general.id}-${general.rarity}-${general.name}`;
+                setProfileData(prev => ({
+                    ...prev,
+                    [currentProfile]: {
+                        ...prev[currentProfile],
+                        generalProfiles: {
+                            ...(prev[currentProfile].generalProfiles || {}),
+                            [key]: {
+                                ...(prev[currentProfile].generalProfiles || {})[key],
+                                grade
+                            }
                         }
                     }
                 }));
@@ -1143,7 +1192,7 @@ const { useState, useEffect } = React;
                     return null;
                 }
                 try {
-                    return calculateFormationStats(formations[formationKey], getGeneralStarRank, {
+                    return calculateFormationStats(formations[formationKey], getGeneralProfile, {
                         level: 10,          // TODO: プロファイルから取得
                         facilityBonus: 0    // TODO: プロファイル参軍府設定から取得
                     });
@@ -2306,6 +2355,9 @@ const { useState, useEffect } = React;
                         setDisabledTreasures={setDisabledTreasures}
                         getGeneralStarRank={getGeneralStarRank}
                         setGeneralStar={setGeneralStar}
+                        getGeneralProfile={getGeneralProfile}
+                        setGeneralLevel={setGeneralLevel}
+                        setGeneralGrade={setGeneralGrade}
                         getTreasureForgeRank={getTreasureForgeRank}
                         setTreasureForge={setTreasureForge}
                         isTreasureUR={isTreasureUR}

@@ -61,34 +61,63 @@ const ADVISOR_SLOT_MAP = {
 
 /**
  * 武将の実ステータスを1つ計算する
+ * @param {number} baseStat - 初期ステータス（武将DBの値）
+ * @param {number} tenpu - 天賦値
+ * @param {number} starRank - 将星ランク（0-7）
+ * @param {number} [level] - レベル（1-60）。省略時は☆0-6→50, ☆7→60
+ * @param {number} [grade] - グレード（0-30）。省略時は30
  */
-function calcActualStat(baseStat, tenpu, starRank) {
+function calcActualStat(baseStat, tenpu, starRank, level, grade) {
     if (!baseStat || !tenpu) return 0;
     const table = TENPU_TABLE[tenpu];
     if (!table) return 0;
 
     const star = Math.min(Math.max(starRank || 0, 0), 7);
-    const gradeBonus = table.grade;
+    const gradeVal = Math.min(Math.max(grade ?? 30, 0), 30);
+    const maxLv = star >= 7 ? 60 : 50;
+    const lv = Math.min(Math.max(level ?? maxLv, 1), maxLv);
+
+    // グレード補正: Grade30で最大、0で0
+    const gradeBonus = table.grade * (gradeVal / 30);
+    // 将星補正: ☆7で最大
     const starBonus = (star / 7) * table.starMax;
-    const lvBonus = star >= 7
-        ? table.lv50 + table.lv50to60
-        : table.lv50;
+    // レベル補正: Lv1→0, Lv50→lv50全量, Lv51-60→lv50to60追加
+    let lvBonus = 0;
+    if (lv <= 50) {
+        lvBonus = table.lv50 * ((lv - 1) / 49);
+    } else {
+        lvBonus = table.lv50 + table.lv50to60 * ((lv - 50) / 10);
+    }
 
     return Math.floor(baseStat * (1 + gradeBonus + starBonus + lvBonus));
 }
 
 /**
- * 武将の全ステータスを計算する
+ * プロファイル関数の戻り値を正規化する（後方互換）
+ * 数値が返った場合は { star: n, level: auto, grade: 30 } に変換
  */
-function calcGeneralStats(general, starRank) {
+function normalizeProfile(profileOrStar) {
+    if (typeof profileOrStar === 'number') {
+        return { star: profileOrStar };
+    }
+    return profileOrStar || { star: 0 };
+}
+
+/**
+ * 武将の全ステータスを計算する
+ * @param {Object} general - 武将データ
+ * @param {number|Object} profileOrStar - 星ランク(数値) or { star, level, grade }
+ */
+function calcGeneralStats(general, profileOrStar) {
     if (!general) return null;
     const t = general.tenpu || 0;
+    const p = normalizeProfile(profileOrStar);
     return {
-        leadership:   calcActualStat(general.leadership, t, starRank),
-        attack:       calcActualStat(general.attack, t, starRank),
-        intelligence: calcActualStat(general.intelligence, t, starRank),
-        politics:     calcActualStat(general.politics || 0, t, starRank),
-        charm:        calcActualStat(general.charm || 0, t, starRank),
+        leadership:   calcActualStat(general.leadership, t, p.star, p.level, p.grade),
+        attack:       calcActualStat(general.attack, t, p.star, p.level, p.grade),
+        intelligence: calcActualStat(general.intelligence, t, p.star, p.level, p.grade),
+        politics:     calcActualStat(general.politics || 0, t, p.star, p.level, p.grade),
+        charm:        calcActualStat(general.charm || 0, t, p.star, p.level, p.grade),
     };
 }
 
@@ -124,7 +153,7 @@ function normalizeFormationName(name) {
  * 防御 = Σ (統率 × 反映率)
  * 知力 = (主将知力 + 部隊最高知力) / 2
  */
-function calcFormationBaseStats(formation, getStarRankFn) {
+function calcFormationBaseStats(formation, getProfileFn) {
     if (!formation?.slots) return null;
 
     const fmtName = normalizeFormationName(formation.formationType || formation.formation_id);
@@ -146,11 +175,11 @@ function calcFormationBaseStats(formation, getStarRankFn) {
         const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
         if (!general) continue;
 
-        const starRank = getStarRankFn(general);
-        const stats = calcGeneralStats(general, starRank);
+        const profile = normalizeProfile(getProfileFn(general));
+        const stats = calcGeneralStats(general, profile);
         if (!stats) continue;
 
-        memberStats[slotName] = { general, starRank, stats };
+        memberStats[slotName] = { general, starRank: profile.star, stats };
 
         const category = getPositionCategory(slotName);
         const rate = rates[category] || 0;
@@ -182,12 +211,12 @@ function calcFormationBaseStats(formation, getStarRankFn) {
 /**
  * 参軍武将のステータス貢献を計算する
  * @param {Object} formation - 部隊データ（formation.advisors を参照）
- * @param {Function} getStarRankFn - 武将の星ランク取得関数
+ * @param {Function} getProfileFn - 武将プロファイル取得関数
  * @param {number} advisorLevel - 参軍レベル（0-10）。デフォルト10
  * @param {number} facilityBonus - 参軍府ボーナス（0-0.10）。デフォルト0
  * @returns {Object} { attack, defense, intelligence } の加算値
  */
-function calcAdvisorContribution(formation, getStarRankFn, advisorLevel, facilityBonus) {
+function calcAdvisorContribution(formation, getProfileFn, advisorLevel, facilityBonus) {
     const contribution = { attack: 0, defense: 0, intelligence: 0 };
     if (!formation?.advisors) return contribution;
 
@@ -203,8 +232,8 @@ function calcAdvisorContribution(formation, getStarRankFn, advisorLevel, facilit
         const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
         if (!general) continue;
 
-        const starRank = getStarRankFn(general);
-        const stats = calcGeneralStats(general, starRank);
+        const profile = normalizeProfile(getProfileFn(general));
+        const stats = calcGeneralStats(general, profile);
         if (!stats) continue;
 
         // TODO: 名宝ステータス加算（鍛錬JS化後に追加）
@@ -269,17 +298,17 @@ function collectSkillStatBonuses(allEntries, fmtCtx) {
 /**
  * 部隊ステータスをまとめて計算する（メインAPI）
  * @param {Object} formation - 部隊データ
- * @param {Function} getStarRankFn - 武将の星ランク取得関数
+ * @param {Function} getProfileFn - 武将プロファイル取得関数。(general) => number|{star,level,grade}
  * @param {Object} [advisorConfig] - 参軍設定 { level: 0-10, facilityBonus: 0-0.10 }
  */
-function calculateFormationStats(formation, getStarRankFn, advisorConfig) {
-    const base = calcFormationBaseStats(formation, getStarRankFn);
+function calculateFormationStats(formation, getProfileFn, advisorConfig) {
+    const base = calcFormationBaseStats(formation, getProfileFn);
     if (!base) return null;
 
     // 参軍加算
     const advCfg = advisorConfig || { level: 10, facilityBonus: 0 };
     const advisorBonus = calcAdvisorContribution(
-        formation, getStarRankFn, advCfg.level, advCfg.facilityBonus
+        formation, getProfileFn, advCfg.level, advCfg.facilityBonus
     );
 
     // 技能加算
@@ -288,7 +317,7 @@ function calculateFormationStats(formation, getStarRankFn, advisorConfig) {
 
     if (typeof buildAllEntries === 'function') {
         try {
-            const { allEntries, fmtCtx } = buildAllEntries(formation, getStarRankFn);
+            const { allEntries, fmtCtx } = buildAllEntries(formation, getProfileFn);
             const bonuses = collectSkillStatBonuses(allEntries, fmtCtx);
             pctBonuses = bonuses.pctBonuses;
             fixBonuses = bonuses.fixBonuses;

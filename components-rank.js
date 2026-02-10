@@ -14,6 +14,7 @@ function RankSettingsPanel({
     expandedTreasureCategories, setExpandedTreasureCategories,
     setDisabledGenerals, setDisabledTreasures,
     getGeneralStarRank, setGeneralStar,
+    getGeneralProfile, setGeneralLevel, setGeneralGrade,
     getTreasureForgeRank, setTreasureForge,
     isTreasureUR, toggleTreasureUR,
     isFavorite, toggleFavorite,
@@ -145,13 +146,12 @@ function RankSettingsPanel({
             
             {rankTab === 'general' ? (
                 <div>
-                    <h2 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>武将の将星ランク設定</h2>
+                    <h2 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>武将の育成設定</h2>
                     
                     {/* 一括操作ボタン */}
                     <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                         <button
                             onClick={() => {
-                                if (!confirm('全武将の将星ランクを☆7に変更します。\nよろしいですか？')) return;
                                 const newRanks = {...generalStarRank};
                                 generals.forEach(g => {
                                     const key = `${g.id}-${g.rarity}-${g.name}`;
@@ -179,7 +179,6 @@ function RankSettingsPanel({
                         </button>
                         <button
                             onClick={() => {
-                                if (!confirm('全武将の将星ランクを☆0にリセットします。\nよろしいですか？')) return;
                                 setProfileData(prev => ({
                                     ...prev,
                                     [currentProfile]: {
@@ -386,12 +385,56 @@ function RankSettingsPanel({
                                         >
                                             {rarity}☆7
                                         </button>
+                                        <button
+                                            onClick={() => {
+                                                setProfileData(prev => {
+                                                    const cp = prev[currentProfile];
+                                                    const newProfiles = {...(cp.generalProfiles || {})};
+                                                    generals
+                                                        .filter(g => g.rarity === rarity)
+                                                        .forEach(g => {
+                                                            const key = `${g.id}-${g.rarity}-${g.name}`;
+                                                            const star = (cp.generalStarRank || {})[key] || 0;
+                                                            newProfiles[key] = {
+                                                                ...(newProfiles[key] || {}),
+                                                                level: star >= 7 ? 60 : 50,
+                                                                grade: 30
+                                                            };
+                                                        });
+                                                    return {
+                                                        ...prev,
+                                                        [currentProfile]: {
+                                                            ...cp,
+                                                            generalProfiles: newProfiles
+                                                        }
+                                                    };
+                                                });
+                                            }}
+                                            style={{
+                                                padding: '6px 12px',
+                                                background: 'var(--success)',
+                                                border: 'none',
+                                                borderRadius: '4px',
+                                                color: '#fff',
+                                                cursor: 'pointer',
+                                                fontWeight: 'bold',
+                                                fontSize: '12px',
+                                                boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                                            }}
+                                            title={`${rarity}武将を全てMaxLv・G30にする`}
+                                        >
+                                            {rarity} Max育成
+                                        </button>
                                     </div>
                                 </div>
                                 {expandedRarities[rarity] && (
-                                <div style={{display: 'grid', gap: '12px'}}>
+                                <div style={{display: 'grid', gap: '8px'}}>
                                     {filteredGenerals.map(general => {
                                 const currentRank = getGeneralStarRank(general);
+                                const profile = getGeneralProfile ? getGeneralProfile(general) : { star: currentRank };
+                                const currentLevel = profile.level ?? (currentRank >= 7 ? 60 : 50);
+                                const currentGrade = profile.grade ?? 30;
+                                const maxLevel = currentRank >= 7 ? 60 : 50;
                                 const isFav = isFavorite(general);
                                 const isDisabled = isGeneralDisabled(general);
                                 return (
@@ -400,43 +443,41 @@ function RankSettingsPanel({
                                         style={{
                                             background: 'var(--bg-card)',
                                             border: '1px solid var(--border-light)',
-                                            padding: '12px',
-                                            display: 'grid',
-                                            gridTemplateColumns: '1fr 60px 130px auto',
+                                            padding: '8px 12px',
+                                            display: 'flex',
                                             alignItems: 'center',
-                                            gap: '12px'
+                                            gap: '8px',
+                                            flexWrap: 'wrap',
+                                            opacity: isDisabled ? 0.4 : 1,
                                         }}
                                     >
-                                        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                                        {/* アイコン+名前 */}
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '8px', minWidth: '140px'}}>
                                             <ItemImage 
                                                 src={getImageUrl('general', general.id, general.rarity, general.name)}
                                                 alt={general.name}
                                                 rarity={general.rarity}
                                             />
                                             <div>
-                                                <div style={{color: 'var(--text-primary)', fontWeight: 'bold'}}>
+                                                <div style={{color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '13px'}}>
                                                     {general.name}
                                                 </div>
-                                                <div style={{color: 'var(--text-muted)', fontSize: '12px'}}>
+                                                <div style={{color: 'var(--text-muted)', fontSize: '11px'}}>
                                                     {general.rarity} - {getUnitTypeName(general.unit_type)}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{display: 'flex', gap: '4px'}}>
+                                        {/* お気に入り・不使用 */}
+                                        <div style={{display: 'flex', gap: '2px'}}>
                                             <button
                                                 onClick={() => toggleFavorite(general)}
                                                 style={{
-                                                    padding: '4px 8px',
-                                                    background: 'none',
-                                                    border: 'none',
-                                                    cursor: 'pointer',
-                                                    fontSize: '16px',
+                                                    padding: '2px 6px', background: 'none', border: 'none',
+                                                    cursor: 'pointer', fontSize: '14px',
                                                     color: isFav ? 'var(--rank-color)' : 'var(--text-muted)'
                                                 }}
                                                 title="お気に入り"
-                                            >
-                                                ★
-                                            </button>
+                                            >★</button>
                                             <button
                                                 onClick={() => {
                                                     if (isDisabled) {
@@ -446,42 +487,79 @@ function RankSettingsPanel({
                                                     }
                                                 }}
                                                 style={{
-                                                    padding: '4px 8px',
-                                                    background: 'none',
-                                                    border: 'none',
-                                                    cursor: 'pointer',
-                                                    fontSize: '16px',
+                                                    padding: '2px 6px', background: 'none', border: 'none',
+                                                    cursor: 'pointer', fontSize: '14px',
                                                     color: isDisabled ? 'var(--danger)' : 'var(--text-muted)'
                                                 }}
                                                 title="不使用"
-                                            >
-                                                ×
-                                            </button>
+                                            >×</button>
                                         </div>
-                                        <div style={{textAlign: 'center', minWidth: '130px'}}>
-                                            {Array.from({length: 7}, (_, i) => (
-                                                <span key={i} style={{color: i < currentRank ? 'var(--rank-color)' : 'var(--bg-elevated)'}}>
-                                                    ☆
-                                                </span>
-                                            ))}
-                                        </div>
-                                        <div style={{display: 'flex', gap: '4px'}}>
+                                        {/* ☆ランク */}
+                                        <div style={{display: 'flex', gap: '2px', alignItems: 'center'}}>
+                                            <span style={{fontSize: '11px', color: 'var(--text-muted)', marginRight: '2px'}}>☆</span>
                                             {[0,1,2,3,4,5,6,7].map(rank => (
                                                 <button
                                                     key={rank}
                                                     onClick={() => setGeneralStar(general, rank)}
                                                     style={{
-                                                        padding: '6px 12px',
+                                                        padding: '3px 7px',
+                                                        fontSize: '11px',
                                                         background: currentRank === rank ? 'var(--accent)' : 'var(--bg-elevated)',
                                                         border: '1px solid var(--border-light)',
-                                                        color: currentRank === rank ? 'var(--text-primary)' : 'var(--text-primary)',
+                                                        color: currentRank === rank ? '#fff' : 'var(--text-secondary)',
                                                         cursor: 'pointer',
-                                                        fontWeight: currentRank === rank ? 'bold' : 'normal'
+                                                        fontWeight: currentRank === rank ? 'bold' : 'normal',
+                                                        borderRadius: '3px',
+                                                        minWidth: '24px',
                                                     }}
                                                 >
                                                     {rank}
                                                 </button>
                                             ))}
+                                        </div>
+                                        {/* Lv */}
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '3px'}}>
+                                            <span style={{fontSize: '11px', color: 'var(--text-muted)'}}>Lv</span>
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                max={maxLevel}
+                                                value={currentLevel}
+                                                onChange={(e) => {
+                                                    const v = parseInt(e.target.value);
+                                                    if (!isNaN(v) && v >= 1 && v <= maxLevel) {
+                                                        setGeneralLevel(general, v);
+                                                    }
+                                                }}
+                                                style={{
+                                                    width: '42px', padding: '3px 4px',
+                                                    fontSize: '11px', textAlign: 'center',
+                                                    background: 'var(--bg-elevated)', color: 'var(--text-primary)',
+                                                    border: '1px solid var(--border-light)', borderRadius: '3px',
+                                                }}
+                                            />
+                                        </div>
+                                        {/* Grade */}
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '3px'}}>
+                                            <span style={{fontSize: '11px', color: 'var(--text-muted)'}}>G</span>
+                                            <input
+                                                type="number"
+                                                min={0}
+                                                max={30}
+                                                value={currentGrade}
+                                                onChange={(e) => {
+                                                    const v = parseInt(e.target.value);
+                                                    if (!isNaN(v) && v >= 0 && v <= 30) {
+                                                        setGeneralGrade(general, v);
+                                                    }
+                                                }}
+                                                style={{
+                                                    width: '38px', padding: '3px 4px',
+                                                    fontSize: '11px', textAlign: 'center',
+                                                    background: 'var(--bg-elevated)', color: 'var(--text-primary)',
+                                                    border: '1px solid var(--border-light)', borderRadius: '3px',
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 );
@@ -500,7 +578,6 @@ function RankSettingsPanel({
                     <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                         <button
                             onClick={() => {
-                                if (!confirm('全名宝の鍛錬ランクを最大（☆7/★10）に変更します。\nよろしいですか？')) return;
                                 const newRanks = {...treasureForgeRank};
                                 treasures.forEach(t => {
                                     const maxRank = treasureURStatus[t.id] ? 10 : 7;
@@ -528,7 +605,6 @@ function RankSettingsPanel({
                         </button>
                         <button
                             onClick={() => {
-                                if (!confirm('全名宝の鍛錬ランクを☆0にリセットします。\nよろしいですか？')) return;
                                 setProfileData(prev => ({
                                     ...prev,
                                     [currentProfile]: {
@@ -553,10 +629,6 @@ function RankSettingsPanel({
                             onClick={() => {
                                 // 全てUR化されているかチェック
                                 const allUR = treasures.every(t => treasureURStatus[t.id]);
-                                const msg = allUR
-                                    ? '全名宝のUR化を解除します。\nよろしいですか？'
-                                    : '全名宝をUR化します。\nよろしいですか？';
-                                if (!confirm(msg)) return;
                                 
                                 const newURStatus = {...treasureURStatus};
                                 
