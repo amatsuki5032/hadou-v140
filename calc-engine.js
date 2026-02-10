@@ -200,6 +200,17 @@ function sumValidLevels(entries, fmtCtx, condition) {
 }
 
 /**
+ * 部隊の全技能エントリとコンテキストを構築する（stat-calculator.js等から利用）
+ * @returns {{ allEntries: Array, fmtCtx: Object }}
+ */
+function buildAllEntries(formation, getStarRankFn) {
+    const entries = collectSkillEntries(formation, getStarRankFn);
+    const fmtCtx = buildFormationContext(formation);
+    const grantedEntries = resolveGrantedSkills(entries, fmtCtx);
+    return { allEntries: entries.concat(grantedEntries), fmtCtx };
+}
+
+/**
  * 部隊の技能効果を計算する（攻撃速度・会心発生・戦法速度）
  * @param {Object} formation - 部隊データ
  * @param {Function} getStarRankFn - 武将の星ランクを取得する関数 (general) => number

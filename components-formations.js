@@ -19,7 +19,7 @@ function FormationsArea({
     saveFormationTemplate, loadFormationTemplate,
     // 計算・ユーティリティ
     getImageUrl, getGeneralStarRank, getTreasureForgeRank,
-    isTreasureUR, calcCombatParams, calcSkillEffects,
+    isTreasureUR, calcCombatParams, calcSkillEffects, calcFormationStats,
     ItemImage
 }) {
     return (
@@ -775,43 +775,82 @@ function FormationsArea({
                             </div>
                             <div className="combat-params-content">
                                 {(() => {
+                                    const stats = calcFormationStats(key);
                                     const params = calcCombatParams(key);
-                                    if (!params) return <div className="no-data">データなし</div>;
+                                    
+                                    // 武将が1人も配置されていない場合
+                                    if (!stats && !params) return <div className="no-data">データなし</div>;
                                     
                                     return (
                                         <>
-                                            <div className="param-row">
-                                                <span className="param-icon">⚡</span>
-                                                <span className="param-label">出陣ゲージ:</span>
-                                                <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
-                                            </div>
-                                            <div className="param-row">
-                                                <span className="param-icon">🎯</span>
-                                                <span className="param-label">戦法速度:</span>
-                                                <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
-                                            </div>
-                                            <div className="param-row">
-                                                <span className="param-icon">🛡️</span>
-                                                <span className="param-label">致死耐性:</span>
-                                                <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
-                                                    {params.lethalResist ? 'ON' : 'OFF'}
-                                                </span>
-                                            </div>
-                                            <div className="param-row">
-                                                <span className="param-icon">⏱️</span>
-                                                <span className="param-label">戦法短縮:</span>
-                                                <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
-                                            </div>
-                                            <div className="param-row">
-                                                <span className="param-icon">⚔️</span>
-                                                <span className="param-label">攻撃速度:</span>
-                                                <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
-                                            </div>
-                                            <div className="param-row">
-                                                <span className="param-icon">💥</span>
-                                                <span className="param-label">会心発生:</span>
-                                                <span className="param-value">+{params.critical.toFixed(1)}%</span>
-                                            </div>
+                                            {/* 部隊ステータス（攻撃/防御/知力） */}
+                                            {stats && stats.base.attack > 0 && (
+                                                <>
+                                                    {['attack', 'defense', 'intelligence'].map(statKey => {
+                                                        const labels = { attack: '攻撃', defense: '防御', intelligence: '知力' };
+                                                        const baseVal = stats.base[statKey];
+                                                        const finalVal = stats.withSkills[statKey];
+                                                        const pct = stats.bonuses.pct[statKey];
+                                                        const fix = stats.bonuses.fix[statKey] || 0;
+                                                        const hasPct = Math.abs(pct) > 0.001;
+                                                        const hasFix = Math.abs(fix) > 0;
+                                                        const hasBonus = hasPct || hasFix;
+                                                        
+                                                        return (
+                                                            <div key={statKey} className="param-row stat-row">
+                                                                <span className="param-label stat-label">{labels[statKey]}:</span>
+                                                                <span className="param-value stat-value">{finalVal}</span>
+                                                                {hasBonus && (
+                                                                    <span className="stat-bonus">
+                                                                        ({hasPct ? `+${(pct * 100).toFixed(1)}%` : ''}
+                                                                        {hasPct && hasFix ? ' ' : ''}
+                                                                        {hasFix ? `+${fix}` : ''})
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                    <div className="param-separator" />
+                                                </>
+                                            )}
+                                            
+                                            {/* 既存の戦闘パラメータ */}
+                                            {params && (
+                                                <>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">⚡</span>
+                                                        <span className="param-label">出陣ゲージ:</span>
+                                                        <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">🎯</span>
+                                                        <span className="param-label">戦法速度:</span>
+                                                        <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">🛡️</span>
+                                                        <span className="param-label">致死耐性:</span>
+                                                        <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
+                                                            {params.lethalResist ? 'ON' : 'OFF'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">⏱️</span>
+                                                        <span className="param-label">戦法短縮:</span>
+                                                        <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">⚔️</span>
+                                                        <span className="param-label">攻撃速度:</span>
+                                                        <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">💥</span>
+                                                        <span className="param-label">会心発生:</span>
+                                                        <span className="param-value">+{params.critical.toFixed(1)}%</span>
+                                                    </div>
+                                                </>
+                                            )}
                                         </>
                                     );
                                 })()}
