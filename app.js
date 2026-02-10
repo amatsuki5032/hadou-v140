@@ -401,6 +401,21 @@ const { useState, useEffect } = React;
 
             const [contextHelpType, setContextHelpType] = useState(null); // 'general', 'treasure', 'pattern', 'template'
             
+            // クリック移動モード（スクロール越しの入れ替え用）
+            // { type: 'general'|'attendant'|'advisor'|'treasure', formationKey, slotName, advisorType?, treasureSlot?, item }
+            const [selectedForMove, setSelectedForMove] = useState(null);
+            
+            // Escキーで移動モード解除
+            useEffect(() => {
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape' && selectedForMove) {
+                        setSelectedForMove(null);
+                    }
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [selectedForMove]);
+            
             // ヘルプ表示設定（localStorage保存）
             const [showContextHelp, setShowContextHelp] = useState(() => {
                 const saved = localStorage.getItem('showContextHelp');
@@ -448,7 +463,6 @@ const { useState, useEffect } = React;
             const [showGeneralsPanel, setShowGeneralsPanel] = useState(true);
             const [showTreasuresPanel, setShowTreasuresPanel] = useState(true);
             const [showPendingPanel, setShowPendingPanel] = useState(true);
-            const [profileConfig, setProfileConfig] = useState(() => loadProfileFromStorage());
             
             // ─── ソート設定 ───
             const [generalsSortOrder, setGeneralsSortOrder] = useState('affinity');
@@ -621,11 +635,6 @@ const { useState, useEffect } = React;
             useEffect(() => {
                 localStorage.setItem('currentProfile', currentProfile.toString());
             }, [currentProfile]);
-            
-            // プロファイル設定（研究/調査/軍馬）の自動保存
-            useEffect(() => {
-                saveProfileToStorage(profileConfig);
-            }, [profileConfig]);
             
             // 編制パターンをlocalStorageに保存
             useEffect(() => {
@@ -1045,6 +1054,78 @@ const { useState, useEffect } = React;
                 getCurrentFormationPatterns
             });
 
+            // ─── クリック移動（スクロール越しの入れ替え） ───
+            const handleClickMove = (targetFormationKey, targetSlotName, targetType, targetSubSlot) => {
+                if (!selectedForMove) return;
+                const src = selectedForMove;
+                
+                // 同じスロットなら選択解除
+                const isSameSlot = src.formationKey === targetFormationKey && src.type === targetType && (
+                    (targetType === 'general' && src.slotName === targetSlotName) ||
+                    (targetType === 'attendant' && src.slotName === targetSlotName) ||
+                    (targetType === 'advisor' && src.advisorType === targetSubSlot) ||
+                    (targetType === 'treasure' && src.slotName === targetSlotName && src.treasureSlot === targetSubSlot)
+                );
+                if (isSameSlot) {
+                    setSelectedForMove(null);
+                    return;
+                }
+                
+                // 型が違う場合は無視
+                if (src.type !== targetType) {
+                    setSelectedForMove(null);
+                    return;
+                }
+                
+                setFormations(prev => {
+                    const next = JSON.parse(JSON.stringify(prev));
+                    const srcF = next[src.formationKey] || {};
+                    const dstF = next[targetFormationKey] || {};
+                    
+                    if (src.type === 'general') {
+                        // 武将スロット入れ替え
+                        if (!srcF.slots) srcF.slots = {};
+                        if (!dstF.slots) dstF.slots = {};
+                        const srcItem = srcF.slots[src.slotName] || null;
+                        const dstItem = dstF.slots[targetSlotName] || null;
+                        dstF.slots[targetSlotName] = srcItem;
+                        srcF.slots[src.slotName] = dstItem;
+                    } else if (src.type === 'attendant') {
+                        // 侍従スロット入れ替え
+                        if (!srcF.attendants) srcF.attendants = {};
+                        if (!dstF.attendants) dstF.attendants = {};
+                        const srcItem = srcF.attendants[src.slotName] || null;
+                        const dstItem = dstF.attendants[targetSlotName] || null;
+                        dstF.attendants[targetSlotName] = srcItem;
+                        srcF.attendants[src.slotName] = dstItem;
+                    } else if (src.type === 'advisor') {
+                        // 参軍スロット入れ替え
+                        if (!srcF.advisors) srcF.advisors = {};
+                        if (!dstF.advisors) dstF.advisors = {};
+                        const srcItem = srcF.advisors[src.advisorType] || null;
+                        const dstItem = dstF.advisors[targetSubSlot] || null;
+                        dstF.advisors[targetSubSlot] = srcItem;
+                        srcF.advisors[src.advisorType] = dstItem;
+                    } else if (src.type === 'treasure') {
+                        // 名宝スロット入れ替え
+                        if (!srcF.treasures) srcF.treasures = {};
+                        if (!dstF.treasures) dstF.treasures = {};
+                        const srcKey = `${src.slotName}-${src.treasureSlot}`;
+                        const dstKey = `${targetSlotName}-${targetSubSlot}`;
+                        const srcItem = srcF.treasures[srcKey] || null;
+                        const dstItem = dstF.treasures[dstKey] || null;
+                        dstF.treasures[dstKey] = srcItem;
+                        srcF.treasures[srcKey] = dstItem;
+                    }
+                    
+                    next[src.formationKey] = srcF;
+                    next[targetFormationKey] = dstF;
+                    return next;
+                });
+                
+                setSelectedForMove(null);
+            };
+
             // 部隊の技能効果を集計（calc-engine.js のラッパー）
             const calcSkillEffects = (formationKey) => {
                 return calculateSkillEffects(formations[formationKey], getGeneralStarRank);
@@ -1053,11 +1134,6 @@ const { useState, useEffect } = React;
             // 部隊の戦闘パラメータを計算（calc-engine.js のラッパー）
             const calcCombatParams = (formationKey) => {
                 return calculateCombatParameters(formations[formationKey], getGeneralStarRank);
-            };
-            
-            // 部隊ステータス計算（stat-calculator.js のラッパー）
-            const calcFormationStats = (formationKey) => {
-                return calculateFormationStats(formations[formationKey], getGeneralStarRank);
             };
             
             // 部隊をリセット
@@ -1235,28 +1311,78 @@ const { useState, useEffect } = React;
                 if (showOnlyRecommendedTreasures && recommendTargetFormation) {
                     const targetFormation = formations[recommendTargetFormation];
                     
-                    // 部隊内の全武将名を取得
-                    const generalsInFormation = [];
-                    
-                    // 主将・副将・補佐
+                    // 部隊内の武将オブジェクトを収集（参軍除く）
+                    const formationGenerals = [];
                     ['主将', '副将1', '副将2', '補佐1', '補佐2'].forEach(slotName => {
-                        const general = targetFormation?.slots?.[slotName];
-                        if (general) generalsInFormation.push(general.name);
+                        const g = targetFormation?.slots?.[slotName];
+                        if (g) formationGenerals.push(g);
                     });
-                    
-                    // 侍従
                     if (targetFormation?.attendants) {
-                        Object.values(targetFormation.attendants).forEach(attendant => {
-                            if (attendant) generalsInFormation.push(attendant.name);
+                        Object.values(targetFormation.attendants).forEach(a => {
+                            if (a) formationGenerals.push(a);
                         });
                     }
                     
                     // 武将がいない場合は除外
-                    if (generalsInFormation.length === 0) return false;
+                    if (formationGenerals.length === 0) return false;
                     
-                    // 名宝のrelatedフィールドと照合
-                    const isRelated = generalsInFormation.includes(t.related);
-                    if (!isRelated) return false;
+                    // 武将名リスト（関連武将マッチング用）
+                    const generalNames = formationGenerals.map(g => g.name);
+                    
+                    // 1. 関連武将マッチング（名宝のrelatedフィールドと照合）
+                    if (generalNames.includes(t.related)) return true;
+                    
+                    // フルデータ付き武将を遅延取得するヘルパー
+                    const getFullGenerals = (() => {
+                        let cache = null;
+                        return () => {
+                            if (!cache) {
+                                cache = formationGenerals.map(fg => 
+                                    generals.find(g => g.id === fg.id && g.rarity === fg.rarity)
+                                ).filter(Boolean);
+                            }
+                            return cache;
+                        };
+                    })();
+                    
+                    // 2. 異民族名宝のマッチング（武将技能名で判定）
+                    if (t.related === '異民族') {
+                        const ethnicGroups = ['南蛮', '烏桓', '鮮卑', '五渓', '山越', '羌', '東湖'];
+                        const treasureEthnic = ethnicGroups.find(g => t.name.includes(g));
+                        if (treasureEthnic) {
+                            const hasMatch = getFullGenerals().some(fg =>
+                                fg.skills && Object.values(fg.skills).some(s => s.name === treasureEthnic)
+                            );
+                            if (hasMatch) return true;
+                        }
+                    }
+                    
+                    // 3. 練達マッチング（名宝技能が部隊武将技能をLvアップする場合）
+                    // data-all-treasures.js に skills 配列が追加されると自動で動作
+                    if (t.skills && t.skills.length > 0 && typeof SKILL_DB !== 'undefined') {
+                        const formationSkillNames = new Set();
+                        getFullGenerals().forEach(fg => {
+                            if (fg.skills) {
+                                Object.values(fg.skills).forEach(s => {
+                                    if (s.name) formationSkillNames.add(s.name);
+                                });
+                            }
+                        });
+                        
+                        if (formationSkillNames.size > 0) {
+                            const hasMatch = t.skills.some(treasureSkillName => {
+                                const skillData = SKILL_DB[treasureSkillName];
+                                if (!skillData) return false;
+                                return skillData.effects.some(eff => 
+                                    eff.type2 === '練達' && formationSkillNames.has(eff.effect)
+                                );
+                            });
+                            if (hasMatch) return true;
+                        }
+                    }
+                    
+                    // いずれにも該当しない場合は除外
+                    return false;
                 }
                 
                 return true;
@@ -1535,9 +1661,9 @@ const { useState, useEffect } = React;
                     
                     {/* 更新情報バー */}
                     <div id="update-info-bar-react" className="update-info-bar">
-                        <span className="version-tag" id="version-tag">v146</span>
-                        <span className="update-date" id="update-date">2026-02-10</span>
-                        <span className="update-summary" id="update-summary">プロファイルシステム追加（研究/調査/軍馬）</span>
+                        <span className="version-tag" id="version-tag">v145</span>
+                        <span className="update-date" id="update-date">2026-02-04</span>
+                        <span className="update-summary" id="update-summary">更新履歴表示機能を追加</span>
                         <button 
                             className="show-history-btn" 
                             id="show-history-btn"
@@ -2023,6 +2149,9 @@ const { useState, useEffect } = React;
                             setShowSkillEffects={setShowSkillEffects}
                             recommendTargetFormation={recommendTargetFormation}
                             setRecommendTargetFormation={setRecommendTargetFormation}
+                            selectedForMove={selectedForMove}
+                            setSelectedForMove={setSelectedForMove}
+                            handleClickMove={handleClickMove}
                             handleDrop={handleDrop}
                             handleTreasureDrop={handleTreasureDrop}
                             handleSlotDragStart={handleSlotDragStart}
@@ -2045,7 +2174,6 @@ const { useState, useEffect } = React;
                             isTreasureUR={isTreasureUR}
                             calcCombatParams={calcCombatParams}
                             calcSkillEffects={calcSkillEffects}
-                            calcFormationStats={calcFormationStats}
                             ItemImage={ItemImage}
                         />
 
@@ -2174,8 +2302,6 @@ const { useState, useEffect } = React;
                         ItemImage={ItemImage}
                         exportProfile={exportProfile}
                         importProfile={importProfile}
-                        profileConfig={profileConfig}
-                        setProfileConfig={setProfileConfig}
                     />
                 )}
                 
@@ -2213,6 +2339,22 @@ const { useState, useEffect } = React;
                         </div>
                     </div>
                 </div>
+                
+                {/* クリック移動モードのフローティングバー */}
+                {selectedForMove && (
+                    <div className="move-mode-bar">
+                        <span className="move-mode-label">
+                            {selectedForMove.item?.name || '名宝'}を移動中
+                        </span>
+                        <span className="move-mode-hint">移動先のスロットをクリック</span>
+                        <button 
+                            className="move-mode-cancel"
+                            onClick={() => setSelectedForMove(null)}
+                        >
+                            キャンセル
+                        </button>
+                    </div>
+                )}
                 
                 </div>
         );

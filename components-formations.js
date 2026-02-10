@@ -8,6 +8,7 @@ function FormationsArea({
     currentFormations, treasures, collapsedFormations,
     showImages, showSkillEffects, setShowSkillEffects,
     recommendTargetFormation, setRecommendTargetFormation,
+    selectedForMove, setSelectedForMove, handleClickMove,
     // ハンドラ
     handleDrop, handleTreasureDrop,
     handleSlotDragStart, handleAttendantDragStart,
@@ -19,7 +20,7 @@ function FormationsArea({
     saveFormationTemplate, loadFormationTemplate,
     // 計算・ユーティリティ
     getImageUrl, getGeneralStarRank, getTreasureForgeRank,
-    isTreasureUR, calcCombatParams, calcSkillEffects, calcFormationStats,
+    isTreasureUR, calcCombatParams, calcSkillEffects,
     ItemImage
 }) {
     return (
@@ -425,7 +426,9 @@ function FormationsArea({
                                 
                                 {/* 武将枠 */}
                                 <div
-                                    className={`slot-drop-zone ${data.slots[slotName] ? 'filled' : ''}`}
+                                    className={`slot-drop-zone ${data.slots[slotName] ? 'filled' : ''} ${
+                                        selectedForMove?.type === 'general' && selectedForMove.formationKey === key && selectedForMove.slotName === slotName ? 'selected-for-move' : ''
+                                    } ${selectedForMove?.type === 'general' ? 'move-target' : ''}`}
                                     data-rarity={data.slots[slotName]?.rarity}
                                     onDragOver={(e) => {
                                         e.preventDefault();
@@ -437,6 +440,21 @@ function FormationsArea({
                                     onDrop={(e) => {
                                         e.currentTarget.classList.remove('drag-over');
                                         handleDrop(e, key, slotName);
+                                    }}
+                                    onClick={(e) => {
+                                        if (e.target.closest('.mini-remove-btn')) return;
+                                        if (selectedForMove) {
+                                            if (selectedForMove.type === 'general') {
+                                                handleClickMove(key, slotName, 'general');
+                                            }
+                                        } else if (data.slots[slotName]) {
+                                            setSelectedForMove({
+                                                type: 'general',
+                                                formationKey: key,
+                                                slotName: slotName,
+                                                item: data.slots[slotName]
+                                            });
+                                        }
                                     }}
                                 >
                                     {data.slots[slotName] ? (
@@ -498,10 +516,27 @@ function FormationsArea({
                                 
                                 {/* 侍従枠 */}
                                 <div 
-                                    className={`attendant-zone ${data.attendants?.[slotName] ? 'filled' : ''}`}
+                                    className={`attendant-zone ${data.attendants?.[slotName] ? 'filled' : ''} ${
+                                        selectedForMove?.type === 'attendant' && selectedForMove.formationKey === key && selectedForMove.slotName === slotName ? 'selected-for-move' : ''
+                                    } ${selectedForMove?.type === 'attendant' ? 'move-target' : ''}`}
                                     data-rarity={data.attendants?.[slotName]?.rarity}
                                     onDragOver={(e) => e.preventDefault()}
                                     onDrop={(e) => handleAttendantDrop(e, key, slotName)}
+                                    onClick={(e) => {
+                                        if (e.target.closest('.mini-remove-btn')) return;
+                                        if (selectedForMove) {
+                                            if (selectedForMove.type === 'attendant') {
+                                                handleClickMove(key, slotName, 'attendant');
+                                            }
+                                        } else if (data.attendants?.[slotName]) {
+                                            setSelectedForMove({
+                                                type: 'attendant',
+                                                formationKey: key,
+                                                slotName: slotName,
+                                                item: data.attendants[slotName]
+                                            });
+                                        }
+                                    }}
                                 >
                                     {data.attendants?.[slotName] ? (
                                         <div 
@@ -562,7 +597,9 @@ function FormationsArea({
                                         return (
                                             <div 
                                                 key={treasureSlot}
-                                                className={`treasure-mini-slot ${equippedTreasure ? 'filled' : ''}`}
+                                                className={`treasure-mini-slot ${equippedTreasure ? 'filled' : ''} ${
+                                                    selectedForMove?.type === 'treasure' && selectedForMove.formationKey === key && selectedForMove.slotName === slotName && selectedForMove.treasureSlot === treasureSlot ? 'selected-for-move' : ''
+                                                } ${selectedForMove?.type === 'treasure' ? 'move-target' : ''}`}
                                                 onDragOver={(e) => e.preventDefault()}
                                                 onDrop={(e) => handleTreasureDrop(e, key, slotName, treasureSlot)}
                                                 draggable={!!equippedTreasure}
@@ -575,6 +612,21 @@ function FormationsArea({
                                                     if (equippedTreasure) {
                                                         e.stopPropagation();
                                                         handleRemoveTreasure(key, slotName, treasureSlot);
+                                                    }
+                                                }}
+                                                onClick={(e) => {
+                                                    if (selectedForMove) {
+                                                        if (selectedForMove.type === 'treasure') {
+                                                            handleClickMove(key, slotName, 'treasure', treasureSlot);
+                                                        }
+                                                    } else if (equippedTreasure) {
+                                                        setSelectedForMove({
+                                                            type: 'treasure',
+                                                            formationKey: key,
+                                                            slotName: slotName,
+                                                            treasureSlot: treasureSlot,
+                                                            item: equippedTreasure
+                                                        });
                                                     }
                                                 }}
                                                 style={equippedTreasure ? {cursor: 'grab'} : {}}
@@ -660,7 +712,9 @@ function FormationsArea({
                                                 {advisor.label}
                                             </div>
                                             <div
-                                                className={`advisor-drop-zone ${advisorGeneral ? 'filled' : ''}`}
+                                                className={`advisor-drop-zone ${advisorGeneral ? 'filled' : ''} ${
+                                                    selectedForMove?.type === 'advisor' && selectedForMove.formationKey === key && selectedForMove.advisorType === advisor.key ? 'selected-for-move' : ''
+                                                } ${selectedForMove?.type === 'advisor' ? 'move-target' : ''}`}
                                                 onDragOver={(e) => {
                                                     e.preventDefault();
                                                     e.currentTarget.classList.add('drag-over');
@@ -671,6 +725,22 @@ function FormationsArea({
                                                 onDrop={(e) => {
                                                     e.currentTarget.classList.remove('drag-over');
                                                     handleAdvisorDrop(e, key, advisor.key);
+                                                }}
+                                                onClick={(e) => {
+                                                    if (e.target.closest('.mini-remove-btn')) return;
+                                                    if (selectedForMove) {
+                                                        if (selectedForMove.type === 'advisor') {
+                                                            handleClickMove(key, null, 'advisor', advisor.key);
+                                                        }
+                                                    } else if (advisorGeneral) {
+                                                        setSelectedForMove({
+                                                            type: 'advisor',
+                                                            formationKey: key,
+                                                            slotName: null,
+                                                            advisorType: advisor.key,
+                                                            item: advisorGeneral
+                                                        });
+                                                    }
                                                 }}
                                                 style={{
                                                     padding: '4px',
@@ -775,89 +845,43 @@ function FormationsArea({
                             </div>
                             <div className="combat-params-content">
                                 {(() => {
-                                    const stats = calcFormationStats(key);
                                     const params = calcCombatParams(key);
-                                    
-                                    // 武将が1人も配置されていない場合
-                                    if (!stats && !params) return <div className="no-data">データなし</div>;
+                                    if (!params) return <div className="no-data">データなし</div>;
                                     
                                     return (
                                         <>
-                                            {/* 部隊ステータス（攻撃/防御/知力） */}
-                                            {stats && Object.keys(stats.memberStats).length > 0 && (
-                                                <>
-                                                    {['attack', 'defense', 'intelligence'].map(statKey => {
-                                                        const labels = { attack: '攻撃', defense: '防御', intelligence: '知力' };
-                                                        const baseVal = stats.base[statKey];
-                                                        const finalVal = stats.withSkills[statKey];
-                                                        const pct = stats.bonuses.pct[statKey];
-                                                        const fix = stats.bonuses.fix[statKey] || 0;
-                                                        const hasPct = Math.abs(pct) > 0.001;
-                                                        const hasFix = Math.abs(fix) > 0;
-                                                        const hasBonus = hasPct || hasFix;
-                                                        const hasData = baseVal > 0 || finalVal > 0;
-                                                        
-                                                        return (
-                                                            <div key={statKey} className="param-row stat-row">
-                                                                <span className="param-label stat-label">{labels[statKey]}:</span>
-                                                                {hasData ? (
-                                                                    <>
-                                                                        <span className="param-value stat-value">{finalVal}</span>
-                                                                        {hasBonus && (
-                                                                            <span className="stat-bonus">
-                                                                                ({hasPct ? `+${(pct * 100).toFixed(1)}%` : ''}
-                                                                                {hasPct && hasFix ? ' ' : ''}
-                                                                                {hasFix ? `+${fix}` : ''})
-                                                                            </span>
-                                                                        )}
-                                                                    </>
-                                                                ) : (
-                                                                    <span className="param-value stat-value" style={{color: 'var(--text-muted)'}}>—</span>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                    <div className="param-separator" />
-                                                </>
-                                            )}
-                                            
-                                            {/* 既存の戦闘パラメータ */}
-                                            {params && (
-                                                <>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⚡</span>
-                                                        <span className="param-label">出陣ゲージ:</span>
-                                                        <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">🎯</span>
-                                                        <span className="param-label">戦法速度:</span>
-                                                        <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">🛡️</span>
-                                                        <span className="param-label">致死耐性:</span>
-                                                        <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
-                                                            {params.lethalResist ? 'ON' : 'OFF'}
-                                                        </span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⏱️</span>
-                                                        <span className="param-label">戦法短縮:</span>
-                                                        <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⚔️</span>
-                                                        <span className="param-label">攻撃速度:</span>
-                                                        <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">💥</span>
-                                                        <span className="param-label">会心発生:</span>
-                                                        <span className="param-value">+{params.critical.toFixed(1)}%</span>
-                                                    </div>
-                                                </>
-                                            )}
+                                            <div className="param-row">
+                                                <span className="param-icon">⚡</span>
+                                                <span className="param-label">出陣ゲージ:</span>
+                                                <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
+                                            </div>
+                                            <div className="param-row">
+                                                <span className="param-icon">🎯</span>
+                                                <span className="param-label">戦法速度:</span>
+                                                <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
+                                            </div>
+                                            <div className="param-row">
+                                                <span className="param-icon">🛡️</span>
+                                                <span className="param-label">致死耐性:</span>
+                                                <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
+                                                    {params.lethalResist ? 'ON' : 'OFF'}
+                                                </span>
+                                            </div>
+                                            <div className="param-row">
+                                                <span className="param-icon">⏱️</span>
+                                                <span className="param-label">戦法短縮:</span>
+                                                <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
+                                            </div>
+                                            <div className="param-row">
+                                                <span className="param-icon">⚔️</span>
+                                                <span className="param-label">攻撃速度:</span>
+                                                <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
+                                            </div>
+                                            <div className="param-row">
+                                                <span className="param-icon">💥</span>
+                                                <span className="param-label">会心発生:</span>
+                                                <span className="param-value">+{params.critical.toFixed(1)}%</span>
+                                            </div>
                                         </>
                                     );
                                 })()}

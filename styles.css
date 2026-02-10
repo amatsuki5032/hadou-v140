@@ -445,6 +445,71 @@
             border-color: var(--accent) !important;
         }
         
+        /* ─── クリック移動モード ─── */
+        .selected-for-move {
+            outline: 2px solid var(--bordeaux, #800020) !important;
+            outline-offset: -2px;
+            box-shadow: 0 0 8px rgba(128, 0, 32, 0.4) !important;
+            animation: pulse-select 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-select {
+            0%, 100% { box-shadow: 0 0 8px rgba(128, 0, 32, 0.4); }
+            50% { box-shadow: 0 0 14px rgba(128, 0, 32, 0.7); }
+        }
+        
+        .move-target:not(.selected-for-move) {
+            cursor: pointer !important;
+        }
+        
+        .move-target:not(.selected-for-move):hover {
+            outline: 2px dashed var(--accent) !important;
+            outline-offset: -2px;
+        }
+        
+        .move-mode-bar {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 24px;
+            background: var(--bg-card, #0e0e12);
+            border: 1px solid var(--bordeaux, #800020);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .move-mode-label {
+            color: var(--text-primary, #f0f1f5);
+            font-weight: bold;
+        }
+        
+        .move-mode-hint {
+            color: var(--text-muted, #606478);
+            font-size: 12px;
+        }
+        
+        .move-mode-cancel {
+            padding: 4px 14px;
+            background: var(--bg-danger, #dc2626);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .move-mode-cancel:hover {
+            background: var(--bg-danger-hover, #b91c1c);
+        }
+        
         .treasures-zone {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1728,608 +1793,4 @@
     color: var(--success);
     font-size: 13px;
     margin-top: 12px;
-}
-
-/* === 部隊ステータス表示（攻撃/防御/知力） === */
-
-.stat-row {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    padding: 3px 0;
-}
-
-.stat-row .stat-label {
-    min-width: 40px;
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.stat-row .stat-value {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
-    font-variant-numeric: tabular-nums;
-}
-
-.stat-bonus {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-left: 2px;
-}
-
-.param-separator {
-    border-top: 1px solid var(--border-base);
-    margin: 6px 0;
-}
-
-/* ============================================
-   プロファイルパネル（研究・調査・軍馬）v1.50
-   ============================================ */
-/* ============================================
-   プロファイルパネル CSS
-   追加先: styles.css の末尾
-   ============================================ */
-
-/* === パネル基本 === */
-
-.profile-panel {
-    flex: 1;
-    min-width: 280px;
-    max-width: 100%;
-    background: var(--bg-panel);
-    border: 1px solid var(--border-base);
-    border-radius: 8px;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.profile-panel.collapsed {
-    min-width: unset;
-}
-
-.profile-panel.collapsed .profile-tab-bar,
-.profile-panel.collapsed .profile-tab-content {
-    display: none;
-}
-
-/* === タブバー === */
-
-.profile-tab-bar {
-    display: flex;
-    border-bottom: 1px solid var(--border-base);
-    flex-shrink: 0;
-}
-
-.profile-tab-btn {
-    flex: 1;
-    padding: 8px 4px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text-muted);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.profile-tab-btn:hover {
-    color: var(--text-secondary);
-    background: var(--bg-btn-hover);
-}
-
-.profile-tab-btn.active {
-    color: var(--text-primary);
-    border-bottom-color: var(--bordeaux);
-}
-
-/* === タブ内容 === */
-
-.profile-tab-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0;
-}
-
-.profile-empty-state {
-    padding: 20px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 12px;
-}
-
-/* === 研究タブ === */
-
-.research-tab {
-    padding: 0;
-}
-
-/* 専攻選択セクション */
-
-.research-spec-section {
-    padding: 12px;
-    border-bottom: 1px solid var(--border-base);
-    background: var(--bg-card);
-}
-
-.research-spec-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-}
-
-.research-spec-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 6px;
-}
-
-.research-spec-row:last-child {
-    margin-bottom: 0;
-}
-
-.research-spec-cat {
-    font-size: 11px;
-    color: var(--text-secondary);
-    min-width: 56px;
-    padding-top: 2px;
-    flex-shrink: 0;
-}
-
-.research-spec-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 10px;
-}
-
-.research-spec-radio {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 11px;
-    color: var(--text-body);
-    cursor: pointer;
-}
-
-.research-spec-radio input[type="radio"] {
-    width: 12px;
-    height: 12px;
-    margin: 0;
-    accent-color: var(--accent);
-}
-
-/* 一括操作ボタン */
-
-.research-bulk-actions {
-    display: flex;
-    gap: 8px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border-base);
-}
-
-.research-bulk-btn {
-    padding: 5px 14px;
-    background: var(--bg-btn);
-    border: 1px solid var(--border-light);
-    border-radius: 4px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s;
-}
-
-.research-bulk-btn:hover {
-    background: var(--bg-btn-hover);
-    border-color: var(--border-hover);
-    color: var(--text-primary);
-}
-
-.research-bulk-btn-danger {
-    border-color: var(--bordeaux-border);
-    color: var(--bordeaux-text);
-}
-
-.research-bulk-btn-danger:hover {
-    background: var(--bordeaux-bg);
-    border-color: var(--bordeaux);
-    color: var(--text-primary);
-}
-
-/* 分野グループ */
-
-.research-field-group {
-    border-bottom: 1px solid var(--border-base);
-}
-
-.research-field-group.inactive {
-    opacity: 0.5;
-}
-
-.research-field-group.inactive:hover {
-    opacity: 0.7;
-}
-
-.research-field-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-primary);
-    background: var(--bg-card);
-    transition: background 0.2s;
-}
-
-.research-field-header:hover {
-    background: var(--bg-btn-hover);
-}
-
-.research-field-toggle {
-    font-size: 10px;
-    color: var(--text-muted);
-    width: 12px;
-}
-
-.research-field-name {
-    flex: 1;
-}
-
-.research-field-count {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-weight: 400;
-}
-
-.research-field-badge-inactive {
-    font-size: 9px;
-    padding: 1px 5px;
-    background: var(--bg-btn);
-    border: 1px solid var(--border-light);
-    border-radius: 3px;
-    color: var(--text-muted);
-}
-
-.research-field-badge-master {
-    font-size: 9px;
-    padding: 1px 5px;
-    background: var(--bordeaux-bg);
-    border: 1px solid var(--bordeaux-border);
-    border-radius: 3px;
-    color: var(--bordeaux-text);
-}
-
-/* 研究項目 */
-
-.research-field-items {
-    padding: 4px 0;
-}
-
-.research-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 3px 12px 3px 20px;
-    font-size: 11px;
-    transition: background 0.15s;
-}
-
-.research-item:hover {
-    background: var(--bg-btn-hover);
-}
-
-.research-item.disabled {
-    opacity: 0.4;
-    pointer-events: none;
-}
-
-.research-item-check input[type="checkbox"] {
-    width: 13px;
-    height: 13px;
-    margin: 0;
-    accent-color: var(--accent);
-}
-
-.research-item-name {
-    flex: 1;
-    color: var(--text-body);
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.research-item-effect {
-    color: var(--text-secondary);
-    font-size: 10px;
-    min-width: 36px;
-}
-
-.research-item-value {
-    width: 48px !important;
-    min-width: 48px;
-    padding: 2px 4px !important;
-    font-size: 11px !important;
-    text-align: right;
-    border-radius: 3px !important;
-}
-
-.research-item-unit {
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.research-item-badge-m {
-    font-size: 9px;
-    font-weight: 700;
-    padding: 0 4px;
-    background: var(--bordeaux-bg);
-    border: 1px solid var(--bordeaux-border);
-    border-radius: 2px;
-    color: var(--bordeaux-text);
-}
-
-
-/* === 調査タブ === */
-
-.investigation-tab {
-    padding: 8px 0;
-}
-
-.investigation-tribe {
-    margin-bottom: 4px;
-}
-
-.investigation-tribe-header {
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-primary);
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border-base);
-    border-left: 3px solid var(--bordeaux);
-}
-
-.investigation-tribe-skills {
-    padding: 4px 0;
-}
-
-.investigation-skill-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 3px 12px;
-    font-size: 11px;
-}
-
-.investigation-skill-row:hover {
-    background: var(--bg-btn-hover);
-}
-
-.investigation-skill-name {
-    min-width: 64px;
-    color: var(--text-body);
-}
-
-.investigation-skill-effect {
-    flex: 1;
-    color: var(--text-secondary);
-    font-size: 10px;
-}
-
-.investigation-skill-level {
-    width: 52px !important;
-    min-width: 52px;
-    padding: 2px 4px !important;
-    font-size: 11px !important;
-    border-radius: 3px !important;
-}
-
-.investigation-skill-value {
-    min-width: 56px;
-    text-align: right;
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 600;
-}
-
-
-/* === 軍馬タブ === */
-
-.horse-tab {
-    padding: 0;
-}
-
-/* 馬選択タブ */
-
-.horse-selector {
-    display: flex;
-    border-bottom: 1px solid var(--border-base);
-}
-
-.horse-selector-btn {
-    flex: 1;
-    padding: 7px 4px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text-muted);
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.horse-selector-btn:hover {
-    color: var(--text-secondary);
-    background: var(--bg-btn-hover);
-}
-
-.horse-selector-btn.active {
-    color: var(--text-primary);
-    border-bottom-color: var(--accent);
-}
-
-/* 馬設定 */
-
-.horse-config {
-    padding: 10px 12px;
-}
-
-.horse-config-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
-.horse-config-label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    min-width: 32px;
-}
-
-.horse-config-select {
-    width: auto !important;
-    min-width: 80px;
-    padding: 3px 6px !important;
-    font-size: 11px !important;
-    border-radius: 3px !important;
-}
-
-.horse-config-select-sm {
-    min-width: 52px !important;
-    width: 52px !important;
-}
-
-.horse-config-bonus {
-    font-size: 10px;
-    color: var(--accent);
-    font-weight: 600;
-}
-
-.horse-config-meiba-toggle {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    color: var(--text-body);
-    cursor: pointer;
-}
-
-.horse-config-meiba-toggle input[type="checkbox"] {
-    width: 13px;
-    height: 13px;
-    margin: 0;
-    accent-color: var(--accent);
-}
-
-.horse-config-star-label {
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
-/* 名馬ステータス */
-
-.horse-meiba-stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 6px 0;
-    margin-bottom: 8px;
-    font-size: 10px;
-    color: var(--text-secondary);
-    border-bottom: 1px solid var(--border-base);
-}
-
-.horse-meiba-stats span {
-    padding: 1px 5px;
-    background: var(--bg-btn);
-    border: 1px solid var(--border-light);
-    border-radius: 3px;
-}
-
-.horse-meiba-skill {
-    background: var(--bordeaux-bg) !important;
-    border-color: var(--bordeaux-border) !important;
-    color: var(--bordeaux-text) !important;
-}
-
-/* 技能設定 */
-
-.horse-skills-section {
-    margin-top: 4px;
-}
-
-.horse-skill-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 5px;
-}
-
-.horse-skill-label {
-    font-size: 10px;
-    color: var(--text-muted);
-    min-width: 36px;
-}
-
-/* 合計 */
-
-.horse-summary {
-    padding: 10px 12px;
-    border-top: 1px solid var(--border-base);
-    background: var(--bg-card);
-}
-
-.horse-summary-header {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-}
-
-.horse-summary-stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 6px;
-    font-size: 11px;
-}
-
-.horse-summary-stats span {
-    padding: 2px 6px;
-    background: var(--bg-btn);
-    border: 1px solid var(--border-light);
-    border-radius: 3px;
-    color: var(--text-body);
-}
-
-.horse-summary-skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 6px;
-}
-
-.horse-summary-skill {
-    font-size: 10px;
-    padding: 1px 5px;
-    background: var(--bordeaux-bg);
-    border: 1px solid var(--bordeaux-border);
-    border-radius: 3px;
-    color: var(--bordeaux-text);
-}
-
-.horse-summary-note {
-    font-size: 10px;
-    color: var(--text-muted);
-    line-height: 1.4;
 }
