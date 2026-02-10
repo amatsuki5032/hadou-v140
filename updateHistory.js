@@ -1,8 +1,21 @@
 // 更新履歴データ
 const updateHistory = [
     {
-        date: "2026-02-04",
+        date: "2026-02-10",
         version: "v145",
+        items: [
+            { type: "system", text: "武将データを5ファイル→1ファイルに統合（447名）" },
+            { type: "general", text: "LR+2名（荀攸・項籍）、UR+1名（鄒氏）、N+20名を追加" },
+            { type: "system", text: "技能DB統合（1,783技能）" },
+            { type: "system", text: "ステータス計算エンジン実装（天賦テーブル・陣形反映率）" },
+            { type: "system", text: "技能発動条件の評価関数実装（44パターン）" },
+            { type: "system", text: "app.jsを7ファイルに分割（7,081→2,200行）" },
+            { type: "system", text: "配色テーマ「雨夜の月」に統一" }
+        ]
+    },
+    {
+        date: "2026-02-04",
+        version: "v144.1",
         items: [
             { type: "system", text: "更新履歴表示機能を追加" }
         ]
