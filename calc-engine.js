@@ -3,7 +3,7 @@
 
 // SKILL_DB効果名 → 戦闘パラメータキーのマッピング
 // type2とtimingでフィルタし、該当する効果のみ対象
-const COMBAT_PARAM_MAP = {
+var COMBAT_PARAM_MAP = {
     '攻撃速度': { key: 'attackSpeed',  type2: 'パラメータ', timing: null },
     '会心発生': { key: 'critical',     type2: 'パラメータ', timing: null },
     '戦法速度': { key: 'tacticSpeed',  type2: 'パラメータ', timing: null },
@@ -12,10 +12,10 @@ const COMBAT_PARAM_MAP = {
 };
 
 // 出陣ゲージの上限（percentage単位）
-const INITIAL_GAUGE_CAP = 50;
+var INITIAL_GAUGE_CAP = 50;
 
 // レベル→ローマ数字の変換マップ
-const LEVEL_KEY_MAP = { 1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ' };
+var LEVEL_KEY_MAP = { 1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ' };
 
 /**
  * 武将のスキルレベルを星ランクから決定する
@@ -197,17 +197,6 @@ function sumValidLevels(entries, fmtCtx, condition) {
         }
     }
     return total;
-}
-
-/**
- * 部隊の全技能エントリとコンテキストを構築する（stat-calculator.js等から利用）
- * @returns {{ allEntries: Array, fmtCtx: Object }}
- */
-function buildAllEntries(formation, getStarRankFn) {
-    const entries = collectSkillEntries(formation, getStarRankFn);
-    const fmtCtx = buildFormationContext(formation);
-    const grantedEntries = resolveGrantedSkills(entries, fmtCtx);
-    return { allEntries: entries.concat(grantedEntries), fmtCtx };
 }
 
 /**
