@@ -65,7 +65,7 @@ const MEIBA_DATA = {
 const RESEARCH_SPECIALIZATION_CATEGORIES = [
     { id: 'city',   label: '都市運営', options: ['都市開発', '都市軍備', '都市防衛'] },
     { id: 'troop',  label: '部隊運用', options: ['歩兵術', '弓兵術', '騎兵術'] },
-    { id: 'fourth', label: '第4枠',   options: ['君主護衛', '君主相対', '要地攻防'] },
+    { id: 'fourth', label: '特化戦術', options: ['君主護衛', '君主相対', '要地攻防'] },
 ];
 
 // === デフォルトプロファイル構造 ===

@@ -1776,9 +1776,11 @@
 .profile-panel {
     flex: 1;
     min-width: 280px;
-    max-width: 400px;
+    max-width: 100%;
     background: var(--bg-panel);
-    border-right: 1px solid var(--border-base);
+    border: 1px solid var(--border-base);
+    border-radius: 8px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1786,8 +1788,7 @@
 }
 
 .profile-panel.collapsed {
-    flex: 0 0 60px;
-    min-width: 60px;
+    min-width: unset;
 }
 
 .profile-panel.collapsed .profile-tab-bar,
@@ -1901,6 +1902,43 @@
     height: 12px;
     margin: 0;
     accent-color: var(--accent);
+}
+
+/* 一括操作ボタン */
+
+.research-bulk-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-base);
+}
+
+.research-bulk-btn {
+    padding: 5px 14px;
+    background: var(--bg-btn);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.research-bulk-btn:hover {
+    background: var(--bg-btn-hover);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.research-bulk-btn-danger {
+    border-color: var(--bordeaux-border);
+    color: var(--bordeaux-text);
+}
+
+.research-bulk-btn-danger:hover {
+    background: var(--bordeaux-bg);
+    border-color: var(--bordeaux);
+    color: var(--text-primary);
 }
 
 /* 分野グループ */

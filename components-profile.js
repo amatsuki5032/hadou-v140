@@ -130,6 +130,48 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
     }
     const fieldOrder = Object.values(RESEARCH_FIELDS).flatMap(f => f.choices);
 
+    // 一括操作: 全アクティブ項目を解除（チェックON）
+    const handleUnlockAll = () => {
+        setProfileConfig(prev => {
+            const newItems = { ...(prev.research?.items || {}) };
+            for (const item of RESEARCH_DATA) {
+                const key = `${item.field}:${item.name}`;
+                const isActive = activeFields.has(item.field) || item.isMaster;
+                if (isActive) {
+                    newItems[key] = { ...(newItems[key] || {}), unlocked: true };
+                }
+            }
+            return { ...prev, research: { ...prev.research, items: newItems } };
+        });
+    };
+
+    // 一括操作: 全ロック（チェックOFF）
+    const handleLockAll = () => {
+        setProfileConfig(prev => {
+            const newItems = { ...(prev.research?.items || {}) };
+            for (const key of Object.keys(newItems)) {
+                newItems[key] = { ...newItems[key], unlocked: false };
+            }
+            return { ...prev, research: { ...prev.research, items: newItems } };
+        });
+    };
+
+    // 一括操作: 全上限に設定
+    const handleSetAllMax = () => {
+        if (!confirm('有効な研究項目の値をすべて上限（100%）に設定します。\nよろしいですか？')) return;
+        setProfileConfig(prev => {
+            const newItems = { ...(prev.research?.items || {}) };
+            for (const item of RESEARCH_DATA) {
+                const key = `${item.field}:${item.name}`;
+                const isActive = activeFields.has(item.field) || item.isMaster;
+                if (isActive) {
+                    newItems[key] = { unlocked: true, value: 100 };
+                }
+            }
+            return { ...prev, research: { ...prev.research, items: newItems } };
+        });
+    };
+
     return (
         <div className="research-tab">
             {/* 専攻選択 */}
@@ -153,6 +195,13 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* 一括操作 */}
+            <div className="research-bulk-actions">
+                <button className="research-bulk-btn" onClick={handleUnlockAll}>全解除</button>
+                <button className="research-bulk-btn" onClick={handleLockAll}>全ロック</button>
+                <button className="research-bulk-btn research-bulk-btn-danger" onClick={handleSetAllMax}>全上限に設定</button>
             </div>
 
             {/* 分野別研究リスト */}
@@ -184,7 +233,7 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
     }, [isActive]);
 
     const unlockedCount = fieldItems.filter(item => {
-        const key = `${item.field}:${item.name}:${item.effect || ''}`;
+        const key = `${item.field}:${item.name}`;
         return items[key]?.unlocked;
     }).length;
 
@@ -205,10 +254,11 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
             {expanded && (
                 <div className="research-field-items">
                     {fieldItems.map(item => {
-                        const isMaster = item.rarity === 'Ｍ';
-                        const key = `${item.field}:${item.name}:${item.effect || ''}`;
+                        const isMaster = item.isMaster;
+                        const key = `${item.field}:${item.name}`;
                         const saved = items[key] || {};
                         const isDisabled = !isActive && !isMaster;
+                        const effectLabel = (item.effects || []).map(e => e.effect).filter(Boolean).join(', ');
 
                         return (
                             <div key={key} className={`research-item ${isDisabled ? 'disabled' : ''}`}>
@@ -221,7 +271,7 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
                                     />
                                 </label>
                                 <span className="research-item-name">{item.name}</span>
-                                <span className="research-item-effect">{item.effect || ''}</span>
+                                <span className="research-item-effect">{effectLabel}</span>
                                 <input
                                     type="number"
                                     className="research-item-value"
