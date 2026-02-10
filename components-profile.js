@@ -128,7 +128,7 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
     for (const item of RESEARCH_DATA) {
         (grouped[item.field] ??= []).push(item);
     }
-    const fieldOrder = RESEARCH_FIELDS.map(f => f.name);
+    const fieldOrder = Object.values(RESEARCH_FIELDS).flatMap(f => f.choices);
 
     return (
         <div className="research-tab">
