@@ -839,11 +839,24 @@ function FormationsArea({
                         </div>
                         
                         {/* 部隊ステータスパネル */}
-                        <div className="combat-parameters-panel" style={{marginBottom: '8px'}}>
-                            <div className="combat-params-header">
-                                <span>部隊ステータス</span>
+                        <div className="formation-stats-panel" style={{
+                            background: 'var(--bg-card)',
+                            border: '1px solid var(--border-base)',
+                            borderRadius: '6px',
+                            padding: '10px',
+                            marginBottom: '8px'
+                        }}>
+                            <div style={{
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                color: 'var(--text-secondary)',
+                                marginBottom: '6px',
+                                borderBottom: '1px solid var(--border-base)',
+                                paddingBottom: '4px'
+                            }}>
+                                部隊ステータス
                             </div>
-                            <div className="combat-params-content">
+                            <div>
                                 {(() => {
                                     try {
                                     const fStats = calcFormationStats(key);
