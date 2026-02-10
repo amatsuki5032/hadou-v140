@@ -838,22 +838,11 @@ function FormationsArea({
                             </div>
                         </div>
                         
+                        {/* ステータス・パラメータ統合パネル */}
+                        <div className="stats-panels-container">
                         {/* 部隊ステータスパネル */}
-                        <div className="formation-stats-panel" style={{
-                            background: 'var(--bg-card)',
-                            border: '1px solid var(--border-base)',
-                            borderRadius: '6px',
-                            padding: '10px',
-                            marginBottom: '8px'
-                        }}>
-                            <div style={{
-                                fontSize: '11px',
-                                fontWeight: 'bold',
-                                color: 'var(--text-secondary)',
-                                marginBottom: '6px',
-                                borderBottom: '1px solid var(--border-base)',
-                                paddingBottom: '4px'
-                            }}>
+                        <div className="formation-stats-panel">
+                            <div className="formation-stats-header">
                                 部隊ステータス
                             </div>
                             <div>
@@ -976,6 +965,7 @@ function FormationsArea({
                                 })()}
                             </div>
                         </div>
+                        </div>{/* stats-panels-container 閉じ */}
                     </div>
                 </div>
                 )}
