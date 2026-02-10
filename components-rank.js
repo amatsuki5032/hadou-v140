@@ -7,7 +7,7 @@
 function RankSettingsPanel({
     generals, treasures,
     currentProfile, setCurrentProfile,
-    profileNames, setProfileNames, setProfileData,
+    profileNames, setProfileNames, profileData, setProfileData,
     rankTab, setRankTab,
     rankSearchTerm, setRankSearchTerm,
     expandedRarities, setExpandedRarities,
@@ -24,6 +24,12 @@ function RankSettingsPanel({
     exportProfile, importProfile,
     profileConfig, setProfileConfig
 }) {
+    // profileDataから現在プロファイルのランクデータを取得
+    const currentProfileData = profileData[currentProfile] || {};
+    const generalStarRank = currentProfileData.generalStarRank || {};
+    const treasureForgeRank = currentProfileData.treasureForgeRank || {};
+    const treasureURStatus = currentProfileData.treasureURStatus || {};
+    
     return (
         <div className="rank-settings-container" style={{padding: '20px', maxWidth: '1200px', margin: '0 auto'}}>
             {/* プロファイル選択 */}
@@ -152,18 +158,18 @@ function RankSettingsPanel({
                     <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                         <button
                             onClick={() => {
-                                const newRanks = {...generalStarRank};
-                                generals.forEach(g => {
-                                    const key = `${g.id}-${g.rarity}-${g.name}`;
-                                    newRanks[key] = 7;
+                                setProfileData(prev => {
+                                    const cp = prev[currentProfile];
+                                    const newRanks = {...(cp.generalStarRank || {})};
+                                    generals.forEach(g => {
+                                        const key = `${g.id}-${g.rarity}-${g.name}`;
+                                        newRanks[key] = 7;
+                                    });
+                                    return {
+                                        ...prev,
+                                        [currentProfile]: { ...cp, generalStarRank: newRanks }
+                                    };
                                 });
-                                setProfileData(prev => ({
-                                    ...prev,
-                                    [currentProfile]: {
-                                        ...prev[currentProfile],
-                                        generalStarRank: newRanks
-                                    }
-                                }));
                             }}
                             style={{
                                 padding: '8px 16px',
@@ -208,9 +214,10 @@ function RankSettingsPanel({
                             <button
                                 onClick={() => {
                                     const profile = {
-                                        generalStarRank: generalStarRank,
-                                        treasureForgeRank: treasureForgeRank,
-                                        treasureURStatus: treasureURStatus
+                                        generalStarRank,
+                                        generalProfiles: currentProfileData.generalProfiles || {},
+                                        treasureForgeRank,
+                                        treasureURStatus
                                     };
                                     localStorage.setItem('hadou-rank-profile-backup', JSON.stringify(profile));
                                     alert('現在の設定を保存しました');
@@ -237,6 +244,7 @@ function RankSettingsPanel({
                                             [currentProfile]: {
                                                 ...prev[currentProfile],
                                                 generalStarRank: profile.generalStarRank || {},
+                                                generalProfiles: profile.generalProfiles || {},
                                                 treasureForgeRank: profile.treasureForgeRank || {},
                                                 treasureURStatus: profile.treasureURStatus || {}
                                             }
@@ -674,6 +682,7 @@ function RankSettingsPanel({
                                 onClick={() => {
                                     const profile = {
                                         generalStarRank: generalStarRank,
+                                        generalProfiles: currentProfileData.generalProfiles || {},
                                         treasureForgeRank: treasureForgeRank,
                                         treasureURStatus: treasureURStatus
                                     };
@@ -702,6 +711,7 @@ function RankSettingsPanel({
                                             [currentProfile]: {
                                                 ...prev[currentProfile],
                                                 generalStarRank: profile.generalStarRank || {},
+                                                generalProfiles: profile.generalProfiles || {},
                                                 treasureForgeRank: profile.treasureForgeRank || {},
                                                 treasureURStatus: profile.treasureURStatus || {}
                                             }

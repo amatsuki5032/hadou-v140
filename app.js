@@ -2342,6 +2342,7 @@ const { useState, useEffect } = React;
                         setCurrentProfile={setCurrentProfile}
                         profileNames={profileNames}
                         setProfileNames={setProfileNames}
+                        profileData={profileData}
                         setProfileData={setProfileData}
                         rankTab={rankTab}
                         setRankTab={setRankTab}
