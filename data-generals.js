@@ -2521,7 +2521,7 @@ var EMBEDDED_GENERALS_DATA = [
 {
   "id": 48,
   "rarity": "LR",
-  "name": "関銀屛",
+  "name": "関銀屏",
   "unit_type": "馬",
   "leadership": 85,
   "attack": 87,
@@ -3510,7 +3510,7 @@ var EMBEDDED_GENERALS_DATA = [
 {
   "id": 67,
   "rarity": "LR",
-  "name": "李逍遙",
+  "name": "李逍遥",
   "unit_type": "馬",
   "leadership": 89,
   "attack": 98,
