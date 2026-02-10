@@ -12,9 +12,77 @@ function createDndHandlers({
     isGeneralUsed, isTreasureUsed, isURGeneralUsed
 }) {
 
-    // ドラッグ開始
+    // ドラッグ開始（武将リストから）
     const handleDragStart = (e, general) => {
-        // UR武将のみ重複チェック
+        // 配置済み武将の場合：配置元を検索して移動モードにする
+        if (isGeneralUsed(general.id, general.name, general.rarity)) {
+            let sourceFormation = null, sourceSlot = null, isFromAttendant = false;
+            let sourceAdvisorType = null;
+            for (const [fKey, formation] of Object.entries(formations)) {
+                // 主将/副将/補佐スロットを検索
+                if (formation.slots) {
+                    for (const [sName, slot] of Object.entries(formation.slots)) {
+                        if (slot && slot.id === general.id && slot.rarity === general.rarity) {
+                            sourceFormation = fKey;
+                            sourceSlot = sName;
+                            break;
+                        }
+                    }
+                }
+                if (sourceFormation) break;
+                // 侍従枠を検索
+                if (formation.attendants) {
+                    for (const [sName, att] of Object.entries(formation.attendants)) {
+                        if (att && att.id === general.id && att.rarity === general.rarity) {
+                            sourceFormation = fKey;
+                            sourceSlot = sName;
+                            isFromAttendant = true;
+                            break;
+                        }
+                    }
+                }
+                if (sourceFormation) break;
+                // 参軍枠を検索
+                if (formation.advisors) {
+                    for (const [aType, adv] of Object.entries(formation.advisors)) {
+                        if (adv && adv.id === general.id && adv.rarity === general.rarity) {
+                            sourceFormation = fKey;
+                            sourceAdvisorType = aType;
+                            break;
+                        }
+                    }
+                }
+                if (sourceFormation) break;
+            }
+
+            if (sourceFormation && (sourceSlot || sourceAdvisorType)) {
+                if (sourceAdvisorType) {
+                    // 参軍からの移動
+                    setDraggedGeneral({
+                        general,
+                        sourceFormation,
+                        sourceAdvisorType
+                    });
+                } else {
+                    // スロット/侍従からの移動
+                    setDraggedGeneral({
+                        ...general,
+                        sourceFormation,
+                        sourceSlot,
+                        isFromAttendant
+                    });
+                }
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'general',
+                    general: general,
+                    from: `formation-${sourceFormation}-${sourceAdvisorType ? 'advisor-' + sourceAdvisorType : (isFromAttendant ? 'attendant-' : '') + sourceSlot}`
+                }));
+                return;
+            }
+        }
+
+        // UR武将の新規配置時のみ重複チェック
         if (general.rarity === 'UR' && isURGeneralUsed(general.id)) {
             e.preventDefault();
             return;
@@ -50,12 +118,43 @@ function createDndHandlers({
         }));
     };
 
-    // 名宝のドラッグ開始
+    // 名宝のドラッグ開始（名宝リストから）
     const handleTreasureDragStart = (e, treasure) => {
+        // 配置済み名宝の場合：配置元を検索して移動モードにする
         if (isTreasureUsed(treasure.id, treasure.name)) {
-            e.preventDefault();
-            return;
+            let sourceFormation = null, sourceSlot = null, sourceTreasureSlot = null;
+            for (const [fKey, formation] of Object.entries(formations)) {
+                if (formation.treasures) {
+                    for (const [key, t] of Object.entries(formation.treasures)) {
+                        if (t && (t.id === treasure.id || t.name === treasure.name)) {
+                            sourceFormation = fKey;
+                            const lastDash = key.lastIndexOf('-');
+                            sourceSlot = key.substring(0, lastDash);
+                            sourceTreasureSlot = key.substring(lastDash + 1);
+                            break;
+                        }
+                    }
+                }
+                if (sourceFormation) break;
+            }
+
+            if (sourceFormation) {
+                setDraggedTreasure({
+                    ...treasure,
+                    sourceFormation,
+                    sourceSlot,
+                    sourceTreasureSlot
+                });
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'treasure',
+                    treasure: treasure,
+                    from: `formation-${sourceFormation}-${sourceSlot}-${sourceTreasureSlot}`
+                }));
+                return;
+            }
         }
+
         setDraggedTreasure(treasure);
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('application/json', JSON.stringify({
@@ -85,8 +184,7 @@ function createDndHandlers({
         });
     };
 
-    // ドロップ
-    // ドロップ
+    // ドロップ（主将/副将/補佐スロットへ）
     const handleDrop = (e, formationKey, slotName) => {
         e.preventDefault();
         if (!draggedGeneral) return;
@@ -481,8 +579,6 @@ function createDndHandlers({
         setDraggedTreasure(null);
     };
 
-    // 武将削除
-    // 武将を削除
     // 武将を削除
     const handleRemoveGeneral = (formationKey, slotName) => {
         setFormations(prev => ({
@@ -497,7 +593,6 @@ function createDndHandlers({
         }));
     };
 
-    // 侍従を削除
     // 侍従を削除
     const handleRemoveAttendant = (formationKey, slotName) => {
         setFormations(prev => ({

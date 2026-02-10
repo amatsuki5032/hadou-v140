@@ -332,7 +332,7 @@ function GeneralsPanel({
                                                     className={`general-item ${isGeneralUsed(general.id, general.name, general.rarity) ? 'used' : ''}`}
                                                     data-affinity-group={getAffinityGroup(general.affinity)}
                                                     data-rarity={general.rarity}
-                                                    draggable={!isGeneralUsed(general.id, general.name, general.rarity)}
+                                                    draggable={true}
                                                     onDragStart={(e) => handleDragStart(e, general)}
                                                     onDoubleClick={() => handleGeneralDoubleClick(general)}
                                                     style={{
@@ -627,7 +627,12 @@ function TreasuresPanel({
                                     targetFormation?.slots?.['補佐2'] ||
                                     (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a));
                                 if (hasGeneral) {
-                                    setShowOnlyRecommendedTreasures(!showOnlyRecommendedTreasures);
+                                    const newState = !showOnlyRecommendedTreasures;
+                                    setShowOnlyRecommendedTreasures(newState);
+                                    // おススメON時に武器・防具・文物を全て展開
+                                    if (newState) {
+                                        setExpandedTreasureCategories({'武器': true, '防具': true, '文物': true});
+                                    }
                                 }
                             }}
                             disabled={(() => {
@@ -742,7 +747,7 @@ function TreasuresPanel({
                                             >
                                                 <div 
                                                     className={`treasure-item ${isTreasureUsed(treasure.id, treasure.name) ? 'used' : ''}`}
-                                                    draggable={!isTreasureUsed(treasure.id, treasure.name)}
+                                                    draggable={true}
                                                     onDragStart={(e) => handleTreasureDragStart(e, treasure)}
                                                     onDoubleClick={(e) => {
                                                         e.stopPropagation();
