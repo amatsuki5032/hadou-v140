@@ -845,6 +845,7 @@ function FormationsArea({
                             </div>
                             <div className="combat-params-content">
                                 {(() => {
+                                    try {
                                     const fStats = calcFormationStats(key);
                                     if (!fStats) return <div className="no-data">主将を配置してください</div>;
                                     
@@ -858,9 +859,9 @@ function FormationsArea({
                                         <>
                                             {statRows.map(row => {
                                                 const baseVal = fStats.base[row.key];
-                                                const advVal = fStats.advisor[row.key];
+                                                const advVal = fStats.advisor ? (fStats.advisor[row.key] || 0) : 0;
                                                 const finalVal = fStats.withSkills[row.key];
-                                                const pctBonus = fStats.bonuses.pct[row.key] || 0;
+                                                const pctBonus = (fStats.bonuses?.pct?.[row.key]) || 0;
                                                 
                                                 return (
                                                     <div key={row.key} className="param-row" style={{
@@ -905,6 +906,10 @@ function FormationsArea({
                                             </div>
                                         </>
                                     );
+                                    } catch(e) {
+                                        console.error('部隊ステータス計算エラー:', e);
+                                        return <div className="no-data">計算エラー</div>;
+                                    }
                                 })()}
                             </div>
                         </div>
