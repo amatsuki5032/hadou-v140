@@ -2530,7 +2530,7 @@ var EMBEDDED_GENERALS_DATA = [
   "tenpu": 1300,
   "politics": 56,
   "charm": 85,
-  "gender": "男",
+  "gender": "女",
   "attendant_position": "右下",
   "tactic_interval": 20,
   "tactic_order": "早い",

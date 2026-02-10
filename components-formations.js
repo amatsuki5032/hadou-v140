@@ -857,8 +857,11 @@ function FormationsArea({
                                                     ].map(row => {
                                                         const baseVal = fStats.base[row.key];
                                                         const advVal = fStats.advisor ? (fStats.advisor[row.key] || 0) : 0;
+                                                        const horseVal = fStats.horse ? (fStats.horse[row.key] || 0) : 0;
                                                         const finalVal = fStats.withSkills[row.key];
                                                         const pctBonus = (fStats.bonuses?.pct?.[row.key]) || 0;
+                                                        const profilePct = (fStats.profileBonuses?.pct?.[row.key]) || 0;
+                                                        const totalPct = pctBonus + profilePct;
                                                         
                                                         return (
                                                             <div key={row.key} className="param-row">
@@ -876,7 +879,8 @@ function FormationsArea({
                                                                 <span style={{color: 'var(--text-muted)', fontSize: '9px'}}>
                                                                     ({baseVal.toLocaleString()}
                                                                     {advVal > 0 && <span style={{color: 'var(--success, #22c55e)'}}>+{advVal}</span>}
-                                                                    {pctBonus > 0 && <span style={{color: 'var(--accent)'}}>+{(pctBonus * 100).toFixed(0)}%</span>})
+                                                                    {horseVal > 0 && <span style={{color: '#a78bfa'}}>+{horseVal}</span>}
+                                                                    {totalPct > 0 && <span style={{color: 'var(--accent)'}}>+{(totalPct * 100).toFixed(0)}%</span>})
                                                                 </span>
                                                             </div>
                                                         );
@@ -884,6 +888,8 @@ function FormationsArea({
                                                     <div className="param-row" style={{borderBottom: '1px solid var(--border-light)', paddingBottom: '2px', marginBottom: '2px'}}>
                                                         <span style={{fontSize: '9px', color: 'var(--text-muted)'}}>
                                                             {fStats.formationName} / 参軍Lv10
+                                                            {(fStats.horse?.attack > 0 || fStats.horse?.defense > 0 || fStats.horse?.intelligence > 0) && ' / 軍馬'}
+                                                            {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
                                                         </span>
                                                     </div>
                                                 </>

@@ -499,6 +499,20 @@ const { useState, useEffect } = React;
             const treasureForgeRank = profileData[currentProfile].treasureForgeRank;
             const treasureURStatus = profileData[currentProfile].treasureURStatus;
             
+            // プロファイルシステム（研究・調査・軍馬） — data-profile.js の localStorage管理
+            const [profileConfig, setProfileConfig] = useState(() => {
+                return typeof loadProfileFromStorage === 'function' 
+                    ? loadProfileFromStorage() 
+                    : { research: { specializations: {}, items: {} }, investigation: {}, horses: [] };
+            });
+            
+            // profileConfig変更時にlocalStorageに自動保存
+            useEffect(() => {
+                if (typeof saveProfileToStorage === 'function') {
+                    saveProfileToStorage(profileConfig);
+                }
+            }, [profileConfig]);
+            
             // データ読み込み
             useEffect(() => {
                 setGenerals(EMBEDDED_GENERALS_DATA.filter(g => g.name !== 'nan'));
@@ -1195,7 +1209,7 @@ const { useState, useEffect } = React;
                     return calculateFormationStats(formations[formationKey], getGeneralProfile, {
                         level: 10,          // TODO: プロファイルから取得
                         facilityBonus: 0    // TODO: プロファイル参軍府設定から取得
-                    });
+                    }, profileConfig);
                 } catch(e) {
                     console.error('calcFormationStats error:', e);
                     return null;
@@ -2373,6 +2387,8 @@ const { useState, useEffect } = React;
                         ItemImage={ItemImage}
                         exportProfile={exportProfile}
                         importProfile={importProfile}
+                        profileConfig={profileConfig}
+                        setProfileConfig={setProfileConfig}
                     />
                 )}
                 

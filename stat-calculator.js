@@ -295,15 +295,180 @@ function collectSkillStatBonuses(allEntries, fmtCtx) {
     return { pctBonuses, fixBonuses };
 }
 
+// === 軍馬ステータスボーナス ===
+
+/**
+ * 軍馬編制によるステータス固定値ボーナスを計算する
+ * 毛色ボーナス + 名馬ステータス（☆ランク依存）の合計
+ * @param {Object} profileConfig - プロファイル設定（profileConfig.horses）
+ * @returns {Object} { attack, defense, intelligence } 固定値加算
+ */
+function calcHorseStatBonus(profileConfig) {
+    const bonus = { attack: 0, defense: 0, intelligence: 0 };
+    const horses = profileConfig?.horses;
+    if (!Array.isArray(horses)) return bonus;
+
+    for (const horse of horses) {
+        if (!horse) continue;
+
+        // 毛色ステータスボーナス（data-profile.js の HORSE_COATS）
+        if (horse.coat && typeof HORSE_COATS !== 'undefined') {
+            const coatBonus = HORSE_COATS[horse.coat];
+            if (coatBonus) {
+                bonus.attack += coatBonus.attack || 0;
+                bonus.defense += coatBonus.defense || 0;
+                bonus.intelligence += coatBonus.intelligence || 0;
+            }
+        }
+
+        // 名馬ステータス（data-profile.js の MEIBA_DATA）
+        if (horse.isMeiba && horse.meibaName && typeof MEIBA_DATA !== 'undefined') {
+            const meiba = MEIBA_DATA[horse.meibaName];
+            if (meiba?.stats) {
+                const stats = meiba.stats[horse.meibaStarRank || 0];
+                if (stats) {
+                    bonus.attack += stats.attack || 0;
+                    bonus.defense += stats.defense || 0;
+                    bonus.intelligence += stats.intelligence || 0;
+                }
+            }
+        }
+    }
+
+    return bonus;
+}
+
+// === 調査（異民族）効果ボーナス ===
+
+/**
+ * 調査レベルによる%ボーナスを計算する
+ * @param {Object} profileConfig - プロファイル設定（profileConfig.investigation）
+ * @returns {Object} { pct: {attack,defense,intelligence,hp}, params: {戦法速度,...} }
+ */
+function calcSurveyBonuses(profileConfig) {
+    const pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
+    const paramBonuses = {};
+    const investigation = profileConfig?.investigation;
+    if (!investigation || typeof SURVEY_DATA === 'undefined') return { pct: pctBonuses, params: paramBonuses };
+
+    const LEVEL_KEYS = { 1: 'Ⅰ', 2: 'Ⅱ', 3: 'Ⅲ', 4: 'Ⅳ', 5: 'Ⅴ' };
+
+    for (const skill of SURVEY_DATA) {
+        const userLevel = investigation[skill.name];
+        if (!userLevel || userLevel <= 0) continue;
+        const levelKey = LEVEL_KEYS[userLevel];
+        if (!levelKey) continue;
+
+        for (const effect of skill.effects) {
+            const value = effect.levels?.[levelKey];
+            if (value == null) continue;
+
+            if (effect.type2 === '基礎') {
+                if (effect.effect === '攻撃') pctBonuses.attack += value;
+                else if (effect.effect === '防御') pctBonuses.defense += value;
+                else if (effect.effect === '知力') pctBonuses.intelligence += value;
+                else if (effect.effect === '兵力') pctBonuses.hp += value;
+                else paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
+            } else if (effect.type2 === 'パラメータ') {
+                paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
+            }
+        }
+    }
+
+    return { pct: pctBonuses, params: paramBonuses };
+}
+
+// === 軍馬技能の%ボーナス ===
+
+/**
+ * 軍馬技能によるパラメータボーナスを計算する
+ * 3頭の技能累積レベル（上限Ⅹ）で効果値を算出
+ * @param {Object} profileConfig - プロファイル設定
+ * @param {string} unitType - 部隊の兵科（馬/槍/弓）
+ * @returns {Object} { pct: {attack,...}, params: {攻撃速度,...} }
+ */
+function calcHorseSkillBonuses(profileConfig, unitType) {
+    const pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
+    const paramBonuses = {};
+    const horses = profileConfig?.horses;
+    if (!Array.isArray(horses) || typeof HORSE_SKILL_DATA === 'undefined') return { pct: pctBonuses, params: paramBonuses };
+
+    // 1) 全3頭の技能を系統名で集計（累積上限Ⅹ=10）
+    const skillTotals = {};
+    for (const horse of horses) {
+        if (!horse?.skills) continue;
+        for (const skill of horse.skills) {
+            if (!skill?.name || !skill.level || skill.level <= 0) continue;
+            const resolved = typeof resolveHorseSkillName === 'function'
+                ? resolveHorseSkillName(skill.name, unitType)
+                : skill.name;
+            if (!resolved) continue;
+            skillTotals[resolved] = Math.min((skillTotals[resolved] || 0) + skill.level, 10);
+        }
+    }
+
+    // 2) 累積レベルで効果値を取得
+    const LK = { 1:'Ⅰ', 2:'Ⅱ', 3:'Ⅲ', 4:'Ⅳ', 5:'Ⅴ', 6:'Ⅵ', 7:'Ⅶ', 8:'Ⅷ', 9:'Ⅸ', 10:'Ⅹ' };
+
+    for (const [skillName, totalLevel] of Object.entries(skillTotals)) {
+        const levelKey = LK[totalLevel];
+        if (!levelKey) continue;
+        const skillData = HORSE_SKILL_DATA.find(s => s.name === skillName);
+        if (!skillData) continue;
+
+        for (const effect of skillData.effects) {
+            const value = effect.levels?.[levelKey];
+            if (value == null) continue;
+            if (effect.type2 === '基礎') {
+                if (effect.effect === '攻撃') pctBonuses.attack += value;
+                else if (effect.effect === '防御') pctBonuses.defense += value;
+                else if (effect.effect === '知力') pctBonuses.intelligence += value;
+                else if (effect.effect === '兵力') pctBonuses.hp += value;
+                else paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
+            } else if (effect.type2 === 'パラメータ') {
+                paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
+            }
+        }
+    }
+
+    // 3) 名馬技能の効果（絶影等）
+    for (const horse of horses) {
+        if (!horse?.isMeiba || !horse.meibaName || typeof MEIBA_DATA === 'undefined') continue;
+        const meiba = MEIBA_DATA[horse.meibaName];
+        if (!meiba?.skillName) continue;
+        const skillLv = meiba.starRankToSkillLevel?.[horse.meibaStarRank || 0] || 0;
+        if (skillLv <= 0) continue;
+        const levelKey = LK[skillLv];
+        if (!levelKey) continue;
+        const skillData = HORSE_SKILL_DATA.find(s => s.name === meiba.skillName);
+        if (!skillData) continue;
+
+        for (const effect of skillData.effects) {
+            const value = effect.levels?.[levelKey];
+            if (value == null) continue;
+            paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
+        }
+    }
+
+    return { pct: pctBonuses, params: paramBonuses };
+}
+
 /**
  * 部隊ステータスをまとめて計算する（メインAPI）
  * @param {Object} formation - 部隊データ
  * @param {Function} getProfileFn - 武将プロファイル取得関数。(general) => number|{star,level,grade}
  * @param {Object} [advisorConfig] - 参軍設定 { level: 0-10, facilityBonus: 0-0.10 }
+ * @param {Object} [profileConfig] - プロファイル設定（研究/調査/軍馬）
  */
-function calculateFormationStats(formation, getProfileFn, advisorConfig) {
+function calculateFormationStats(formation, getProfileFn, advisorConfig, profileConfig) {
     const base = calcFormationBaseStats(formation, getProfileFn);
     if (!base) return null;
+
+    // 主将の兵科を取得（軍馬技能の兵科判定用）
+    const mainSlot = formation.slots?.['主将'];
+    const mainGeneralId = typeof mainSlot === 'object' ? mainSlot?.id : mainSlot;
+    const mainGeneral = mainGeneralId ? EMBEDDED_GENERALS_DATA.find(g => g.id === mainGeneralId) : null;
+    const unitType = mainGeneral?.unit_type || '馬';
 
     // 参軍加算
     const advCfg = advisorConfig || { level: 10, facilityBonus: 0 };
@@ -311,7 +476,7 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig) {
         formation, getProfileFn, advCfg.level, advCfg.facilityBonus
     );
 
-    // 技能加算
+    // 技能加算（武将技能 + 名宝技能）
     let pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
     let fixBonuses = { attack: 0, defense: 0, intelligence: 0 };
 
@@ -326,11 +491,45 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig) {
         }
     }
 
-    // 基礎 + 参軍を合算してから技能%を適用
-    const baseWithAdvisor = {
-        attack: base.attack + advisorBonus.attack,
-        defense: base.defense + advisorBonus.defense,
-        intelligence: base.intelligence + advisorBonus.intelligence,
+    // 軍馬ステータスボーナス（固定値）
+    const horseStatBonus = calcHorseStatBonus(profileConfig);
+
+    // 軍馬技能ボーナス（%値）
+    const horseSkillBonus = calcHorseSkillBonuses(profileConfig, unitType);
+
+    // 調査ボーナス（%値）
+    const surveyBonus = calcSurveyBonuses(profileConfig);
+
+    // プロファイル系%ボーナスを合算
+    const profilePct = {
+        attack: horseSkillBonus.pct.attack + surveyBonus.pct.attack,
+        defense: horseSkillBonus.pct.defense + surveyBonus.pct.defense,
+        intelligence: horseSkillBonus.pct.intelligence + surveyBonus.pct.intelligence,
+        hp: horseSkillBonus.pct.hp + surveyBonus.pct.hp,
+    };
+
+    // パラメータボーナスを合算
+    const profileParams = {};
+    for (const [k, v] of Object.entries(horseSkillBonus.params)) {
+        profileParams[k] = (profileParams[k] || 0) + v;
+    }
+    for (const [k, v] of Object.entries(surveyBonus.params)) {
+        profileParams[k] = (profileParams[k] || 0) + v;
+    }
+
+    // 全%ボーナス合算
+    const totalPct = {
+        attack: pctBonuses.attack + profilePct.attack,
+        defense: pctBonuses.defense + profilePct.defense,
+        intelligence: pctBonuses.intelligence + profilePct.intelligence,
+        hp: (pctBonuses.hp || 0) + profilePct.hp,
+    };
+
+    // 基礎 + 参軍 + 軍馬固定値を合算してから技能%を適用
+    const baseWithAll = {
+        attack: base.attack + advisorBonus.attack + horseStatBonus.attack,
+        defense: base.defense + advisorBonus.defense + horseStatBonus.defense,
+        intelligence: base.intelligence + advisorBonus.intelligence + horseStatBonus.intelligence,
     };
 
     return {
@@ -342,14 +541,18 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig) {
         },
         // 参軍加算
         advisor: advisorBonus,
-        // 技能加算後（基礎+参軍 に技能%適用 + 固定値）
+        // 軍馬ステータス加算（固定値）
+        horse: horseStatBonus,
+        // 技能加算後（基礎+参軍+軍馬 に技能%+調査%+軍馬技能% 適用 + 固定値）
         withSkills: {
-            attack: Math.floor(baseWithAdvisor.attack * (1 + pctBonuses.attack)) + fixBonuses.attack,
-            defense: Math.floor(baseWithAdvisor.defense * (1 + pctBonuses.defense)) + fixBonuses.defense,
-            intelligence: Math.floor(baseWithAdvisor.intelligence * (1 + pctBonuses.intelligence)) + fixBonuses.intelligence,
+            attack: Math.floor(baseWithAll.attack * (1 + totalPct.attack)) + fixBonuses.attack,
+            defense: Math.floor(baseWithAll.defense * (1 + totalPct.defense)) + fixBonuses.defense,
+            intelligence: Math.floor(baseWithAll.intelligence * (1 + totalPct.intelligence)) + fixBonuses.intelligence,
         },
         // 技能ボーナス詳細
         bonuses: { pct: pctBonuses, fix: fixBonuses },
+        // プロファイルボーナス詳細（調査+軍馬技能の%合計）
+        profileBonuses: { pct: profilePct, params: profileParams },
         // メンバー個別ステータス
         memberStats: base.memberStats,
         // 陣形情報
