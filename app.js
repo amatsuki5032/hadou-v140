@@ -448,7 +448,6 @@ const { useState, useEffect } = React;
             const [showGeneralsPanel, setShowGeneralsPanel] = useState(true);
             const [showTreasuresPanel, setShowTreasuresPanel] = useState(true);
             const [showPendingPanel, setShowPendingPanel] = useState(true);
-            const [showProfilePanel, setShowProfilePanel] = useState(true);
             const [profileConfig, setProfileConfig] = useState(() => loadProfileFromStorage());
             
             // ─── ソート設定 ───
@@ -1531,13 +1530,6 @@ const { useState, useEffect } = React;
                             >
                                 ランク設定
                             </button>
-                            <button
-                                className={`tab-button ${viewMode === 'profile' ? 'active' : ''}`}
-                                onClick={() => setViewMode('profile')}
-                                style={{padding: '8px 16px', fontSize: '12px'}}
-                            >
-                                研究/軍馬
-                            </button>
                         </div>
                     </div>
                     
@@ -2147,15 +2139,6 @@ const { useState, useEffect } = React;
                     />
                     
                     </>
-            ) : viewMode === 'profile' ? (
-                    <ProfilePanel
-                        showProfilePanel={showProfilePanel}
-                        setShowProfilePanel={setShowProfilePanel}
-                        profileConfig={profileConfig}
-                        setProfileConfig={setProfileConfig}
-                        showContextHelp={showContextHelp}
-                        setContextHelpType={setContextHelpType}
-                    />
             ) : (
                     <RankSettingsPanel
                         generals={generals}
@@ -2191,6 +2174,8 @@ const { useState, useEffect } = React;
                         ItemImage={ItemImage}
                         exportProfile={exportProfile}
                         importProfile={importProfile}
+                        profileConfig={profileConfig}
+                        setProfileConfig={setProfileConfig}
                     />
                 )}
                 

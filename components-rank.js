@@ -20,7 +20,8 @@ function RankSettingsPanel({
     isFavoriteTreasure, toggleFavoriteTreasure,
     isGeneralDisabled, isTreasureDisabled,
     getImageUrl, ItemImage,
-    exportProfile, importProfile
+    exportProfile, importProfile,
+    profileConfig, setProfileConfig
 }) {
     return (
         <div className="rank-settings-container" style={{padding: '20px', maxWidth: '1200px', margin: '0 auto'}}>
@@ -121,6 +122,24 @@ function RankSettingsPanel({
                     onClick={() => setRankTab('treasure')}
                 >
                     名宝の鍛錬ランク
+                </button>
+                <button
+                    className={`tab-button ${rankTab === 'research' ? 'active' : ''}`}
+                    onClick={() => setRankTab('research')}
+                >
+                    研究
+                </button>
+                <button
+                    className={`tab-button ${rankTab === 'investigation' ? 'active' : ''}`}
+                    onClick={() => setRankTab('investigation')}
+                >
+                    調査
+                </button>
+                <button
+                    className={`tab-button ${rankTab === 'horse' ? 'active' : ''}`}
+                    onClick={() => setRankTab('horse')}
+                >
+                    軍馬
                 </button>
             </div>
             
@@ -471,7 +490,7 @@ function RankSettingsPanel({
                         );
                     })}
                 </div>
-            ) : (
+            ) : rankTab === 'treasure' ? (
                 <div>
                     <h2 style={{color: 'var(--text-primary)', marginBottom: '16px'}}>名宝の鍛錬ランク設定</h2>
                     
@@ -803,7 +822,13 @@ function RankSettingsPanel({
                         );
                     })}
                 </div>
-            )}
+            ) : rankTab === 'research' ? (
+                <ResearchTab profileConfig={profileConfig} setProfileConfig={setProfileConfig} />
+            ) : rankTab === 'investigation' ? (
+                <InvestigationTab profileConfig={profileConfig} setProfileConfig={setProfileConfig} />
+            ) : rankTab === 'horse' ? (
+                <HorseTab profileConfig={profileConfig} setProfileConfig={setProfileConfig} />
+            ) : null}
         </div>
     );
 }
