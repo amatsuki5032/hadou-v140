@@ -448,6 +448,8 @@ const { useState, useEffect } = React;
             const [showGeneralsPanel, setShowGeneralsPanel] = useState(true);
             const [showTreasuresPanel, setShowTreasuresPanel] = useState(true);
             const [showPendingPanel, setShowPendingPanel] = useState(true);
+            const [showProfilePanel, setShowProfilePanel] = useState(true);
+            const [profileConfig, setProfileConfig] = useState(() => loadProfileFromStorage());
             
             // ─── ソート設定 ───
             const [generalsSortOrder, setGeneralsSortOrder] = useState('affinity');
@@ -620,6 +622,11 @@ const { useState, useEffect } = React;
             useEffect(() => {
                 localStorage.setItem('currentProfile', currentProfile.toString());
             }, [currentProfile]);
+            
+            // プロファイル設定（研究/調査/軍馬）の自動保存
+            useEffect(() => {
+                saveProfileToStorage(profileConfig);
+            }, [profileConfig]);
             
             // 編制パターンをlocalStorageに保存
             useEffect(() => {
@@ -1047,11 +1054,6 @@ const { useState, useEffect } = React;
             // 部隊の戦闘パラメータを計算（calc-engine.js のラッパー）
             const calcCombatParams = (formationKey) => {
                 return calculateCombatParameters(formations[formationKey], getGeneralStarRank);
-            };
-            
-            // 部隊ステータスを計算（stat-calculator.js のラッパー）
-            const calcFormationStats = (formationKey) => {
-                return calculateFormationStats(formations[formationKey], getGeneralStarRank);
             };
             
             // 部隊をリセット
@@ -1524,14 +1526,21 @@ const { useState, useEffect } = React;
                             >
                                 ランク設定
                             </button>
+                            <button
+                                className={`tab-button ${viewMode === 'profile' ? 'active' : ''}`}
+                                onClick={() => setViewMode('profile')}
+                                style={{padding: '8px 16px', fontSize: '12px'}}
+                            >
+                                研究/軍馬
+                            </button>
                         </div>
                     </div>
                     
                     {/* 更新情報バー */}
                     <div id="update-info-bar-react" className="update-info-bar">
-                        <span className="version-tag" id="version-tag">v145</span>
-                        <span className="update-date" id="update-date">2026-02-04</span>
-                        <span className="update-summary" id="update-summary">更新履歴表示機能を追加</span>
+                        <span className="version-tag" id="version-tag">v146</span>
+                        <span className="update-date" id="update-date">2026-02-10</span>
+                        <span className="update-summary" id="update-summary">プロファイルシステム追加（研究/調査/軍馬）</span>
                         <button 
                             className="show-history-btn" 
                             id="show-history-btn"
@@ -2039,7 +2048,6 @@ const { useState, useEffect } = React;
                             isTreasureUR={isTreasureUR}
                             calcCombatParams={calcCombatParams}
                             calcSkillEffects={calcSkillEffects}
-                            calcFormationStats={calcFormationStats}
                             ItemImage={ItemImage}
                         />
 
@@ -2133,6 +2141,15 @@ const { useState, useEffect } = React;
                     />
                     
                     </>
+            ) : viewMode === 'profile' ? (
+                    <ProfilePanel
+                        showProfilePanel={showProfilePanel}
+                        setShowProfilePanel={setShowProfilePanel}
+                        profileConfig={profileConfig}
+                        setProfileConfig={setProfileConfig}
+                        showContextHelp={showContextHelp}
+                        setContextHelpType={setContextHelpType}
+                    />
             ) : (
                     <RankSettingsPanel
                         generals={generals}

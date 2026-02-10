@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三國志覇道 編制管理アプリ v1.40</title>
+    <title>三國志覇道 編制管理アプリ v1.50</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.24.0/babel.min.js"></script>
@@ -12,17 +12,29 @@
     <script src="data-generals.js"></script>
     <script src="data-all-treasures.js"></script>
     <script src="data-skill-db.js"></script>
+    <script src="data-research.js"></script>
+    <script src="data-survey.js"></script>
+    <script src="data-horse-skills.js"></script>
+    <script src="data-treasure-forge.js"></script>
+
+    <!-- エンジン・ユーティリティ -->
     <script src="skill-conditions.js"></script>
-    <script src="stat-calculator.js"></script>
+    <script src="data-profile.js"></script>
     <script src="config.js"></script>
     <script src="utils.js"></script>
     <script src="calc-engine.js"></script>
+    <script src="stat-calculator.js"></script>
+
+    <!-- ハンドラ -->
     <script src="handlers-dnd.js"></script>
     <script src="handlers-template.js"></script>
     <script src="data-io.js"></script>
+
+    <!-- UIコンポーネント -->
     <script type="text/babel" src="components-modals.js"></script>
     <script type="text/babel" src="components-panels.js"></script>
     <script type="text/babel" src="components-rank.js"></script>
+    <script type="text/babel" src="components-profile.js"></script>
     <script type="text/babel" src="components-formations.js"></script>
 
     <!-- スタイル -->
@@ -31,9 +43,8 @@
 <body>
     <div id="root"></div>
 
-    <!-- アプリケーション本体 -->
+    <!-- メインアプリ -->
     <script type="text/babel" src="app.js"></script>
-    <script src="theme-toggle.js"></script>
     <script src="updateHistory.js"></script>
 </body>
 </html>

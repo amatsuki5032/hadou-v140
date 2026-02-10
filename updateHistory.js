@@ -2,15 +2,29 @@
 const updateHistory = [
     {
         date: "2026-02-10",
+        version: "v150",
+        items: [
+            { type: "feature", text: "プロファイルシステム追加（研究/調査/軍馬タブ）" },
+            { type: "feature", text: "研究タブ: 専攻選択（4カテゴリ×3択）、127項目の入力UI" },
+            { type: "feature", text: "調査タブ: 6民族23技能のレベル選択、効果値リアルタイム表示" },
+            { type: "feature", text: "軍馬タブ: 3頭編制、毛色/名馬/技能設定、累積合計（上限Ⅹ）" },
+            { type: "data", text: "名宝マスタ・鍛錬データ生成（209名宝, 1,030鍛錬行）" },
+            { type: "data", text: "研究/調査/軍馬マスタデータ（data-profile.js）" },
+            { type: "system", text: "ETLスクリプト整備（技能DB/名宝鍛錬データ再生成用）" },
+            { type: "system", text: "バリデーションスクリプト作成（ID一意性・技能リンクチェック）" }
+        ]
+    },
+    {
+        date: "2026-02-10",
         version: "v145",
         items: [
-            { type: "system", text: "武将データを5ファイル→1ファイルに統合（447名）" },
-            { type: "general", text: "LR+2名（荀攸・項籍）、UR+1名（鄒氏）、N+20名を追加" },
-            { type: "system", text: "技能DB統合（1,783技能）" },
+            { type: "data", text: "武将データ5ファイル→1ファイル統合（447名）" },
+            { type: "data", text: "LR+2名（荀攸・項籍）、UR+1名（鄒氏）、N+20名追加" },
+            { type: "data", text: "技能DB統合（1,783技能）" },
             { type: "system", text: "ステータス計算エンジン実装（天賦テーブル・陣形反映率）" },
-            { type: "system", text: "技能発動条件の評価関数実装（44パターン）" },
-            { type: "system", text: "app.jsを7ファイルに分割（7,081→2,200行）" },
-            { type: "system", text: "配色テーマ「雨夜の月」に統一" }
+            { type: "system", text: "技能発動条件評価関数実装（44パターン）" },
+            { type: "system", text: "app.js 7ファイル分割（7,081→2,200行）" },
+            { type: "system", text: "配色テーマ「雨夜の月」統一" }
         ]
     },
     {
