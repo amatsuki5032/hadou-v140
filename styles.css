@@ -1429,15 +1429,11 @@
    戦闘パラメータパネル
    =========================== */
 .combat-parameters-panel {
-    position: absolute;
-    left: 0;
-    top: 220px;
-    width: 180px;
+    width: 188px;
+    margin-top: 8px;
     background: var(--bg-panel);
     border: 1px solid var(--border-light);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    z-index: 100;
 }
 
 .combat-params-header {
