@@ -782,17 +782,38 @@ const { useState, useEffect } = React;
             // 武将を不使用リストに移動
             const moveToDisabled = (general) => {
                 if (!isGeneralDisabled(general)) {
-                    // 編制から削除
+                    // 編制から削除（スロット・侍従・参軍すべて）
                     if (isGeneralUsed(general.id, general.name, general.rarity)) {
                         setFormations(prev => {
                             const newFormations = { ...prev };
                             Object.keys(newFormations).forEach(key => {
-                                Object.keys(newFormations[key].slots).forEach(slotName => {
-                                    const slot = newFormations[key].slots[slotName];
-                                    if (slot && slot.id === general.id && slot.rarity === general.rarity) {
-                                        newFormations[key].slots[slotName] = null;
-                                    }
-                                });
+                                // スロットから削除
+                                if (newFormations[key].slots) {
+                                    Object.keys(newFormations[key].slots).forEach(slotName => {
+                                        const slot = newFormations[key].slots[slotName];
+                                        if (slot && slot.id === general.id && slot.rarity === general.rarity) {
+                                            newFormations[key].slots[slotName] = null;
+                                        }
+                                    });
+                                }
+                                // 侍従から削除
+                                if (newFormations[key].attendants) {
+                                    Object.keys(newFormations[key].attendants).forEach(aKey => {
+                                        const att = newFormations[key].attendants[aKey];
+                                        if (att && att.id === general.id && att.rarity === general.rarity) {
+                                            newFormations[key].attendants[aKey] = null;
+                                        }
+                                    });
+                                }
+                                // 参軍から削除
+                                if (newFormations[key].advisors) {
+                                    Object.keys(newFormations[key].advisors).forEach(aType => {
+                                        const adv = newFormations[key].advisors[aType];
+                                        if (adv && adv.id === general.id && adv.rarity === general.rarity) {
+                                            newFormations[key].advisors[aType] = null;
+                                        }
+                                    });
+                                }
                             });
                             return newFormations;
                         });
@@ -1186,11 +1207,17 @@ const { useState, useEffect } = React;
                         dstF.advisors[targetSubSlot] = srcItem;
                         srcF.advisors[src.advisorType] = dstItem;
                     } else if (src.type === 'treasure') {
-                        // 名宝スロット入れ替え
+                        // 名宝スロット入れ替え — カテゴリチェック
                         if (!srcF.treasures) srcF.treasures = {};
                         if (!dstF.treasures) dstF.treasures = {};
                         const srcKey = `${src.slotName}-${src.treasureSlot}`;
                         const dstKey = `${targetSlotName}-${targetSubSlot}`;
+                        
+                        // 同じカテゴリ（weapon/armor/artifact）でなければ移動不可
+                        if (src.treasureSlot !== targetSubSlot) {
+                            return prev;
+                        }
+                        
                         const srcItem = srcF.treasures[srcKey] || null;
                         const dstItem = dstF.treasures[dstKey] || null;
                         dstF.treasures[dstKey] = srcItem;

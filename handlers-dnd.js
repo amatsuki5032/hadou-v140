@@ -804,6 +804,16 @@ function createDndHandlers({
                             }
                         });
                     }
+
+                    // 参軍から削除
+                    if (newFormations[formationKey].advisors) {
+                        Object.keys(newFormations[formationKey].advisors).forEach(advisorType => {
+                            const advisor = newFormations[formationKey].advisors[advisorType];
+                            if (advisor && advisor.id === general.id && advisor.rarity === general.rarity) {
+                                newFormations[formationKey].advisors[advisorType] = null;
+                            }
+                        });
+                    }
                 });
 
                 return newFormations;
@@ -818,6 +828,7 @@ function createDndHandlers({
         }
 
         const slotOrder = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
+        const advisorOrder = ['leadership', 'attack', 'intelligence', 'politics', 'charm'];
         const formationOrder = [];
 
         // おススメ部隊を最優先
@@ -875,17 +886,13 @@ function createDndHandlers({
             }
         }
 
-        // UR/SSR/SR/R武将：侍従枠を探す
-        if (['UR', 'SSR', 'SR', 'R'].includes(general.rarity)) {
+        // UR武将：侍従枠を探す
+        if (general.rarity === 'UR') {
             for (const formationKey of formationOrder) {
-                // 折りたたまれている部隊はスキップ
-                if (collapsedFormations[formationKey]) {
-                    continue;
-                }
+                if (collapsedFormations[formationKey]) continue;
                 for (const slotName of slotOrder) {
                     const attendantKey = slotName;
                     if (!formations[formationKey]?.attendants?.[attendantKey]) {
-                        // 空き侍従枠に配置
                         setFormations(prev => ({
                             ...prev,
                             [formationKey]: {
@@ -893,6 +900,28 @@ function createDndHandlers({
                                 attendants: {
                                     ...prev[formationKey].attendants,
                                     [attendantKey]: general
+                                }
+                            }
+                        }));
+                        return;
+                    }
+                }
+            }
+        }
+
+        // SSR以下：参軍枠を探す
+        if (['SSR', 'SR', 'R', 'N'].includes(general.rarity)) {
+            for (const formationKey of formationOrder) {
+                if (collapsedFormations[formationKey]) continue;
+                for (const advisorType of advisorOrder) {
+                    if (!formations[formationKey]?.advisors?.[advisorType]) {
+                        setFormations(prev => ({
+                            ...prev,
+                            [formationKey]: {
+                                ...prev[formationKey],
+                                advisors: {
+                                    ...prev[formationKey].advisors,
+                                    [advisorType]: general
                                 }
                             }
                         }));
