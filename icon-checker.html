@@ -67,7 +67,7 @@ function initData() {
     let lines = [];
 
     // 武将データ（GENERALS_DATA or EMBEDDED_GENERALS_DATA）
-    const genSource = window.GENERALS_DATA || window.EMBEDDED_GENERALS_DATA;
+    const genSource = (typeof GENERALS_DATA !== 'undefined' ? GENERALS_DATA : null) || (typeof EMBEDDED_GENERALS_DATA !== 'undefined' ? EMBEDDED_GENERALS_DATA : null);
     if (genSource && Array.isArray(genSource)) {
         GENERALS = genSource.map(g => ({ id: g.id, r: g.rarity, n: g.name }));
         const ro = { LR: 0, UR: 1, SSR: 2, SR: 3, R: 4, N: 5 };
@@ -78,7 +78,7 @@ function initData() {
     }
 
     // 名宝データ（EMBEDDED_TREASURES_DATA or ALL_TREASURES_DATA）
-    const treSource = window.EMBEDDED_TREASURES_DATA || window.ALL_TREASURES_DATA;
+    const treSource = (typeof EMBEDDED_TREASURES_DATA !== 'undefined' ? EMBEDDED_TREASURES_DATA : null) || (typeof ALL_TREASURES_DATA !== 'undefined' ? ALL_TREASURES_DATA : null);
     if (treSource && Array.isArray(treSource)) {
         TREASURES = treSource.map(t => ({ id: t.id, n: t.name, c: t.category }));
         lines.push(`<span class="loaded">✓</span> 名宝: ${TREASURES.length}件`);
