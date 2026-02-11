@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>アイコン不足チェッカー</title>
+<style>
+body { background: #09090c; color: #e2e4ec; font-family: -apple-system, 'Noto Sans JP', sans-serif; padding: 20px; }
+h1 { font-size: 20px; border-bottom: 2px solid #800020; padding-bottom: 12px; }
+.summary { margin: 16px 0; padding: 12px 16px; background: #0e0e12; border-radius: 8px; font-size: 14px; }
+.summary .ok { color: #22c55e; } .summary .ng { color: #ef4444; }
+.rarity-section { margin: 20px 0; }
+.rarity-title { font-size: 16px; margin-bottom: 8px; color: #9a9eb0; }
+.grid { display: flex; flex-wrap: wrap; gap: 4px; }
+.item { display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 4px; font-size: 12px; min-width: 140px; }
+.item.ok { background: #0a1a0a; color: #4ade80; }
+.item.ng { background: #1a0a0a; color: #f87171; font-weight: bold; }
+.item img { width: 28px; height: 28px; border-radius: 2px; object-fit: cover; }
+.item .placeholder { width: 28px; height: 28px; background: #1c1c24; border: 1px dashed #606478; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+#progress { color: #9a9eb0; font-size: 13px; }
+button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+button:hover { background: #1d4ed8; }
+.filter-bar { margin: 12px 0; display: flex; gap: 8px; }
+.filter-btn { padding: 6px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; border: 1px solid #1c1c24; background: #121216; color: #9a9eb0; }
+.filter-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+</style>
+</head>
+<body>
+<h1>武将アイコン不足チェッカー</h1>
+<p style="font-size:13px;color:#606478">アイコンの読み込みテストを実行し、404（画像なし）の武将を検出します。</p>
+<button onclick="runCheck()">チェック開始</button>
+<p id="progress"></p>
+
+<div class="filter-bar" id="filterBar" style="display:none">
+    <span class="filter-btn active" onclick="filterAll(this)">すべて</span>
+    <span class="filter-btn" onclick="filterMissing(this)">不足のみ</span>
+</div>
+
+<div class="summary" id="summary" style="display:none"></div>
+<div id="results"></div>
+
+<script>
+const GENERALS = [
+{id:1,r:"LR",n:"張飛"},
+{id:2,r:"LR",n:"呂尚"},
+{id:3,r:"LR",n:"周瑜"},
+{id:4,r:"LR",n:"郭嘉"},
+{id:5,r:"LR",n:"夏侯淵"},
+{id:6,r:"LR",n:"李信"},
+{id:7,r:"LR",n:"呂布"},
+{id:8,r:"LR",n:"貂蝉"},
+{id:9,r:"LR",n:"太史慈"},
+{id:10,r:"LR",n:"龐統"},
+{id:11,r:"LR",n:"孫臏"},
+{id:12,r:"LR",n:"許褚"},
+{id:13,r:"LR",n:"孫堅"},
+{id:14,r:"LR",n:"黄忠"},
+{id:15,r:"LR",n:"呂不韋"},
+{id:16,r:"LR",n:"趙雲"},
+{id:17,r:"LR",n:"甘寧"},
+{id:18,r:"LR",n:"法正"},
+{id:19,r:"LR",n:"賈詡"},
+{id:20,r:"LR",n:"韓信"},
+{id:21,r:"LR",n:"夏侯惇"},
+{id:22,r:"LR",n:"陸遜"},
+{id:23,r:"LR",n:"ラインハルト"},
+{id:24,r:"LR",n:"ヤン"},
+{id:25,r:"LR",n:"龐徳"},
+{id:26,r:"LR",n:"廉頗"},
+{id:27,r:"LR",n:"張郃"},
+{id:28,r:"LR",n:"呂蒙"},
+{id:29,r:"LR",n:"孫策"},
+{id:30,r:"LR",n:"大喬"},
+{id:31,r:"LR",n:"藺相如"},
+{id:32,r:"LR",n:"孫尚香"},
+{id:33,r:"LR",n:"張遼"},
+{id:34,r:"LR",n:"高順"},
+{id:35,r:"LR",n:"王翦"},
+{id:36,r:"LR",n:"司馬懿"},
+{id:37,r:"LR",n:"諸葛亮"},
+{id:38,r:"LR",n:"徐庶"},
+{id:39,r:"LR",n:"周泰"},
+{id:40,r:"LR",n:"徐晃"},
+{id:41,r:"LR",n:"范増"},
+{id:42,r:"LR",n:"馬超"},
+{id:43,r:"LR",n:"孫権"},
+{id:44,r:"LR",n:"小喬"},
+{id:45,r:"LR",n:"董卓"},
+{id:46,r:"LR",n:"皇甫嵩"},
+{id:47,r:"LR",n:"英布"},
+{id:48,r:"LR",n:"関銀屏"},
+{id:49,r:"LR",n:"鍾会"},
+{id:50,r:"LR",n:"華佗"},
+{id:51,r:"LR",n:"李牧"},
+{id:52,r:"LR",n:"鄭成功"},
+{id:53,r:"LR",n:"張角"},
+{id:54,r:"LR",n:"典韋"},
+{id:55,r:"LR",n:"魯粛"},
+{id:56,r:"LR",n:"鄧艾"},
+{id:57,r:"LR",n:"呉起"},
+{id:58,r:"LR",n:"公孫瓚"},
+{id:59,r:"LR",n:"陸抗"},
+{id:60,r:"LR",n:"羊祜"},
+{id:61,r:"LR",n:"劉備"},
+{id:62,r:"LR",n:"魏延"},
+{id:63,r:"LR",n:"管夷吾"},
+{id:64,r:"LR",n:"馬岱"},
+{id:65,r:"LR",n:"呂玲綺"},
+{id:66,r:"LR",n:"黄蓋"},
+{id:67,r:"LR",n:"李逍遥"},
+{id:68,r:"LR",n:"林月如"},
+{id:69,r:"LR",n:"趙霊児"},
+{id:70,r:"LR",n:"阿奴"},
+{id:71,r:"LR",n:"姜維"},
+{id:72,r:"LR",n:"鮑叔牙"},
+{id:73,r:"LR",n:"袁紹"},
+{id:74,r:"LR",n:"曹操"},
+{id:75,r:"LR",n:"荀彧"},
+{id:76,r:"LR",n:"田豊"},
+{id:77,r:"LR",n:"甄氏"},
+{id:78,r:"LR",n:"馬騰"},
+{id:79,r:"LR",n:"項燕"},
+{id:80,r:"LR",n:"楽進"},
+{id:81,r:"LR",n:"朱桓"},
+{id:82,r:"LR",n:"張飛O"},
+{id:83,r:"LR",n:"孫尚香O"},
+{id:84,r:"LR",n:"夏侯惇O"},
+{id:85,r:"LR",n:"黄月英"},
+{id:86,r:"LR",n:"白起"},
+{id:87,r:"LR",n:"左慈"},
+{id:88,r:"LR",n:"関羽"},
+{id:89,r:"LR",n:"周倉"},
+{id:90,r:"LR",n:"諸葛恪"},
+{id:91,r:"LR",n:"荀攸"},
+{id:92,r:"LR",n:"項籍"},
+{id:1001,r:"UR",n:"趙雲"},
+{id:1002,r:"UR",n:"劉備"},
+{id:1003,r:"UR",n:"張遼"},
+{id:1004,r:"UR",n:"郭嘉"},
+{id:1005,r:"UR",n:"周瑜"},
+{id:1006,r:"UR",n:"甘寧"},
+{id:1007,r:"UR",n:"張飛"},
+{id:1008,r:"UR",n:"賈詡"},
+{id:1009,r:"UR",n:"孫策"},
+{id:1010,r:"UR",n:"大喬"},
+{id:1011,r:"UR",n:"姜維"},
+{id:1012,r:"UR",n:"太史慈"},
+{id:1013,r:"UR",n:"孫尚香"},
+{id:1014,r:"UR",n:"諸葛亮"},
+{id:1015,r:"UR",n:"呂布"},
+{id:1016,r:"UR",n:"司馬懿"},
+{id:1017,r:"UR",n:"貂蝉"},
+{id:1018,r:"UR",n:"董卓"},
+{id:1019,r:"UR",n:"孫堅"},
+{id:1020,r:"UR",n:"陸遜"},
+{id:1021,r:"UR",n:"小喬"},
+{id:1022,r:"UR",n:"関羽"},
+{id:1023,r:"UR",n:"龐統"},
+{id:1024,r:"UR",n:"夏侯淵"},
+{id:1025,r:"UR",n:"黄忠"},
+{id:1026,r:"UR",n:"龐徳"},
+{id:1027,r:"UR",n:"夏侯惇"},
+{id:1028,r:"UR",n:"馬超"},
+{id:1029,r:"UR",n:"張郃"},
+{id:1030,r:"UR",n:"孫権"},
+{id:1031,r:"UR",n:"呂玲綺"},
+{id:1032,r:"UR",n:"皇甫嵩"},
+{id:1033,r:"UR",n:"呂蒙"},
+{id:1034,r:"UR",n:"周泰"},
+{id:1035,r:"UR",n:"張角"},
+{id:1036,r:"UR",n:"荀彧"},
+{id:1037,r:"UR",n:"荀攸"},
+{id:1038,r:"UR",n:"徐晃"},
+{id:1039,r:"UR",n:"関銀屏"},
+{id:1040,r:"UR",n:"曹操"},
+{id:1041,r:"UR",n:"徐庶"},
+{id:1042,r:"UR",n:"典韋"},
+{id:1043,r:"UR",n:"公孫瓚"},
+{id:1044,r:"UR",n:"馬騰"},
+{id:1045,r:"UR",n:"陸抗"},
+{id:1046,r:"UR",n:"華雄"},
+{id:1047,r:"UR",n:"王元姫"},
+{id:1048,r:"UR",n:"魏延"},
+{id:1049,r:"UR",n:"甄氏"},
+{id:1050,r:"UR",n:"袁紹"},
+{id:1051,r:"UR",n:"顔良"},
+{id:1052,r:"UR",n:"文醜"},
+{id:1053,r:"UR",n:"鄧艾"},
+{id:1054,r:"UR",n:"鍾会"},
+{id:1055,r:"UR",n:"曹丕"},
+{id:1056,r:"UR",n:"黄月英"},
+{id:1057,r:"UR",n:"魯粛"},
+{id:1058,r:"UR",n:"于禁"},
+{id:1059,r:"UR",n:"諸葛恪"},
+{id:1060,r:"UR",n:"楽進"},
+{id:1061,r:"UR",n:"馬雲騄"},
+{id:1062,r:"UR",n:"孟獲"},
+{id:1063,r:"UR",n:"祝融"},
+{id:1064,r:"UR",n:"張苞"},
+{id:1065,r:"UR",n:"文鴦"},
+{id:1066,r:"UR",n:"黄蓋"},
+{id:1067,r:"UR",n:"曹仁"},
+{id:1068,r:"UR",n:"陳宮"},
+{id:1069,r:"UR",n:"王平"},
+{id:1070,r:"UR",n:"周倉"},
+{id:1071,r:"UR",n:"凌統"},
+{id:1072,r:"UR",n:"曹叡"},
+{id:1073,r:"UR",n:"蔡琰"},
+{id:1074,r:"UR",n:"程昱"},
+{id:1075,r:"UR",n:"関興"},
+{id:1076,r:"UR",n:"丁奉"},
+{id:1077,r:"UR",n:"曹洪"},
+{id:1078,r:"UR",n:"張紘"},
+{id:1079,r:"UR",n:"張昭"},
+{id:1080,r:"UR",n:"キルヒアイス"},
+{id:1081,r:"UR",n:"フレデリカ"},
+{id:1082,r:"UR",n:"張嶷"},
+{id:1083,r:"UR",n:"関索"},
+{id:1084,r:"UR",n:"王異"},
+{id:1085,r:"UR",n:"李典"},
+{id:1086,r:"UR",n:"程普"},
+{id:1087,r:"UR",n:"廖化"},
+{id:1088,r:"UR",n:"満寵"},
+{id:1089,r:"UR",n:"虞翻"},
+{id:1090,r:"UR",n:"諸葛瑾"},
+{id:1091,r:"UR",n:"張春華"},
+{id:1092,r:"UR",n:"曹真"},
+{id:1093,r:"UR",n:"馬謖"},
+{id:1094,r:"UR",n:"郝昭"},
+{id:1095,r:"UR",n:"朱然"},
+{id:1096,r:"UR",n:"孫魯班"},
+{id:1097,r:"UR",n:"鄭成功"},
+{id:1098,r:"UR",n:"高長恭"},
+{id:1099,r:"UR",n:"董白"},
+{id:1100,r:"UR",n:"岳飛"},
+{id:1101,r:"UR",n:"張宝"},
+{id:1102,r:"UR",n:"張梁"},
+{id:1103,r:"UR",n:"呉国太"},
+{id:1104,r:"UR",n:"司馬徽"},
+{id:1105,r:"UR",n:"辛憲英"},
+{id:1106,r:"UR",n:"厳顔"},
+{id:1107,r:"UR",n:"歩練師"},
+{id:1108,r:"UR",n:"鄒氏"},
+{id:2001,r:"SSR",n:"関羽"},
+{id:2002,r:"SSR",n:"姜維"},
+{id:2003,r:"SSR",n:"皇甫嵩"},
+{id:2004,r:"SSR",n:"司馬懿"},
+{id:2005,r:"SSR",n:"祝融"},
+{id:2006,r:"SSR",n:"周瑜"},
+{id:2007,r:"SSR",n:"諸葛亮"},
+{id:2008,r:"SSR",n:"徐晃"},
+{id:2009,r:"SSR",n:"曹操"},
+{id:2010,r:"SSR",n:"孫策"},
+{id:2011,r:"SSR",n:"張角"},
+{id:2012,r:"SSR",n:"張飛"},
+{id:2013,r:"SSR",n:"董卓"},
+{id:2014,r:"SSR",n:"孟獲"},
+{id:2015,r:"SSR",n:"陸遜"},
+{id:2016,r:"SSR",n:"呂布"},
+{id:3001,r:"SSR",n:"曹植"},
+{id:3002,r:"SSR",n:"朱桓"},
+{id:3003,r:"SSR",n:"韓遂"},
+{id:3004,r:"SSR",n:"高順"},
+{id:3005,r:"SSR",n:"馬良"},
+{id:3006,r:"SSR",n:"馬岱"},
+{id:3007,r:"SSR",n:"文聘"},
+{id:3008,r:"SSR",n:"沮授"},
+{id:3009,r:"SSR",n:"曹節"},
+{id:3010,r:"SSR",n:"劉曄"},
+{id:3011,r:"SSR",n:"張任"},
+{id:3012,r:"SSR",n:"盧植"},
+{id:3013,r:"SSR",n:"張氏"},
+{id:3014,r:"SSR",n:"夏侯氏"},
+{id:4001,r:"SSR",n:"賈詡"},
+{id:4002,r:"SSR",n:"郭嘉"},
+{id:4003,r:"SSR",n:"郝昭"},
+{id:4004,r:"SSR",n:"郭淮"},
+{id:4005,r:"SSR",n:"夏侯覇"},
+{id:4006,r:"SSR",n:"花鬘"},
+{id:4007,r:"SSR",n:"関興"},
+{id:4008,r:"SSR",n:"関索"},
+{id:4009,r:"SSR",n:"甘寧"},
+{id:4010,r:"SSR",n:"関平"},
+{id:4011,r:"SSR",n:"楽進"},
+{id:4012,r:"SSR",n:"厳顔"},
+{id:4013,r:"SSR",n:"黄蓋"},
+{id:4014,r:"SSR",n:"顧雍"},
+{id:4015,r:"SSR",n:"呉懿"},
+{id:4016,r:"SSR",n:"呉国太"},
+{id:4017,r:"SSR",n:"蔡琰"},
+{id:4018,r:"SSR",n:"左慈"},
+{id:4019,r:"SSR",n:"司馬徽"},
+{id:4020,r:"SSR",n:"司馬師"},
+{id:4021,r:"SSR",n:"司馬昭"},
+{id:4022,r:"SSR",n:"朱儁"},
+{id:4023,r:"SSR",n:"蔣琬"},
+{id:4024,r:"SSR",n:"蔣欽"},
+{id:4025,r:"SSR",n:"諸葛瑾"},
+{id:4026,r:"SSR",n:"徐庶"},
+{id:4027,r:"SSR",n:"周倉"},
+{id:4028,r:"SSR",n:"荀攸"},
+{id:4029,r:"SSR",n:"徐盛"},
+{id:4030,r:"SSR",n:"甄氏"},
+{id:4031,r:"SSR",n:"鄒氏"},
+{id:4032,r:"SSR",n:"曹彰"},
+{id:4033,r:"SSR",n:"曹真"},
+{id:4034,r:"SSR",n:"曹仁"},
+{id:4035,r:"SSR",n:"曹丕"},
+{id:4036,r:"SSR",n:"孫権"},
+{id:4037,r:"SSR",n:"趙雲"},
+{id:4038,r:"SSR",n:"張春華"},
+{id:4039,r:"SSR",n:"貂蝉"},
+{id:4040,r:"SSR",n:"張苞"},
+{id:4041,r:"SSR",n:"張遼"},
+{id:4042,r:"SSR",n:"陳宮"},
+{id:4043,r:"SSR",n:"程普"},
+{id:4044,r:"SSR",n:"典韋"},
+{id:4045,r:"SSR",n:"杜預"},
+{id:4046,r:"SSR",n:"馬超"},
+{id:4047,r:"SSR",n:"馬騰"},
+{id:4048,r:"SSR",n:"費禕"},
+{id:4049,r:"SSR",n:"龐統"},
+{id:4050,r:"SSR",n:"鮑三娘"},
+{id:4051,r:"SSR",n:"歩練師"},
+{id:4052,r:"SSR",n:"羊祜"},
+{id:4053,r:"SSR",n:"陸抗"},
+{id:4054,r:"SSR",n:"李厳"},
+{id:4055,r:"SSR",n:"李儒"},
+{id:4056,r:"SSR",n:"劉備"},
+{id:4057,r:"SSR",n:"凌統"},
+{id:4058,r:"SSR",n:"満寵"},
+{id:4059,r:"SSR",n:"張松"},
+{id:4060,r:"SSR",n:"管輅"},
+{id:4061,r:"SSR",n:"越吉"},
+{id:4062,r:"SSR",n:"兀突骨"},
+{id:4063,r:"SSR",n:"沙摩柯"},
+{id:4064,r:"SSR",n:"蹋頓"},
+{id:4065,r:"SSR",n:"潘臨"},
+{id:4066,r:"SSR",n:"軻比能"},
+{id:5001,r:"SSR",n:"于吉"},
+{id:5002,r:"SSR",n:"于禁"},
+{id:5003,r:"SSR",n:"王異"},
+{id:5004,r:"SSR",n:"王元姫"},
+{id:5005,r:"SSR",n:"王平"},
+{id:5006,r:"SSR",n:"夏侯淵"},
+{id:5007,r:"SSR",n:"夏侯惇"},
+{id:5008,r:"SSR",n:"何進"},
+{id:5009,r:"SSR",n:"華佗"},
+{id:5010,r:"SSR",n:"華雄"},
+{id:5011,r:"SSR",n:"顔良"},
+{id:5012,r:"SSR",n:"関銀屏"},
+{id:5013,r:"SSR",n:"魏延"},
+{id:5014,r:"SSR",n:"許褚"},
+{id:5015,r:"SSR",n:"黄月英"},
+{id:5016,r:"SSR",n:"公孫瓚"},
+{id:5017,r:"SSR",n:"黄忠"},
+{id:5018,r:"SSR",n:"周泰"},
+{id:5019,r:"SSR",n:"荀彧"},
+{id:5020,r:"SSR",n:"鍾会"},
+{id:5021,r:"SSR",n:"小喬"},
+{id:5022,r:"SSR",n:"諸葛恪"},
+{id:5023,r:"SSR",n:"孫堅"},
+{id:5024,r:"SSR",n:"孫尚香"},
+{id:5025,r:"SSR",n:"太史慈"},
+{id:5026,r:"SSR",n:"大喬"},
+{id:5027,r:"SSR",n:"張郃"},
+{id:5028,r:"SSR",n:"張紘"},
+{id:5029,r:"SSR",n:"張昭"},
+{id:5030,r:"SSR",n:"張宝"},
+{id:5031,r:"SSR",n:"張梁"},
+{id:5032,r:"SSR",n:"陳羣"},
+{id:5033,r:"SSR",n:"程昱"},
+{id:5034,r:"SSR",n:"田豊"},
+{id:5035,r:"SSR",n:"鄧艾"},
+{id:5036,r:"SSR",n:"馬雲騄"},
+{id:5037,r:"SSR",n:"文鴦"},
+{id:5038,r:"SSR",n:"文醜"},
+{id:5039,r:"SSR",n:"法正"},
+{id:5040,r:"SSR",n:"龐徳"},
+{id:5041,r:"SSR",n:"羊祜"},
+{id:5042,r:"SSR",n:"劉禅"},
+{id:5043,r:"SSR",n:"呂蒙"},
+{id:5044,r:"SSR",n:"呂玲綺"},
+{id:5045,r:"SSR",n:"魯粛"},
+{id:5046,r:"SSR",n:"丘力居"},
+{id:5047,r:"SSR",n:"強端"},
+{id:5048,r:"SSR",n:"徹里吉"},
+{id:5049,r:"SSR",n:"尤突"},
+{id:5050,r:"SSR",n:"歩度根"},
+{id:6001,r:"SR",n:"郝昭"},
+{id:6002,r:"SR",n:"楽進"},
+{id:6003,r:"SR",n:"郭淮"},
+{id:6004,r:"SR",n:"夏侯覇"},
+{id:6005,r:"SR",n:"関興"},
+{id:6006,r:"SR",n:"関索"},
+{id:6007,r:"SR",n:"関平"},
+{id:6008,r:"SR",n:"厳顔"},
+{id:6009,r:"SR",n:"呉懿"},
+{id:6010,r:"SR",n:"黄蓋"},
+{id:6011,r:"SR",n:"呉国体"},
+{id:6012,r:"SR",n:"顧雍"},
+{id:6013,r:"SR",n:"蔡琰"},
+{id:6014,r:"SR",n:"司馬師"},
+{id:6015,r:"SR",n:"司馬昭"},
+{id:6016,r:"SR",n:"蒋欽"},
+{id:6017,r:"SR",n:"諸葛瑾"},
+{id:6018,r:"SR",n:"徐盛"},
+{id:6019,r:"SR",n:"曹彰"},
+{id:6020,r:"SR",n:"曹植"},
+{id:6021,r:"SR",n:"曹真"},
+{id:6022,r:"SR",n:"曹仁"},
+{id:6023,r:"SR",n:"曹丕"},
+{id:6024,r:"SR",n:"張苞"},
+{id:6025,r:"SR",n:"陳宮"},
+{id:6026,r:"SR",n:"程普"},
+{id:6027,r:"SR",n:"杜預"},
+{id:6028,r:"SR",n:"満寵"},
+{id:6029,r:"SR",n:"李厳"},
+{id:6030,r:"SR",n:"李儒"},
+{id:6031,r:"SR",n:"凌統"},
+{id:6032,r:"SR",n:"韓遂"},
+{id:6033,r:"SR",n:"馬岱"},
+{id:6034,r:"SR",n:"烏延"},
+{id:6035,r:"SR",n:"雅丹"},
+{id:6036,r:"SR",n:"金環三結"},
+{id:6037,r:"SR",n:"泄帰泥"},
+{id:6038,r:"SR",n:"張雅"},
+{id:6039,r:"SR",n:"董荼那"},
+{id:6040,r:"SR",n:"杜濩"},
+{id:6041,r:"SR",n:"朴胡"},
+{id:6042,r:"SR",n:"迷当大王"},
+{id:6043,r:"SR",n:"楼班"},
+{id:6044,r:"R",n:"王允"},
+{id:6045,r:"R",n:"王双"},
+{id:6046,r:"R",n:"王平"},
+{id:6047,r:"R",n:"王朗"},
+{id:6048,r:"R",n:"華歆"},
+{id:6049,r:"R",n:"闞沢"},
+{id:6050,r:"R",n:"牛金"},
+{id:6051,r:"R",n:"紀霊"},
+{id:6052,r:"R",n:"虞翻"},
+{id:6053,r:"R",n:"黄権"},
+{id:6054,r:"R",n:"胡車児"},
+{id:6055,r:"R",n:"蔡瑁"},
+{id:6056,r:"R",n:"朱然"},
+{id:6057,r:"R",n:"鍾ヨウ"},
+{id:6058,r:"R",n:"審配"},
+{id:6059,r:"R",n:"曹洪"},
+{id:6060,r:"R",n:"曹純"},
+{id:6061,r:"R",n:"張繍"},
+{id:6062,r:"R",n:"張魯"},
+{id:6063,r:"R",n:"丁奉"},
+{id:6064,r:"R",n:"馬謖"},
+{id:6065,r:"R",n:"潘璋"},
+{id:6066,r:"R",n:"歩隲"},
+{id:6067,r:"R",n:"孟達"},
+{id:6068,r:"R",n:"李典"},
+{id:6069,r:"R",n:"凌操"},
+{id:6070,r:"R",n:"王同"},
+{id:6071,r:"R",n:"俄何焼戈"},
+{id:6072,r:"R",n:"奚泥"},
+{id:6073,r:"R",n:"黄乱"},
+{id:6074,r:"R",n:"骨進"},
+{id:6075,r:"R",n:"素利"},
+{id:6076,r:"R",n:"鄧凱"},
+{id:6077,r:"R",n:"土安"},
+{id:6078,r:"R",n:"費桟"},
+{id:6079,r:"R",n:"弥加"},
+{id:6080,r:"R",n:"文布"},
+{id:6081,r:"R",n:"劉冑"},
+{id:6082,r:"N",n:"郭汜"},
+{id:6083,r:"N",n:"夏侯恩"},
+{id:6084,r:"N",n:"夏侯楙"},
+{id:6085,r:"N",n:"簡雍"},
+{id:6086,r:"N",n:"許ユウ"},
+{id:6087,r:"N",n:"黄祖"},
+{id:6088,r:"N",n:"孔融"},
+{id:6089,r:"N",n:"手治"},
+{id:6090,r:"N",n:"淳于瓊"},
+{id:6091,r:"N",n:"曹休"},
+{id:6092,r:"N",n:"曹昂"},
+{id:6093,r:"N",n:"祖茂"},
+{id:6094,r:"N",n:"陳矯"},
+{id:6095,r:"N",n:"潘鳳"},
+{id:6096,r:"N",n:"武安国"},
+{id:6097,r:"N",n:"下喜"},
+{id:6098,r:"N",n:"楊シュウ"},
+{id:6099,r:"N",n:"李確"},
+{id:6100,r:"N",n:"劉封"},
+{id:6101,r:"N",n:"廖化"}
+];
+
+const RARITY_ORDER = ['LR','UR','SSR','SR','R','N'];
+let results = [];
+let showOnlyMissing = false;
+
+function checkImage(url) {
+    return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
+}
+
+async function runCheck() {
+    const prog = document.getElementById('progress');
+    const btn = document.querySelector('button');
+    btn.disabled = true;
+    results = [];
+    
+    for (let i = 0; i < GENERALS.length; i++) {
+        const g = GENERALS[i];
+        const path = `./icons/generals/${g.r}/${g.r}${g.n}.png`;
+        prog.textContent = `チェック中... ${i+1}/${GENERALS.length} (${g.r} ${g.n})`;
+        const ok = await checkImage(path);
+        results.push({ ...g, path, ok });
+    }
+    
+    prog.textContent = 'チェック完了';
+    btn.disabled = false;
+    document.getElementById('filterBar').style.display = 'flex';
+    renderResults();
+}
+
+function renderResults() {
+    const container = document.getElementById('results');
+    const summary = document.getElementById('summary');
+    summary.style.display = 'block';
+    
+    const total = results.length;
+    const okCount = results.filter(r => r.ok).length;
+    const ngCount = total - okCount;
+    
+    // Rarity breakdown
+    let breakdown = RARITY_ORDER.map(r => {
+        const all = results.filter(x => x.r === r);
+        const ng = all.filter(x => !x.ok);
+        return `${r}: <span class="${ng.length > 0 ? 'ng' : 'ok'}">${all.length - ng.length}/${all.length}</span>`;
+    }).join(' / ');
+    
+    summary.innerHTML = `
+        合計: <span class="ok">${okCount}件 OK</span> / <span class="ng">${ngCount}件 不足</span> （全${total}件）<br>
+        ${breakdown}
+    `;
+    
+    let html = '';
+    for (const r of RARITY_ORDER) {
+        const items = results.filter(x => x.r === r);
+        const filtered = showOnlyMissing ? items.filter(x => !x.ok) : items;
+        if (filtered.length === 0) continue;
+        
+        const ngCount = items.filter(x => !x.ok).length;
+        html += `<div class="rarity-section">`;
+        html += `<div class="rarity-title">${r} (${ngCount > 0 ? ngCount + '件不足' : '全件OK'})</div>`;
+        html += `<div class="grid">`;
+        for (const item of filtered) {
+            if (item.ok) {
+                html += `<div class="item ok"><img src="${item.path}">${item.n}</div>`;
+            } else {
+                html += `<div class="item ng"><div class="placeholder">✕</div>${item.n}</div>`;
+            }
+        }
+        html += `</div></div>`;
+    }
+    container.innerHTML = html;
+}
+
+function filterAll(btn) {
+    showOnlyMissing = false;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderResults();
+}
+
+function filterMissing(btn) {
+    showOnlyMissing = true;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderResults();
+}
+</script>
+</body>
+</html>
