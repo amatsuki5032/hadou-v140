@@ -99,6 +99,27 @@ hadou-v140/
 - Firebase操作は必ず try-catch で囲む
 - エラーはユーザー向けに画面表示する（console.logだけで終わらない）
 
+## ドキュメント
+
+- docs/覇道ルール定義書.md — ゲーム仕様
+- docs/覇道DB定義書_v3.md — データ構造・ETLパイプライン
+- docs/覇道アプリ設計書_v1.md — アプリ設計・実装状況
+
+作業前にこれらを確認すること。
+
+## 自動生成ファイル（直接編集禁止）
+
+以下はETLスクリプト（tools/）で生成されるため直接編集しない:
+- data-generals.js
+- data-skill-db.js
+- data-all-treasures.js
+- data-research.js
+- data-survey.js
+- data-horse-skills.js
+- data-treasure-forge.js
+
+構造の詳細は docs/覇道DB定義書_v3.md を参照。
+
 ## 判断基準
 
 セキュリティ ＞ 可読性 ＞ UI美観 ＞ 実装速度
