@@ -928,6 +928,7 @@ function FormationsArea({
                                                         <div className="param-row" style={{borderBottom: '1px solid var(--border-light)', paddingBottom: '2px', marginBottom: '2px'}}>
                                                             <span style={{fontSize: '9px', color: 'var(--text-muted)'}}>
                                                                 {fStats.formationName} / 参軍Lv10
+                                                                {data.treasures && Object.values(data.treasures).some(t => t != null) && ' / 名宝'}
                                                                 {(fStats.horse?.attack > 0 || fStats.horse?.defense > 0 || fStats.horse?.intelligence > 0) && ' / 軍馬'}
                                                                 {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
                                                             </span>
