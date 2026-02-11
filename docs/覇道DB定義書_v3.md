@@ -481,8 +481,8 @@ Excel → Python/Claude ETL → JS → GitHub Pages
 | 6 | 将星補正の☆ランク別配分 | 中 | 現在は均等割り。実際の配分は未確認 |
 | 7 | SR/R/N天賦テーブル | 低 | 650/550/500は推定値。検証未実施 |
 | 8 | ~~プロファイルシステム基本実装~~ | ~~高~~ | ✅ v1.50で実装済み（研究/調査/軍馬タブ + localStorage保存） |
-| 9 | 旧data-skill-effects.js / data-combat-parameters.js 廃止 | 低 | calc-engine.jsがSKILL_DB参照に移行済みのため不要。削除可 |
-| 10 | 参軍ステータス計算ロジック | 高 | UI有・calc-engineに収集ロジック無。参軍レベル(0-10)の概念整理済み |
+| 9 | ~~旧data-skill-effects.js / data-combat-parameters.js 廃止~~ | ~~低~~ | ✅ 廃止完了。ファイル・scriptタグ・コード参照すべて削除済み |
+| 10 | ~~参軍ステータス計算ロジック~~ | ~~高~~ | ✅ 完了。stat-calculator.js の calcAdvisorContribution() で実装済み（Lv10固定） |
 | 11 | 名宝ステータス加算 | 高 | data-treasure-forge.js生成済み。計算ロジック未実装 |
 | 12 | 武将育成プロファイル | 中 | Lv/Grade/☆/五行/参軍Lvの個別管理。設計書作成済み。Lv/Grade/☆のUI実装済み |
 | 13 | stat-calculator統合 | 中 | 調査・軍馬は反映済み。研究の効果を部隊ステータスに反映する計算ロジックが未実装 |
