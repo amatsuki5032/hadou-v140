@@ -2508,3 +2508,4 @@ const { useState, useEffect } = React;
     }
     
     ReactDOM.render(<App />, document.getElementById('root'));
+    document.getElementById('loading-screen')?.remove();

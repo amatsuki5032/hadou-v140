@@ -4,47 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>三國志覇道 編制管理アプリ v1.50</title>
+
+    <!-- CDN接続を先行 -->
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
+    <!-- スタイルを最優先で読み込み -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ローディング表示用（app.jsレンダリング完了で消える） -->
+    <style>
+        #loading-screen {
+            position: fixed; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: #09090c; color: #606478;
+            font-family: -apple-system, 'Noto Sans JP', sans-serif;
+            font-size: 14px; z-index: 9999;
+        }
+        #loading-screen .spinner {
+            width: 20px; height: 20px; margin-right: 10px;
+            border: 2px solid #1c1c24; border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+
+    <!-- React/Babel -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.24.0/babel.min.js"></script>
 
-    <!-- データファイル -->
-    <script src="data-generals.js"></script>
-    <script src="data-all-treasures.js"></script>
-    <script src="data-skill-db.js"></script>
-    <script src="data-research.js"></script>
-    <script src="data-survey.js"></script>
-    <script src="data-horse-skills.js"></script>
-    <script src="data-treasure-forge.js"></script>
+    <!-- データファイル（defer: HTMLパースをブロックしない） -->
+    <script defer src="data-generals.js"></script>
+    <script defer src="data-all-treasures.js"></script>
+    <script defer src="data-skill-db.js"></script>
+    <script defer src="data-research.js"></script>
+    <script defer src="data-survey.js"></script>
+    <script defer src="data-horse-skills.js"></script>
+    <script defer src="data-treasure-forge.js"></script>
 
-    <!-- エンジン・ユーティリティ -->
-    <script src="skill-conditions.js"></script>
-    <script src="data-profile.js"></script>
-    <script src="config.js"></script>
-    <script src="utils.js"></script>
-    <script src="calc-engine.js"></script>
-    <script src="stat-calculator.js"></script>
+    <!-- エンジン・ユーティリティ（defer） -->
+    <script defer src="skill-conditions.js"></script>
+    <script defer src="data-profile.js"></script>
+    <script defer src="config.js"></script>
+    <script defer src="utils.js"></script>
+    <script defer src="calc-engine.js"></script>
+    <script defer src="stat-calculator.js"></script>
 
-    <!-- ハンドラ -->
-    <script src="handlers-dnd.js"></script>
-    <script src="handlers-template.js"></script>
-    <script src="data-io.js"></script>
+    <!-- ハンドラ（defer） -->
+    <script defer src="handlers-dnd.js"></script>
+    <script defer src="handlers-template.js"></script>
+    <script defer src="data-io.js"></script>
 
-    <!-- UIコンポーネント -->
+    <!-- UIコンポーネント（Babel処理） -->
     <script type="text/babel" src="components-modals.js"></script>
     <script type="text/babel" src="components-panels.js"></script>
     <script type="text/babel" src="components-rank.js"></script>
     <script type="text/babel" src="components-profile.js"></script>
     <script type="text/babel" src="components-formations.js"></script>
-
-    <!-- スタイル -->
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        読み込み中...
+    </div>
     <div id="root"></div>
 
     <!-- メインアプリ -->
     <script type="text/babel" src="app.js"></script>
-    <script src="updateHistory.js"></script>
+    <script defer src="updateHistory.js"></script>
 </body>
 </html>
