@@ -394,6 +394,21 @@ const { useState, useEffect } = React;
             // 画像URL設定
             const [showImageSettings, setShowImageSettings] = useState(false);
             const [showStatDetail, setShowStatDetail] = useState(false);
+            
+            // テーマ切り替え（ダーク/ライト）
+            const [theme, setTheme] = useState(() => {
+                return localStorage.getItem('hadou-theme') || 'dark';
+            });
+            useEffect(() => {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+                localStorage.setItem('hadou-theme', theme);
+            }, [theme]);
+            const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+            
             const [imageUrls, setImageUrls] = useState({});
             const [showImages, setShowImages] = useState(() => {
                 const saved = localStorage.getItem('showImages');
@@ -1722,6 +1737,21 @@ const { useState, useEffect } = React;
                                 title={showImages ? '画像を非表示' : '画像を表示'}
                             >
                                 {showImages ? '🖼️' : '🖼️'}
+                            </button>
+                            <button
+                                onClick={toggleTheme}
+                                style={{
+                                    padding: '8px 12px',
+                                    background: 'transparent',
+                                    border: '1px solid var(--border-light)',
+                                    borderRadius: '4px',
+                                    color: 'var(--text-muted)',
+                                    cursor: 'pointer',
+                                    fontSize: '14px',
+                                }}
+                                title={theme === 'dark' ? 'ライトモードに切替' : 'ダークモードに切替'}
+                            >
+                                {theme === 'dark' ? '☀️' : '🌙'}
                             </button>
                             <button
                                 className={`tab-button ${viewMode === 'formation' ? 'active' : ''}`}
