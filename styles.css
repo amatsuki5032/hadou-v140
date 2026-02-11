@@ -1445,16 +1445,16 @@
 }
 
 .combat-params-content {
-    padding: 8px;
+    padding: 4px 6px;
 }
 
 .param-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 0;
+    gap: 4px;
+    padding: 1px 0;
     border-bottom: 1px solid var(--border-base);
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .param-row:last-child {
@@ -1467,15 +1467,15 @@
 
 .param-label {
     flex: 1;
-    font-size: 13px;
+    font-size: 11px;
     color: var(--text-secondary);
 }
 
 .param-value {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     color: var(--text-primary);
-    min-width: 60px;
+    min-width: 55px;
     text-align: right;
 }
 
