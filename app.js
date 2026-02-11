@@ -393,6 +393,7 @@ const { useState, useEffect } = React;
             const [showHelpModal, setShowHelpModal] = useState(false);
             // 画像URL設定
             const [showImageSettings, setShowImageSettings] = useState(false);
+            const [showStatDetail, setShowStatDetail] = useState(false);
             const [imageUrls, setImageUrls] = useState({});
             const [showImages, setShowImages] = useState(() => {
                 const saved = localStorage.getItem('showImages');
@@ -2253,6 +2254,8 @@ const { useState, useEffect } = React;
                             getTreasureForgeRank={getTreasureForgeRank}
                             isTreasureUR={isTreasureUR}
                             calcCombatParams={calcCombatParams}
+                            showStatDetail={showStatDetail}
+                            setShowStatDetail={setShowStatDetail}
                             calcFormationStats={calcFormationStats}
                             calcSkillEffects={calcSkillEffects}
                             ItemImage={ItemImage}

@@ -7,6 +7,7 @@
 function FormationsArea({
     currentFormations, treasures, collapsedFormations,
     showImages, showSkillEffects, setShowSkillEffects,
+    showStatDetail, setShowStatDetail,
     recommendTargetFormation, setRecommendTargetFormation,
     selectedForMove, setSelectedForMove, handleClickMove,
     // ハンドラ
@@ -840,6 +841,23 @@ function FormationsArea({
                         
                         {/* 部隊ステータス・パラメータ統合パネル */}
                         <div className="combat-parameters-panel">
+                            <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '2px'}}>
+                                <button
+                                    onClick={() => setShowStatDetail(!showStatDetail)}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: showStatDetail ? 'var(--accent)' : 'var(--text-muted)',
+                                        fontSize: '9px',
+                                        cursor: 'pointer',
+                                        padding: '0 2px',
+                                        opacity: showStatDetail ? 1 : 0.6,
+                                    }}
+                                    title="ステータス内訳を表示"
+                                >
+                                    {showStatDetail ? '内訳 ▲' : '内訳 ▼'}
+                                </button>
+                            </div>
                             <div className="combat-params-content">
                                 {(() => {
                                     const fStats = typeof calcFormationStats === 'function' ? calcFormationStats(key) : null;
@@ -855,10 +873,31 @@ function FormationsArea({
                                                         { label: '防御', key: 'defense',      color: 'var(--danger, #dc2626)' },
                                                         { label: '知力', key: 'intelligence', color: 'var(--accent, #2563eb)' },
                                                     ].map(row => {
+                                                        const finalVal = fStats.withSkills[row.key];
+                                                        
+                                                        if (!showStatDetail) {
+                                                            // 通常モード: 最終値のみ
+                                                            return (
+                                                                <div key={row.key} className="param-row">
+                                                                    <span className="param-label" style={{color: row.color, fontWeight: 'bold'}}>
+                                                                        {row.label}:
+                                                                    </span>
+                                                                    <span style={{
+                                                                        color: 'var(--text-primary)',
+                                                                        fontWeight: 'bold',
+                                                                        fontFamily: 'monospace',
+                                                                        fontSize: '13px'
+                                                                    }}>
+                                                                        {finalVal.toLocaleString()}
+                                                                    </span>
+                                                                </div>
+                                                            );
+                                                        }
+                                                        
+                                                        // 詳細モード: 内訳表示
                                                         const baseVal = fStats.base[row.key];
                                                         const advVal = fStats.advisor ? (fStats.advisor[row.key] || 0) : 0;
                                                         const horseVal = fStats.horse ? (fStats.horse[row.key] || 0) : 0;
-                                                        const finalVal = fStats.withSkills[row.key];
                                                         const pctBonus = (fStats.bonuses?.pct?.[row.key]) || 0;
                                                         const profilePct = (fStats.profileBonuses?.pct?.[row.key]) || 0;
                                                         const totalPct = pctBonus + profilePct;
@@ -885,13 +924,15 @@ function FormationsArea({
                                                             </div>
                                                         );
                                                     })}
-                                                    <div className="param-row" style={{borderBottom: '1px solid var(--border-light)', paddingBottom: '2px', marginBottom: '2px'}}>
-                                                        <span style={{fontSize: '9px', color: 'var(--text-muted)'}}>
-                                                            {fStats.formationName} / 参軍Lv10
-                                                            {(fStats.horse?.attack > 0 || fStats.horse?.defense > 0 || fStats.horse?.intelligence > 0) && ' / 軍馬'}
-                                                            {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
-                                                        </span>
-                                                    </div>
+                                                    {showStatDetail && (
+                                                        <div className="param-row" style={{borderBottom: '1px solid var(--border-light)', paddingBottom: '2px', marginBottom: '2px'}}>
+                                                            <span style={{fontSize: '9px', color: 'var(--text-muted)'}}>
+                                                                {fStats.formationName} / 参軍Lv10
+                                                                {(fStats.horse?.attack > 0 || fStats.horse?.defense > 0 || fStats.horse?.intelligence > 0) && ' / 軍馬'}
+                                                                {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </>
                                             )}
                                             {params && (
