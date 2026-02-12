@@ -131,3 +131,8 @@ hadou-v140/
 ## 判断基準
 
 セキュリティ ＞ 可読性 ＞ UI美観 ＞ 実装速度
+
+## Git ワークフロー
+- 作業はmainブランチで行う（git checkout main && git pull origin main）
+- コミット後、ブランチを作成してプッシュ
+- PRの作成とマージ:
