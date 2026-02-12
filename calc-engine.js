@@ -254,7 +254,8 @@ function calculateSkillEffects(formation, getStarRankFn) {
 
     const targetParams = ['攻撃速度', '会心発生', '戦法速度'];
     const results = {};
-    targetParams.forEach(param => results[param] = 0);
+    const details = {};
+    targetParams.forEach(param => { results[param] = 0; details[param] = []; });
 
     const entries = collectSkillEntries(formation, getStarRankFn);
     const treasureEntries = collectTreasureSkillEntries(formation);
@@ -294,11 +295,23 @@ function calculateSkillEffects(formation, getStarRankFn) {
                 const val = eff.levels[levelKey];
                 if (typeof val === 'number') {
                     results[eff.effect] += val;
+                    details[eff.effect].push({
+                        skillName: skillName,
+                        value: val,
+                        level: effectiveLevel,
+                        condition: eff.condition || '常に',
+                    });
                 }
             }
         }
     }
 
+    // 効果値の降順でソート
+    targetParams.forEach(param => {
+        details[param].sort((a, b) => b.value - a.value);
+    });
+
+    results._details = details;
     return results;
 }
 
