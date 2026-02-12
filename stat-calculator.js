@@ -378,6 +378,54 @@ function calcSurveyBonuses(profileConfig) {
     return { pct: pctBonuses, params: paramBonuses };
 }
 
+// === 研究効果ボーナス ===
+
+/**
+ * 研究による%ボーナスを計算する（基礎ステータス4項目のみ）
+ * M研究は常時有効、専攻中の分野のみ有効
+ * @param {Object} profileConfig - プロファイル設定（profileConfig.research）
+ * @returns {Object} { pct: {attack,defense,intelligence,hp} }
+ */
+function calcResearchBonuses(profileConfig) {
+    const pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
+    const research = profileConfig?.research;
+    if (!research || typeof RESEARCH_DATA === 'undefined') return { pct: pctBonuses };
+
+    const STAT_MAP = { '攻撃': 'attack', '防御': 'defense', '知力': 'intelligence', '兵力': 'hp' };
+
+    // 有効な分野を決定（序論は常時有効 + 各カテゴリの専攻選択）
+    const specs = research.specializations || {};
+    const activeFields = new Set(['序論', specs.city, specs.troop, specs.fourth].filter(Boolean));
+
+    const items = research.items || {};
+
+    for (const resItem of RESEARCH_DATA) {
+        // M研究は常時有効、それ以外は専攻中の分野のみ
+        if (!resItem.isMaster && !activeFields.has(resItem.field)) continue;
+
+        // UIと同じキー形式でsaved値を取得
+        const key = `${resItem.field}:${resItem.name}`;
+        const saved = items[key];
+        if (!saved || !saved.unlocked || !saved.value) continue;
+
+        // ユーザー入力値（%）を小数に変換
+        const valueDec = saved.value / 100;
+
+        // 同一アイテム内の重複エフェクトを排除
+        const applied = new Set();
+        for (const eff of (resItem.effects || [])) {
+            if (eff.type2 !== '基礎') continue;
+            const statKey = STAT_MAP[eff.effect];
+            if (statKey && !applied.has(statKey)) {
+                pctBonuses[statKey] += valueDec;
+                applied.add(statKey);
+            }
+        }
+    }
+
+    return { pct: pctBonuses };
+}
+
 // === 軍馬技能の%ボーナス ===
 
 /**
@@ -500,12 +548,15 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     // 調査ボーナス（%値）
     const surveyBonus = calcSurveyBonuses(profileConfig);
 
+    // 研究ボーナス（%値）
+    const researchBonus = calcResearchBonuses(profileConfig);
+
     // プロファイル系%ボーナスを合算
     const profilePct = {
-        attack: horseSkillBonus.pct.attack + surveyBonus.pct.attack,
-        defense: horseSkillBonus.pct.defense + surveyBonus.pct.defense,
-        intelligence: horseSkillBonus.pct.intelligence + surveyBonus.pct.intelligence,
-        hp: horseSkillBonus.pct.hp + surveyBonus.pct.hp,
+        attack: horseSkillBonus.pct.attack + surveyBonus.pct.attack + researchBonus.pct.attack,
+        defense: horseSkillBonus.pct.defense + surveyBonus.pct.defense + researchBonus.pct.defense,
+        intelligence: horseSkillBonus.pct.intelligence + surveyBonus.pct.intelligence + researchBonus.pct.intelligence,
+        hp: horseSkillBonus.pct.hp + surveyBonus.pct.hp + researchBonus.pct.hp,
     };
 
     // パラメータボーナスを合算
@@ -543,7 +594,7 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
         advisor: advisorBonus,
         // 軍馬ステータス加算（固定値）
         horse: horseStatBonus,
-        // 技能加算後（基礎+参軍+軍馬 に技能%+調査%+軍馬技能% 適用 + 固定値）
+        // 技能加算後（基礎+参軍+軍馬 に技能%+調査%+軍馬技能%+研究% 適用 + 固定値）
         withSkills: {
             attack: Math.floor(baseWithAll.attack * (1 + totalPct.attack)) + fixBonuses.attack,
             defense: Math.floor(baseWithAll.defense * (1 + totalPct.defense)) + fixBonuses.defense,
@@ -551,8 +602,10 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
         },
         // 技能ボーナス詳細
         bonuses: { pct: pctBonuses, fix: fixBonuses },
-        // プロファイルボーナス詳細（調査+軍馬技能の%合計）
+        // プロファイルボーナス詳細（調査+軍馬技能+研究の%合計）
         profileBonuses: { pct: profilePct, params: profileParams },
+        // 研究ボーナス詳細（UI表示用）
+        research: researchBonus.pct,
         // メンバー個別ステータス
         memberStats: base.memberStats,
         // 陣形情報

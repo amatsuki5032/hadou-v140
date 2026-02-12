@@ -485,4 +485,4 @@ Excel → Python/Claude ETL → JS → GitHub Pages
 | 10 | ~~参軍ステータス計算ロジック~~ | ~~高~~ | ✅ 完了。stat-calculator.js の calcAdvisorContribution() で実装済み（Lv10固定） |
 | 11 | ~~名宝ステータス加算~~ | ~~高~~ | ✅ 完了。calc-engine.js の buildAllEntries() + collectTreasureSkillEntries() で実装。☆0・通常固定 |
 | 12 | 武将育成プロファイル | 中 | Lv/Grade/☆/五行/参軍Lvの個別管理。設計書作成済み。Lv/Grade/☆のUI実装済み |
-| 13 | stat-calculator統合 | 中 | 調査・軍馬は反映済み。研究の効果を部隊ステータスに反映する計算ロジックが未実装 |
+| 13 | ~~stat-calculator統合~~ | ~~中~~ | ✅ 完了。調査・軍馬・研究すべて反映済み。研究はcalcResearchBonuses()で基礎4項目（攻撃/防御/知力/兵力）の%ボーナスを計算 |
