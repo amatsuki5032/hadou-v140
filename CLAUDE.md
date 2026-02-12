@@ -136,3 +136,7 @@ hadou-v140/
 - 作業はmainブランチで行う（git checkout main && git pull origin main）
 - コミット後、ブランチを作成してプッシュ
 - PRの作成とマージ:
+gh pr create --fill --base main
+gh pr merge --merge --delete-branch
+git checkout main && git pull origin main
+- 上記を毎回のコミット後に自動で実行すること
