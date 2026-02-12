@@ -417,6 +417,145 @@ function FormationsArea({
                                     return lines;
                                 })()}
                             </svg>
+
+                        {/* 部隊ステータス・パラメータ統合パネル */}
+                        <div className="combat-parameters-panel">
+                            <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '2px'}}>
+                                <button
+                                    onClick={() => setShowStatDetail(!showStatDetail)}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: showStatDetail ? 'var(--accent)' : 'var(--text-muted)',
+                                        fontSize: '9px',
+                                        cursor: 'pointer',
+                                        padding: '0 2px',
+                                        opacity: showStatDetail ? 1 : 0.6,
+                                    }}
+                                    title="ステータス内訳を表示"
+                                >
+                                    {showStatDetail ? '内訳 ▲' : '内訳 ▼'}
+                                </button>
+                            </div>
+                            <div className="combat-params-content">
+                                {(() => {
+                                    const fStats = typeof calcFormationStats === 'function' ? calcFormationStats(key) : null;
+                                    const params = calcCombatParams(key);
+                                    if (!fStats && !params) return <div className="no-data">データなし</div>;
+
+                                    return (
+                                        <>
+                                            {fStats && (
+                                                <>
+                                                    {[
+                                                        { label: '攻撃', key: 'attack',       color: 'var(--stat-attack, #ef4444)' },
+                                                        { label: '防御', key: 'defense',      color: 'var(--danger, #dc2626)' },
+                                                        { label: '知力', key: 'intelligence', color: 'var(--accent, #2563eb)' },
+                                                    ].map(row => {
+                                                        const finalVal = fStats.withSkills[row.key];
+
+                                                        if (!showStatDetail) {
+                                                            // 通常モード: 最終値のみ
+                                                            return (
+                                                                <div key={row.key} className="param-row">
+                                                                    <span className="param-label" style={{color: row.color, fontWeight: 'bold'}}>
+                                                                        {row.label}:
+                                                                    </span>
+                                                                    <span style={{
+                                                                        color: 'var(--text-primary)',
+                                                                        fontWeight: 'bold',
+                                                                        fontFamily: 'monospace',
+                                                                        fontSize: '13px'
+                                                                    }}>
+                                                                        {finalVal.toLocaleString()}
+                                                                    </span>
+                                                                </div>
+                                                            );
+                                                        }
+
+                                                        // 詳細モード: 内訳表示
+                                                        const baseVal = fStats.base[row.key];
+                                                        const advVal = fStats.advisor ? (fStats.advisor[row.key] || 0) : 0;
+                                                        const horseVal = fStats.horse ? (fStats.horse[row.key] || 0) : 0;
+                                                        const pctBonus = (fStats.bonuses?.pct?.[row.key]) || 0;
+                                                        const profilePct = (fStats.profileBonuses?.pct?.[row.key]) || 0;
+                                                        const totalPct = pctBonus + profilePct;
+
+                                                        return (
+                                                            <div key={row.key} className="param-row">
+                                                                <span className="param-label" style={{color: row.color, fontWeight: 'bold'}}>
+                                                                    {row.label}:
+                                                                </span>
+                                                                <span style={{
+                                                                    color: 'var(--text-primary)',
+                                                                    fontWeight: 'bold',
+                                                                    fontFamily: 'monospace',
+                                                                    fontSize: '13px'
+                                                                }}>
+                                                                    {finalVal.toLocaleString()}
+                                                                </span>
+                                                                <span style={{color: 'var(--text-muted)', fontSize: '9px'}}>
+                                                                    ({baseVal.toLocaleString()}
+                                                                    {advVal > 0 && <span style={{color: 'var(--success, #22c55e)'}}>+{advVal}</span>}
+                                                                    {horseVal > 0 && <span style={{color: '#a78bfa'}}>+{horseVal}</span>}
+                                                                    {totalPct > 0 && <span style={{color: 'var(--accent)'}}>+{(totalPct * 100).toFixed(0)}%</span>})
+                                                                </span>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                    {showStatDetail && (
+                                                        <div className="param-row" style={{borderBottom: '1px solid var(--border-light)', paddingBottom: '2px', marginBottom: '2px'}}>
+                                                            <span style={{fontSize: '9px', color: 'var(--text-muted)'}}>
+                                                                {fStats.formationName} / 参軍Lv10
+                                                                {data.treasures && Object.values(data.treasures).some(t => t != null) && ' / 名宝'}
+                                                                {(fStats.horse?.attack > 0 || fStats.horse?.defense > 0 || fStats.horse?.intelligence > 0) && ' / 軍馬'}
+                                                                {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
+                                            {params && (
+                                                <>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">⚡</span>
+                                                        <span className="param-label">出陣ゲージ:</span>
+                                                        <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">🎯</span>
+                                                        <span className="param-label">戦法速度:</span>
+                                                        <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">🛡️</span>
+                                                        <span className="param-label">致死耐性:</span>
+                                                        <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
+                                                            {params.lethalResist ? 'ON' : 'OFF'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">⏱️</span>
+                                                        <span className="param-label">戦法短縮:</span>
+                                                        <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">⚔️</span>
+                                                        <span className="param-label">攻撃速度:</span>
+                                                        <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-icon">💥</span>
+                                                        <span className="param-label">会心発生:</span>
+                                                        <span className="param-value">+{params.critical.toFixed(1)}%</span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </>
+                                    );
+                                })()}
+                            </div>
+                        </div>
                         </div>
                         
                         {/* 右：編制枠 */}
@@ -836,144 +975,6 @@ function FormationsArea({
                                         </React.Fragment>
                                     );
                                 })}
-                            </div>
-                        </div>
-                        
-                        {/* 部隊ステータス・パラメータ統合パネル */}
-                        <div className="combat-parameters-panel">
-                            <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '2px'}}>
-                                <button
-                                    onClick={() => setShowStatDetail(!showStatDetail)}
-                                    style={{
-                                        background: 'transparent',
-                                        border: 'none',
-                                        color: showStatDetail ? 'var(--accent)' : 'var(--text-muted)',
-                                        fontSize: '9px',
-                                        cursor: 'pointer',
-                                        padding: '0 2px',
-                                        opacity: showStatDetail ? 1 : 0.6,
-                                    }}
-                                    title="ステータス内訳を表示"
-                                >
-                                    {showStatDetail ? '内訳 ▲' : '内訳 ▼'}
-                                </button>
-                            </div>
-                            <div className="combat-params-content">
-                                {(() => {
-                                    const fStats = typeof calcFormationStats === 'function' ? calcFormationStats(key) : null;
-                                    const params = calcCombatParams(key);
-                                    if (!fStats && !params) return <div className="no-data">データなし</div>;
-                                    
-                                    return (
-                                        <>
-                                            {fStats && (
-                                                <>
-                                                    {[
-                                                        { label: '攻撃', key: 'attack',       color: 'var(--stat-attack, #ef4444)' },
-                                                        { label: '防御', key: 'defense',      color: 'var(--danger, #dc2626)' },
-                                                        { label: '知力', key: 'intelligence', color: 'var(--accent, #2563eb)' },
-                                                    ].map(row => {
-                                                        const finalVal = fStats.withSkills[row.key];
-                                                        
-                                                        if (!showStatDetail) {
-                                                            // 通常モード: 最終値のみ
-                                                            return (
-                                                                <div key={row.key} className="param-row">
-                                                                    <span className="param-label" style={{color: row.color, fontWeight: 'bold'}}>
-                                                                        {row.label}:
-                                                                    </span>
-                                                                    <span style={{
-                                                                        color: 'var(--text-primary)',
-                                                                        fontWeight: 'bold',
-                                                                        fontFamily: 'monospace',
-                                                                        fontSize: '13px'
-                                                                    }}>
-                                                                        {finalVal.toLocaleString()}
-                                                                    </span>
-                                                                </div>
-                                                            );
-                                                        }
-                                                        
-                                                        // 詳細モード: 内訳表示
-                                                        const baseVal = fStats.base[row.key];
-                                                        const advVal = fStats.advisor ? (fStats.advisor[row.key] || 0) : 0;
-                                                        const horseVal = fStats.horse ? (fStats.horse[row.key] || 0) : 0;
-                                                        const pctBonus = (fStats.bonuses?.pct?.[row.key]) || 0;
-                                                        const profilePct = (fStats.profileBonuses?.pct?.[row.key]) || 0;
-                                                        const totalPct = pctBonus + profilePct;
-                                                        
-                                                        return (
-                                                            <div key={row.key} className="param-row">
-                                                                <span className="param-label" style={{color: row.color, fontWeight: 'bold'}}>
-                                                                    {row.label}:
-                                                                </span>
-                                                                <span style={{
-                                                                    color: 'var(--text-primary)',
-                                                                    fontWeight: 'bold',
-                                                                    fontFamily: 'monospace',
-                                                                    fontSize: '13px'
-                                                                }}>
-                                                                    {finalVal.toLocaleString()}
-                                                                </span>
-                                                                <span style={{color: 'var(--text-muted)', fontSize: '9px'}}>
-                                                                    ({baseVal.toLocaleString()}
-                                                                    {advVal > 0 && <span style={{color: 'var(--success, #22c55e)'}}>+{advVal}</span>}
-                                                                    {horseVal > 0 && <span style={{color: '#a78bfa'}}>+{horseVal}</span>}
-                                                                    {totalPct > 0 && <span style={{color: 'var(--accent)'}}>+{(totalPct * 100).toFixed(0)}%</span>})
-                                                                </span>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                    {showStatDetail && (
-                                                        <div className="param-row" style={{borderBottom: '1px solid var(--border-light)', paddingBottom: '2px', marginBottom: '2px'}}>
-                                                            <span style={{fontSize: '9px', color: 'var(--text-muted)'}}>
-                                                                {fStats.formationName} / 参軍Lv10
-                                                                {(fStats.horse?.attack > 0 || fStats.horse?.defense > 0 || fStats.horse?.intelligence > 0) && ' / 軍馬'}
-                                                                {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </>
-                                            )}
-                                            {params && (
-                                                <>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⚡</span>
-                                                        <span className="param-label">出陣ゲージ:</span>
-                                                        <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">🎯</span>
-                                                        <span className="param-label">戦法速度:</span>
-                                                        <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">🛡️</span>
-                                                        <span className="param-label">致死耐性:</span>
-                                                        <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
-                                                            {params.lethalResist ? 'ON' : 'OFF'}
-                                                        </span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⏱️</span>
-                                                        <span className="param-label">戦法短縮:</span>
-                                                        <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⚔️</span>
-                                                        <span className="param-label">攻撃速度:</span>
-                                                        <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">💥</span>
-                                                        <span className="param-label">会心発生:</span>
-                                                        <span className="param-value">+{params.critical.toFixed(1)}%</span>
-                                                    </div>
-                                                </>
-                                            )}
-                                        </>
-                                    );
-                                })()}
                             </div>
                         </div>
                     </div>

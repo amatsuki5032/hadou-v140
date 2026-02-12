@@ -1429,15 +1429,11 @@
    戦闘パラメータパネル
    =========================== */
 .combat-parameters-panel {
-    position: absolute;
-    left: 0;
-    top: 220px;
-    width: 180px;
+    width: 188px;
+    margin-top: 8px;
     background: var(--bg-panel);
     border: 1px solid var(--border-light);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    z-index: 100;
 }
 
 .combat-params-header {
@@ -1445,16 +1441,16 @@
 }
 
 .combat-params-content {
-    padding: 8px;
+    padding: 4px 6px;
 }
 
 .param-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 0;
+    gap: 4px;
+    padding: 1px 0;
     border-bottom: 1px solid var(--border-base);
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .param-row:last-child {
@@ -1467,15 +1463,15 @@
 
 .param-label {
     flex: 1;
-    font-size: 13px;
+    font-size: 11px;
     color: var(--text-secondary);
 }
 
 .param-value {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     color: var(--text-primary);
-    min-width: 60px;
+    min-width: 55px;
     text-align: right;
 }
 

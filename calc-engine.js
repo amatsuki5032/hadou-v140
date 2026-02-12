@@ -1,5 +1,6 @@
 // 計算エンジン - 技能効果・戦闘パラメータの計算ロジック
 // 依存: EMBEDDED_GENERALS_DATA (グローバル), SKILL_DB (グローバル), checkSkillCondition (skill-conditions.js)
+// 依存(名宝): EMBEDDED_TREASURES_DATA (グローバル), TREASURE_FORGE (グローバル), getTreasureSkillLevels (data-treasure-forge.js)
 
 // SKILL_DB効果名 → 戦闘パラメータキーのマッピング
 // type2とtimingでフィルタし、該当する効果のみ対象
@@ -321,4 +322,124 @@ function calculateCombatParameters(formation, getStarRankFn) {
     result.initialGauge = Math.min(result.initialGauge, INITIAL_GAUGE_CAP);
 
     return result;
+}
+
+// === 名宝技能エントリ収集 ===
+
+// EMBEDDED_TREASURES_DATA.id → TREASURE_FORGE key のマッピングキャッシュ
+var _treasureIdToForgeKey = null;
+
+/**
+ * EMBEDDED_TREASURES_DATA.id → TREASURE_FORGE key のマッピングを構築する
+ * 技能名セットの一致でマッピング（遅延初期化・キャッシュ）
+ */
+function buildTreasureIdMapping() {
+    if (_treasureIdToForgeKey) return _treasureIdToForgeKey;
+    _treasureIdToForgeKey = {};
+
+    if (typeof EMBEDDED_TREASURES_DATA === 'undefined' || typeof TREASURE_FORGE === 'undefined') {
+        return _treasureIdToForgeKey;
+    }
+
+    // TREASURE_FORGE の技能セット → forgeKey マッピング
+    var forgeBySkills = {};
+    for (var forgeKey in TREASURE_FORGE) {
+        var forgeData = TREASURE_FORGE[forgeKey];
+        var stage = (forgeData.ur && forgeData.ur.length > 0) ? forgeData.ur : forgeData.normal;
+        var skillKey = (stage || []).map(function(s) { return s.skill; }).sort().join('|');
+        if (!forgeBySkills[skillKey]) {
+            forgeBySkills[skillKey] = parseInt(forgeKey);
+        }
+    }
+
+    // EMBEDDED_TREASURES_DATA.id → forgeKey
+    for (var i = 0; i < EMBEDDED_TREASURES_DATA.length; i++) {
+        var t = EMBEDDED_TREASURES_DATA[i];
+        if (!t.skills || t.skills.length === 0) continue;
+        var tSkillKey = t.skills.slice().sort().join('|');
+        if (forgeBySkills[tSkillKey] != null) {
+            _treasureIdToForgeKey[t.id] = forgeBySkills[tSkillKey];
+        }
+    }
+
+    return _treasureIdToForgeKey;
+}
+
+/**
+ * 部隊の名宝から技能エントリを収集する（☆0・通常固定）
+ * @param {Object} formation - 部隊データ
+ * @returns {Array} [{skillName, level, slotName, general}, ...]
+ */
+function collectTreasureSkillEntries(formation) {
+    var entries = [];
+    var treasures = formation.treasures;
+    if (!treasures) return entries;
+    if (typeof getTreasureSkillLevels !== 'function') return entries;
+
+    var idMapping = buildTreasureIdMapping();
+
+    for (var treasureKey in treasures) {
+        var treasure = treasures[treasureKey];
+        if (!treasure) continue;
+
+        // treasureKey: "主将-weapon" → slotName: "主将"
+        var slotName = treasureKey.split('-')[0];
+
+        // スロットの武将を取得（発動条件チェック用）
+        var slotData = formation.slots && formation.slots[slotName];
+        if (!slotData) continue;
+        var generalId = typeof slotData === 'object' ? slotData.id : slotData;
+        var general = EMBEDDED_GENERALS_DATA.find(function(g) { return g.id === generalId; });
+        if (!general) continue;
+
+        // TREASURE_FORGE key を取得
+        var forgeKey = idMapping[treasure.id];
+        if (!forgeKey) continue;
+
+        // ☆0・通常で技能レベルを取得
+        var skillLevels = getTreasureSkillLevels(forgeKey, 0, false);
+        for (var j = 0; j < skillLevels.length; j++) {
+            var sl = skillLevels[j];
+            entries.push({
+                skillName: sl.skill,
+                level: sl.level,
+                slotName: slotName,
+                general: general
+            });
+        }
+    }
+
+    return entries;
+}
+
+/**
+ * 武将技能 + 名宝技能を統合して全エントリを返す
+ * stat-calculator.js の calculateFormationStats から呼ばれる
+ * @param {Object} formation - 部隊データ
+ * @param {Function} getProfileFn - (general) => number|{star,level,grade}
+ * @returns {Object} { allEntries, fmtCtx }
+ */
+function buildAllEntries(formation, getProfileFn) {
+    // getProfileFn を星ランク関数に変換
+    var getStarRankFn = function(general) {
+        var profile = getProfileFn(general);
+        return (typeof profile === 'number') ? profile : ((profile && profile.star) || 0);
+    };
+
+    var fmtCtx = buildFormationContext(formation);
+
+    // 武将技能エントリ
+    var generalEntries = collectSkillEntries(formation, getStarRankFn);
+
+    // 名宝技能エントリ
+    var treasureEntries = collectTreasureSkillEntries(formation);
+
+    // 武将技能 + 名宝技能を結合
+    var baseEntries = generalEntries.concat(treasureEntries);
+
+    // 付与効果を解決
+    var grantedEntries = resolveGrantedSkills(baseEntries, fmtCtx);
+    var allEntries = baseEntries.concat(grantedEntries);
+
+    return { allEntries: allEntries, fmtCtx: fmtCtx };
 }
