@@ -260,13 +260,13 @@ function calculateSkillEffects(formation, getStarRankFn) {
     const treasureEntries = collectTreasureSkillEntries(formation);
     const fmtCtx = buildFormationContext(formation);
 
-    // 練達効果を適用（名宝技能 → 武将技能のLvアップ）
-    applyRentatsuEffects(entries, treasureEntries, fmtCtx);
-
     // 武将技能 + 名宝技能を結合し、付与効果を解決して追加
     const baseEntries = entries.concat(treasureEntries);
     const grantedEntries = resolveGrantedSkills(baseEntries, fmtCtx);
     const allEntries = baseEntries.concat(grantedEntries);
+
+    // 練達効果を適用（付与で追加された技能も含めてLvアップ）
+    applyRentatsuEffects(allEntries, treasureEntries, fmtCtx);
 
     // 技能名でグループ化
     const bySkillName = {};
@@ -320,13 +320,13 @@ function calculateCombatParameters(formation, getStarRankFn) {
     const treasureEntries = collectTreasureSkillEntries(formation);
     const fmtCtx = buildFormationContext(formation);
 
-    // 練達効果を適用（名宝技能 → 武将技能のLvアップ）
-    applyRentatsuEffects(entries, treasureEntries, fmtCtx);
-
     // 武将技能 + 名宝技能を結合し、付与効果を解決して追加
     const baseEntries = entries.concat(treasureEntries);
     const grantedEntries = resolveGrantedSkills(baseEntries, fmtCtx);
     const allEntries = baseEntries.concat(grantedEntries);
+
+    // 練達効果を適用（付与で追加された技能も含めてLvアップ）
+    applyRentatsuEffects(allEntries, treasureEntries, fmtCtx);
 
     // 技能名でグループ化
     const bySkillName = {};
@@ -487,15 +487,15 @@ function buildAllEntries(formation, getProfileFn) {
     // 名宝技能エントリ
     var treasureEntries = collectTreasureSkillEntries(formation);
 
-    // 練達効果を適用（名宝技能 → 武将技能のLvアップ）
-    applyRentatsuEffects(generalEntries, treasureEntries, fmtCtx);
-
     // 武将技能 + 名宝技能を結合
     var baseEntries = generalEntries.concat(treasureEntries);
 
     // 付与効果を解決
     var grantedEntries = resolveGrantedSkills(baseEntries, fmtCtx);
     var allEntries = baseEntries.concat(grantedEntries);
+
+    // 練達効果を適用（付与で追加された技能も含めてLvアップ）
+    applyRentatsuEffects(allEntries, treasureEntries, fmtCtx);
 
     return { allEntries: allEntries, fmtCtx: fmtCtx };
 }
