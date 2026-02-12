@@ -44,6 +44,45 @@ const FORMATION_RATES = {
     '斬心陣':     { main: 0.624, sub: 0.276, advisor: 0.188 },
 };
 
+// === 陣形固有効果（基礎ステータスに影響する数値付き効果のみ） ===
+// SKILL_DB source='陣形DB' から抽出。levels=null の定性効果(↑/↓)はスキップ。
+// type: 'fixed' = 固定%, 'perUnitType' = 兵科人数×%, 'unitCountThreshold' = 人数条件,
+//       'perAffinityMatch' = 好相性人数×%
+const FORMATION_STAT_BONUSES = {
+    // 歩兵兵力 (id:4504) — 兵力+2%×歩兵人数, cap 10%
+    '歩兵陣':     [{ stat: 'hp', type: 'perUnitType', unitType: '槍', perUnit: 0.02, cap: 0.10 }],
+    '歩兵陣・改': [
+        { stat: 'hp', type: 'perUnitType', unitType: '槍', perUnit: 0.02, cap: 0.10 },
+        // 歩兵金剛 (id:4550) — 歩兵3人以上:防御+15%, 5人:+30%
+        { stat: 'defense', type: 'unitCountThreshold', unitType: '槍', min: 3, value: 0.15, fullCount: 5, fullValue: 0.30 },
+    ],
+    // 弓兵兵力 (id:4511) — 兵力+2%×弓兵人数, cap 10%
+    '弓兵陣':     [{ stat: 'hp', type: 'perUnitType', unitType: '弓', perUnit: 0.02, cap: 0.10 }],
+    '弓兵陣・改': [{ stat: 'hp', type: 'perUnitType', unitType: '弓', perUnit: 0.02, cap: 0.10 }],
+    // 騎兵兵力 (id:4515) — 兵力+2%×騎兵人数, cap 10%
+    '騎兵陣':     [{ stat: 'hp', type: 'perUnitType', unitType: '馬', perUnit: 0.02, cap: 0.10 }],
+    '騎兵陣・改': [{ stat: 'hp', type: 'perUnitType', unitType: '馬', perUnit: 0.02, cap: 0.10 }],
+    // 兵器陣 (id:4543) — 兵力-5% 固定
+    '兵器陣':     [{ stat: 'hp', type: 'fixed', value: -0.05 }],
+    '兵器陣・改': [{ stat: 'hp', type: 'fixed', value: -0.05 }],
+    // 勇往陣 (id:4549) — 兵力+5% 固定
+    '勇往陣':     [{ stat: 'hp', type: 'fixed', value: 0.05 }],
+    '勇往陣・改': [{ stat: 'hp', type: 'fixed', value: 0.05 }],
+    // 堅防陣 (id:4560) — 兵力+10%, 防御+10%
+    // 堅防強陣 (id:4559) — 攻撃+5%, 知力+5%
+    '堅防陣': [
+        { stat: 'hp', type: 'fixed', value: 0.10 },
+        { stat: 'defense', type: 'fixed', value: 0.10 },
+        { stat: 'attack', type: 'fixed', value: 0.05 },
+        { stat: 'intelligence', type: 'fixed', value: 0.05 },
+    ],
+    // 友結陣戦 (id:4557) — 攻撃/知力 +2%×好相性人数, cap 10%
+    '友結陣': [
+        { stat: 'attack', type: 'perAffinityMatch', perUnit: 0.02, cap: 0.10 },
+        { stat: 'intelligence', type: 'perAffinityMatch', perUnit: 0.02, cap: 0.10 },
+    ],
+};
+
 // === 参軍反映率テーブル ===
 // 参軍レベル別の反映率（Lv1=6%, 以降+1%ずつ, Lv10=15%）
 const ADVISOR_LEVEL_RATES = [0, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15];
@@ -501,6 +540,81 @@ function calcHorseSkillBonuses(profileConfig, unitType) {
     return { pct: pctBonuses, params: paramBonuses };
 }
 
+// === 陣形固有効果ボーナス ===
+
+/**
+ * 陣形固有効果による%ボーナスを計算する
+ * FORMATION_STAT_BONUSES テーブルに基づき、兵科人数/好相性人数を考慮
+ * @param {string} formationName - 正規化済み陣形名
+ * @param {Object} formation - 部隊データ（slots含む）
+ * @returns {Object} { pct: {attack,defense,intelligence,hp} }
+ */
+function calcFormationBonuses(formationName, formation) {
+    const pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
+    const bonuses = FORMATION_STAT_BONUSES[formationName];
+    if (!bonuses || !formation?.slots) return { pct: pctBonuses };
+
+    // 5枠の武将データを収集
+    const slotNames = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
+    const generals = [];
+    for (const slotName of slotNames) {
+        const slotData = formation.slots[slotName];
+        if (!slotData) continue;
+        const generalId = typeof slotData === 'object' ? slotData.id : slotData;
+        const general = generalId ? EMBEDDED_GENERALS_DATA.find(g => g.id === generalId) : null;
+        if (general) generals.push(general);
+    }
+
+    // 兵科別人数カウント
+    const unitCounts = {};
+    for (const g of generals) {
+        const ut = g.unit_type || '';
+        unitCounts[ut] = (unitCounts[ut] || 0) + 1;
+    }
+
+    // 好相性人数カウント（主将との好相性）
+    let affinityMatchCount = 0;
+    if (generals.length > 1 && typeof isAffinityGood === 'function') {
+        const mainAffinity = generals[0].affinity;
+        for (let i = 1; i < generals.length; i++) {
+            if (isAffinityGood(mainAffinity, generals[i].affinity)) {
+                affinityMatchCount++;
+            }
+        }
+    }
+
+    // 各効果を適用
+    for (const b of bonuses) {
+        let value = 0;
+        switch (b.type) {
+            case 'fixed':
+                value = b.value;
+                break;
+            case 'perUnitType': {
+                const count = unitCounts[b.unitType] || 0;
+                value = Math.min(b.perUnit * count, b.cap);
+                break;
+            }
+            case 'unitCountThreshold': {
+                const count = unitCounts[b.unitType] || 0;
+                if (count >= (b.fullCount || 999)) {
+                    value = b.fullValue;
+                } else if (count >= b.min) {
+                    value = b.value;
+                }
+                break;
+            }
+            case 'perAffinityMatch': {
+                value = Math.min(b.perUnit * affinityMatchCount, b.cap);
+                break;
+            }
+        }
+        pctBonuses[b.stat] += value;
+    }
+
+    return { pct: pctBonuses };
+}
+
 /**
  * 部隊ステータスをまとめて計算する（メインAPI）
  * @param {Object} formation - 部隊データ
@@ -551,12 +665,15 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     // 研究ボーナス（%値）
     const researchBonus = calcResearchBonuses(profileConfig);
 
+    // 陣形固有効果ボーナス（%値）
+    const formationBonus = calcFormationBonuses(base.formationName, formation);
+
     // プロファイル系%ボーナスを合算
     const profilePct = {
-        attack: horseSkillBonus.pct.attack + surveyBonus.pct.attack + researchBonus.pct.attack,
-        defense: horseSkillBonus.pct.defense + surveyBonus.pct.defense + researchBonus.pct.defense,
-        intelligence: horseSkillBonus.pct.intelligence + surveyBonus.pct.intelligence + researchBonus.pct.intelligence,
-        hp: horseSkillBonus.pct.hp + surveyBonus.pct.hp + researchBonus.pct.hp,
+        attack: horseSkillBonus.pct.attack + surveyBonus.pct.attack + researchBonus.pct.attack + formationBonus.pct.attack,
+        defense: horseSkillBonus.pct.defense + surveyBonus.pct.defense + researchBonus.pct.defense + formationBonus.pct.defense,
+        intelligence: horseSkillBonus.pct.intelligence + surveyBonus.pct.intelligence + researchBonus.pct.intelligence + formationBonus.pct.intelligence,
+        hp: horseSkillBonus.pct.hp + surveyBonus.pct.hp + researchBonus.pct.hp + formationBonus.pct.hp,
     };
 
     // パラメータボーナスを合算
@@ -606,6 +723,8 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
         profileBonuses: { pct: profilePct, params: profileParams },
         // 研究ボーナス詳細（UI表示用）
         research: researchBonus.pct,
+        // 陣形固有効果ボーナス詳細（UI表示用）
+        formationBonus: formationBonus.pct,
         // メンバー個別ステータス
         memberStats: base.memberStats,
         // 陣形情報
