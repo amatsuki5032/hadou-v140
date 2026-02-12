@@ -134,7 +134,10 @@ hadou-v140/
 
 ## Git ワークフロー
 - 作業はmainブランチで行う（git checkout main && git pull origin main）
-- コミット後、ブランチを作成してプッシュ
-- GitHub上でPRをマージする（ユーザーが実施）
-- マージ用URLを必ず出力すること
-- マージ後: git checkout main && git pull origin main
+- コミット後、まず git push origin main を試す
+- 成功すればそのまま完了
+- 403で拒否された場合:
+  1. ブランチを作成してプッシュ
+  2. マージ用URLを出力する
+  3. GitHub上でPRをマージする（ユーザーが実施）
+  4. git checkout main で戻る（pullはマージ後にユーザーが指示）
