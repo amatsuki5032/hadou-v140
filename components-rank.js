@@ -158,6 +158,7 @@ function RankSettingsPanel({
                     <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                         <button
                             onClick={() => {
+                                if (!confirm('全武将の将星ランクを☆7に変更します。よろしいですか？')) return;
                                 setProfileData(prev => {
                                     const cp = prev[currentProfile];
                                     const newRanks = {...(cp.generalStarRank || {})};
@@ -185,6 +186,7 @@ function RankSettingsPanel({
                         </button>
                         <button
                             onClick={() => {
+                                if (!confirm('全武将の将星ランクを☆0にリセットします。よろしいですか？')) return;
                                 setProfileData(prev => ({
                                     ...prev,
                                     [currentProfile]: {
@@ -331,6 +333,7 @@ function RankSettingsPanel({
                                     <div style={{display: 'flex', gap: '8px'}} onClick={(e) => e.stopPropagation()}>
                                         <button
                                             onClick={() => {
+                                                if (!confirm(`${rarity}武将の将星ランクを全て☆0にリセットします。よろしいですか？`)) return;
                                                 const newRanks = {...generalStarRank};
                                                 generals
                                                     .filter(g => g.rarity === rarity)
@@ -363,6 +366,7 @@ function RankSettingsPanel({
                                         </button>
                                         <button
                                             onClick={() => {
+                                                if (!confirm(`${rarity}武将の将星ランクを全て☆7に変更します。よろしいですか？`)) return;
                                                 const newRanks = {...generalStarRank};
                                                 generals
                                                     .filter(g => g.rarity === rarity)
@@ -395,6 +399,7 @@ function RankSettingsPanel({
                                         </button>
                                         <button
                                             onClick={() => {
+                                                if (!confirm(`${rarity}武将のLv・グレードを全てMax（Lv50/60・G30）に変更します。よろしいですか？`)) return;
                                                 setProfileData(prev => {
                                                     const cp = prev[currentProfile];
                                                     const newProfiles = {...(cp.generalProfiles || {})};
@@ -586,6 +591,7 @@ function RankSettingsPanel({
                     <div style={{marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                         <button
                             onClick={() => {
+                                if (!confirm('全名宝の鍛錬ランクをMAX（☆7/☆10）に変更します。よろしいですか？')) return;
                                 const newRanks = {...treasureForgeRank};
                                 treasures.forEach(t => {
                                     const maxRank = treasureURStatus[t.id] ? 10 : 7;
@@ -613,6 +619,7 @@ function RankSettingsPanel({
                         </button>
                         <button
                             onClick={() => {
+                                if (!confirm('全名宝の鍛錬ランクを☆0にリセットします。よろしいですか？')) return;
                                 setProfileData(prev => ({
                                     ...prev,
                                     [currentProfile]: {
@@ -637,9 +644,13 @@ function RankSettingsPanel({
                             onClick={() => {
                                 // 全てUR化されているかチェック
                                 const allUR = treasures.every(t => treasureURStatus[t.id]);
-                                
+                                const msg = allUR
+                                    ? '全名宝のUR化を解除します。よろしいですか？'
+                                    : '全名宝をUR化します。よろしいですか？';
+                                if (!confirm(msg)) return;
+
                                 const newURStatus = {...treasureURStatus};
-                                
+
                                 if (allUR) {
                                     // 全てUR化されている → 全て解除（鍛錬ランクはそのまま）
                                     treasures.forEach(t => {
@@ -651,7 +662,7 @@ function RankSettingsPanel({
                                         newURStatus[t.id] = true;
                                     });
                                 }
-                                
+
                                 setProfileData(prev => ({
                                     ...prev,
                                     [currentProfile]: {
