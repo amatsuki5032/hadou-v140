@@ -328,6 +328,10 @@ function calculateCombatParameters(formation, getStarRankFn) {
         initialGauge: 0, tacticSpeed: 0, lethalResist: false,
         tacticReduce: 0, attackSpeed: 0, critical: 0
     };
+    const _details = {
+        initialGauge: [], tacticSpeed: [], lethalResist: [],
+        tacticReduce: [], attackSpeed: [], critical: []
+    };
 
     const entries = collectSkillEntries(formation, getStarRankFn);
     const treasureEntries = collectTreasureSkillEntries(formation);
@@ -368,7 +372,14 @@ function calculateCombatParameters(formation, getStarRankFn) {
             if (validLevel <= 0 && mapping.key !== 'lethalResist') continue;
 
             if (mapping.key === 'lethalResist') {
-                if (validLevel > 0) result.lethalResist = true;
+                if (validLevel > 0) {
+                    result.lethalResist = true;
+                    _details.lethalResist.push({
+                        skillName: skillName,
+                        level: Math.min(validLevel, 5),
+                        condition: eff.condition || '常に',
+                    });
+                }
             } else {
                 const effectiveLevel = Math.min(validLevel, 5);
                 const levelKey = LEVEL_KEY_MAP[effectiveLevel];
@@ -378,11 +389,25 @@ function calculateCombatParameters(formation, getStarRankFn) {
                     if (typeof val === 'number') {
                         // SKILL_DBはdecimal (0.25)、表示はpercentage (25) → ×100で互換維持
                         result[mapping.key] += val * 100;
+                        _details[mapping.key].push({
+                            skillName: skillName,
+                            value: val * 100,
+                            level: effectiveLevel,
+                            condition: eff.condition || '常に',
+                        });
                     }
                 }
             }
         }
     }
+
+    // 効果値の降順でソート
+    for (const k in _details) {
+        if (k !== 'lethalResist') {
+            _details[k].sort((a, b) => b.value - a.value);
+        }
+    }
+    result._details = _details;
 
     // 出陣ゲージの上限適用
     result.initialGauge = Math.min(result.initialGauge, INITIAL_GAUGE_CAP);
