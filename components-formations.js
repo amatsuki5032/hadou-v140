@@ -585,42 +585,80 @@ function FormationsArea({
                                                     )}
                                                 </>
                                             )}
-                                            {params && (
-                                                <>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⚡</span>
-                                                        <span className="param-label">出陣ゲージ:</span>
-                                                        <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">🎯</span>
-                                                        <span className="param-label">戦法速度:</span>
-                                                        <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">🛡️</span>
-                                                        <span className="param-label">致死耐性:</span>
-                                                        <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
-                                                            {params.lethalResist ? 'ON' : 'OFF'}
-                                                        </span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⏱️</span>
-                                                        <span className="param-label">戦法短縮:</span>
-                                                        <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">⚔️</span>
-                                                        <span className="param-label">攻撃速度:</span>
-                                                        <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
-                                                    </div>
-                                                    <div className="param-row">
-                                                        <span className="param-icon">💥</span>
-                                                        <span className="param-label">会心発生:</span>
-                                                        <span className="param-value">+{params.critical.toFixed(1)}%</span>
-                                                    </div>
-                                                </>
-                                            )}
+                                            {params && (() => {
+                                                const det = params._details || {};
+                                                const detailSub = (paramKey) => {
+                                                    if (!showStatDetail || !det[paramKey] || det[paramKey].length === 0) return null;
+                                                    return det[paramKey].map((d, i) => (
+                                                        <div key={i} className="param-row" style={{paddingLeft: '22px'}}>
+                                                            <span style={{color: 'var(--text-body)', fontSize: '9px'}}>
+                                                                {d.skillName}
+                                                                <span style={{color: 'var(--accent)', marginLeft: '3px'}}>Lv{d.level}</span>
+                                                                {d.condition !== '常に' && (
+                                                                    <span style={{color: 'var(--text-muted)', marginLeft: '3px'}}>({d.condition})</span>
+                                                                )}
+                                                            </span>
+                                                            <span style={{color: 'var(--success)', fontFamily: 'monospace', fontSize: '9px'}}>
+                                                                +{d.value.toFixed(1)}%
+                                                            </span>
+                                                        </div>
+                                                    ));
+                                                };
+                                                return (
+                                                    <>
+                                                        <div className="param-row">
+                                                            <span className="param-icon">⚡</span>
+                                                            <span className="param-label">出陣ゲージ:</span>
+                                                            <span className="param-value">+{params.initialGauge.toFixed(1)}%</span>
+                                                        </div>
+                                                        {detailSub('initialGauge')}
+                                                        <div className="param-row">
+                                                            <span className="param-icon">🎯</span>
+                                                            <span className="param-label">戦法速度:</span>
+                                                            <span className="param-value">+{params.tacticSpeed.toFixed(1)}%</span>
+                                                        </div>
+                                                        {detailSub('tacticSpeed')}
+                                                        <div className="param-row">
+                                                            <span className="param-icon">🛡️</span>
+                                                            <span className="param-label">致死耐性:</span>
+                                                            <span className={`param-value ${params.lethalResist ? 'active' : 'inactive'}`}>
+                                                                {params.lethalResist ? 'ON' : 'OFF'}
+                                                            </span>
+                                                        </div>
+                                                        {showStatDetail && det.lethalResist && det.lethalResist.length > 0 && (
+                                                            det.lethalResist.map((d, i) => (
+                                                                <div key={i} className="param-row" style={{paddingLeft: '22px'}}>
+                                                                    <span style={{color: 'var(--text-body)', fontSize: '9px'}}>
+                                                                        {d.skillName}
+                                                                        <span style={{color: 'var(--accent)', marginLeft: '3px'}}>Lv{d.level}</span>
+                                                                        {d.condition !== '常に' && (
+                                                                            <span style={{color: 'var(--text-muted)', marginLeft: '3px'}}>({d.condition})</span>
+                                                                        )}
+                                                                    </span>
+                                                                </div>
+                                                            ))
+                                                        )}
+                                                        <div className="param-row">
+                                                            <span className="param-icon">⏱️</span>
+                                                            <span className="param-label">戦法短縮:</span>
+                                                            <span className="param-value">+{params.tacticReduce.toFixed(1)}%</span>
+                                                        </div>
+                                                        {detailSub('tacticReduce')}
+                                                        <div className="param-row">
+                                                            <span className="param-icon">⚔️</span>
+                                                            <span className="param-label">攻撃速度:</span>
+                                                            <span className="param-value">+{params.attackSpeed.toFixed(1)}%</span>
+                                                        </div>
+                                                        {detailSub('attackSpeed')}
+                                                        <div className="param-row">
+                                                            <span className="param-icon">💥</span>
+                                                            <span className="param-label">会心発生:</span>
+                                                            <span className="param-value">+{params.critical.toFixed(1)}%</span>
+                                                        </div>
+                                                        {detailSub('critical')}
+                                                    </>
+                                                );
+                                            })()}
                                         </>
                                     );
                                 })()}
