@@ -33,6 +33,7 @@ const { useState, useEffect } = React;
                 return {'武器': true, '防具': true, '文物': true}; // デフォルトは全て開いた状態
             }); // 名宝カテゴリごとの折りたたみ状態
             const [showSkillEffects, setShowSkillEffects] = useState({}); // 技能効果表示状態
+            const [showSkillList, setShowSkillList] = useState(false); // 技能一覧表示トグル
             
             // ─── おススメフィルタ ───
             const [recommendTargetFormation, setRecommendTargetFormation] = useState(() => {
@@ -1236,6 +1237,19 @@ const { useState, useEffect } = React;
             const calcSkillEffects = (formationKey) => {
                 return calculateSkillEffects(formations[formationKey], getGeneralStarRank);
             };
+
+            // 部隊の技能一覧を取得（calc-engine.js のラッパー）
+            const calcSkillList = (formationKey) => {
+                const formation = formations[formationKey];
+                if (!formation || typeof buildAllEntries !== 'function') return null;
+                try {
+                    const { allEntries } = buildAllEntries(formation, getGeneralProfile);
+                    return allEntries;
+                } catch(e) {
+                    console.warn('calcSkillList error:', e);
+                    return null;
+                }
+            };
             
             // 部隊の戦闘パラメータを計算（calc-engine.js のラッパー）
             const calcCombatParams = (formationKey) => {
@@ -1764,6 +1778,22 @@ const { useState, useEffect } = React;
                                 title={showImages ? '画像を非表示' : '画像を表示'}
                             >
                                 {showImages ? '🖼️' : '🖼️'}
+                            </button>
+                            <button
+                                onClick={() => setShowSkillList(prev => !prev)}
+                                style={{
+                                    padding: '8px 12px',
+                                    background: showSkillList ? 'var(--accent)' : 'transparent',
+                                    border: `1px solid ${showSkillList ? 'var(--accent)' : 'var(--border-light)'}`,
+                                    borderRadius: '4px',
+                                    color: showSkillList ? 'var(--text-primary)' : 'var(--text-muted)',
+                                    cursor: 'pointer',
+                                    fontSize: '11px',
+                                    fontWeight: 'bold'
+                                }}
+                                title={showSkillList ? '技能一覧を非表示' : '技能一覧を表示'}
+                            >
+                                技能
                             </button>
                             <button
                                 onClick={toggleTheme}
@@ -2315,6 +2345,8 @@ const { useState, useEffect } = React;
                             setShowStatDetail={setShowStatDetail}
                             calcFormationStats={calcFormationStats}
                             calcSkillEffects={calcSkillEffects}
+                            showSkillList={showSkillList}
+                            calcSkillList={calcSkillList}
                             ItemImage={ItemImage}
                         />
 

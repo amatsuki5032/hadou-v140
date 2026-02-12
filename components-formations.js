@@ -22,6 +22,7 @@ function FormationsArea({
     // 計算・ユーティリティ
     getImageUrl, getGeneralStarRank, getTreasureForgeRank,
     isTreasureUR, calcCombatParams, calcFormationStats, calcSkillEffects,
+    showSkillList, calcSkillList,
     ItemImage
 }) {
     return (
@@ -259,6 +260,73 @@ function FormationsArea({
                                         対象パラメータの技能効果なし
                                     </div>
                                 )}
+                            </div>
+                        );
+                    })()}
+                    {/* 技能一覧表示 */}
+                    {showSkillList && (() => {
+                        const entries = calcSkillList(key);
+                        if (!entries || entries.length === 0) return null;
+
+                        // スロット別にグループ化
+                        const slotOrder = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
+                        const bySlot = {};
+                        for (const e of entries) {
+                            (bySlot[e.slotName] ??= []).push(e);
+                        }
+
+                        return (
+                            <div style={{
+                                padding: '10px 12px',
+                                background: 'var(--bg-card)',
+                                borderRadius: '8px',
+                                marginBottom: '12px',
+                                border: '1px solid var(--border-light)',
+                                fontSize: '11px',
+                                lineHeight: '1.6'
+                            }}>
+                                <div style={{
+                                    fontWeight: 'bold',
+                                    color: 'var(--text-primary)',
+                                    marginBottom: '6px',
+                                    paddingBottom: '4px',
+                                    borderBottom: '1px solid var(--border-light)'
+                                }}>
+                                    技能一覧
+                                </div>
+                                {slotOrder.map(slot => {
+                                    const slotEntries = bySlot[slot];
+                                    if (!slotEntries) return null;
+                                    // 同一スロット内で重複排除（同名技能は最初のもの）
+                                    const seen = new Set();
+                                    const unique = slotEntries.filter(e => {
+                                        if (seen.has(e.skillName)) return false;
+                                        seen.add(e.skillName);
+                                        return true;
+                                    });
+                                    return (
+                                        <div key={slot} style={{marginBottom: '4px'}}>
+                                            <span style={{
+                                                color: 'var(--text-muted)',
+                                                fontWeight: 'bold',
+                                                marginRight: '6px'
+                                            }}>
+                                                {slot}:
+                                            </span>
+                                            {unique.map((e, i) => (
+                                                <span key={i}>
+                                                    {i > 0 && <span style={{color: 'var(--text-muted)'}}> / </span>}
+                                                    <span style={{color: 'var(--text-body)'}}>
+                                                        {e.skillName}
+                                                    </span>
+                                                    <span style={{color: 'var(--accent)', marginLeft: '2px'}}>
+                                                        Lv{e.level}
+                                                    </span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         );
                     })()}
