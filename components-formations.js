@@ -510,6 +510,7 @@ function FormationsArea({
                                                                 {data.treasures && Object.values(data.treasures).some(t => t != null) && ' / 名宝'}
                                                                 {(fStats.horse?.attack > 0 || fStats.horse?.defense > 0 || fStats.horse?.intelligence > 0) && ' / 軍馬'}
                                                                 {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
+                                                                {(fStats.research?.attack > 0 || fStats.research?.defense > 0 || fStats.research?.intelligence > 0 || fStats.research?.hp > 0) && ' / 研究'}
                                                             </span>
                                                         </div>
                                                     )}
