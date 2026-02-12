@@ -200,58 +200,110 @@ function FormationsArea({
                             }}
                         />
                     </div>
-                    {/* 技能効果表示 */}
+                    {/* 技能効果表示（内訳付き） */}
                     {showSkillEffects[key] && (() => {
                         const effects = calcSkillEffects(key);
                         if (!effects) return null;
-                        
+
+                        const paramList = ['攻撃速度', '会心発生', '戦法速度'];
+                        const hasAnyEffect = paramList.some(p => effects[p] !== 0);
+                        const detailData = effects._details || {};
+
                         return (
                             <div style={{
-                                padding: '12px',
+                                padding: '16px',
                                 background: 'var(--bg-card)',
                                 borderRadius: '8px',
                                 marginBottom: '16px',
                                 border: '2px solid var(--accent)',
-                                boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                                width: '100%'
                             }}>
                                 <div style={{
                                     fontSize: '14px',
                                     fontWeight: 'bold',
                                     color: 'var(--text-primary)',
-                                    marginBottom: '8px',
+                                    marginBottom: '12px',
                                     borderBottom: '1px solid rgba(37, 99, 235, 0.15)',
-                                    paddingBottom: '4px'
+                                    paddingBottom: '6px'
                                 }}>
                                     技能効果
                                 </div>
-                                <div style={{display: 'flex', gap: '24px', flexWrap: 'wrap'}}>
-                                    {['攻撃速度', '会心発生', '戦法速度'].map(param => {
-                                        const value = effects[param];
-                                        if (value === 0) return null;
-                                        return (
-                                            <div key={param} style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '8px'
-                                            }}>
-                                                <span style={{
-                                                    color: 'var(--text-muted)',
-                                                    fontSize: '13px'
+                                {hasAnyEffect ? (
+                                    <div style={{display: 'flex', gap: '16px', flexWrap: 'wrap'}}>
+                                        {paramList.map(param => {
+                                            const value = effects[param];
+                                            if (value === 0) return null;
+                                            const paramDetails = detailData[param] || [];
+                                            return (
+                                                <div key={param} style={{
+                                                    flex: '1 1 0',
+                                                    minWidth: '160px',
+                                                    background: 'rgba(0,0,0,0.2)',
+                                                    borderRadius: '6px',
+                                                    padding: '12px',
+                                                    border: '1px solid var(--border-light)'
                                                 }}>
-                                                    {param}:
-                                                </span>
-                                                <span style={{
-                                                    color: 'var(--success)',
-                                                    fontSize: '16px',
-                                                    fontWeight: 'bold'
-                                                }}>
-                                                    +{(value * 100).toFixed(1)}%
-                                                </span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                                {Object.values(effects).every(v => v === 0) && (
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        marginBottom: '8px',
+                                                        paddingBottom: '6px',
+                                                        borderBottom: '1px solid var(--border-light)'
+                                                    }}>
+                                                        <span style={{
+                                                            color: 'var(--text-muted)',
+                                                            fontSize: '13px',
+                                                            fontWeight: 'bold'
+                                                        }}>
+                                                            {param}
+                                                        </span>
+                                                        <span style={{
+                                                            color: 'var(--success)',
+                                                            fontSize: '18px',
+                                                            fontWeight: 'bold'
+                                                        }}>
+                                                            +{(value * 100).toFixed(1)}%
+                                                        </span>
+                                                    </div>
+                                                    {paramDetails.length > 0 && (
+                                                        <div style={{fontSize: '11px'}}>
+                                                            {paramDetails.map((d, i) => (
+                                                                <div key={i} style={{
+                                                                    display: 'flex',
+                                                                    justifyContent: 'space-between',
+                                                                    alignItems: 'center',
+                                                                    padding: '3px 0',
+                                                                    borderBottom: i < paramDetails.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none'
+                                                                }}>
+                                                                    <span style={{color: 'var(--text-body)'}}>
+                                                                        {d.skillName}
+                                                                        <span style={{color: 'var(--accent)', marginLeft: '4px'}}>
+                                                                            Lv{d.level}
+                                                                        </span>
+                                                                        {d.condition !== '常に' && (
+                                                                            <span style={{color: 'var(--text-muted)', marginLeft: '4px', fontSize: '9px'}}>
+                                                                                ({d.condition})
+                                                                            </span>
+                                                                        )}
+                                                                    </span>
+                                                                    <span style={{
+                                                                        color: 'var(--success)',
+                                                                        fontWeight: 'bold',
+                                                                        fontFamily: 'monospace'
+                                                                    }}>
+                                                                        +{(d.value * 100).toFixed(1)}%
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
                                     <div style={{
                                         color: 'var(--text-muted)',
                                         fontSize: '13px',
