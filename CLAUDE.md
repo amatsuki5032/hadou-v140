@@ -134,5 +134,7 @@ hadou-v140/
 
 ## Git ワークフロー
 - 作業はmainブランチで行う（git checkout main && git pull origin main）
-- コミット後は直接 git push origin main でプッシュする
-- ブランチ作成・PR作成は不要
+- コミット後、ブランチを作成してプッシュ
+- GitHub上でPRをマージする（ユーザーが実施）
+- マージ用URLを必ず出力すること
+- マージ後: git checkout main && git pull origin main
