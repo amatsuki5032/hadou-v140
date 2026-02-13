@@ -773,7 +773,8 @@ function TreasuresPanel({
                                                                 className="treasure-name"
                                                                 style={{
                                                                     color: isTreasureUR(treasure.id) ? 'var(--rarity-ur)' : 'var(--text-primary)',
-                                                                    fontWeight: isTreasureUR(treasure.id) ? 'bold' : '700'
+                                                                    fontWeight: isTreasureUR(treasure.id) ? 'bold' : '700',
+                                                                    fontSize: treasure.name.length >= 6 ? '9px' : undefined
                                                                 }}
                                                             >
                                                                 {treasure.name}{isTreasureUR(treasure.id) ? '(UR)' : ''}
@@ -840,7 +841,7 @@ function TreasuresPanel({
                                                 rarity={isTreasureUR(treasure.id) ? 'UR' : 'normal'}
                                             />
                                             <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0}}>
-                                                <span className="treasure-name">{treasure.name}</span>
+                                                <span className="treasure-name" style={{fontSize: treasure.name.length >= 6 ? '9px' : undefined}}>{treasure.name}</span>
                                                 <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
                                                     {getTreasureForgeRank(treasure.id) >= 0 && (
                                                         <span className={`treasure-forge-inline ${isTreasureUR(treasure.id) ? 'ur' : ''}`}>
