@@ -1324,8 +1324,8 @@
         
         /* 武将・名宝アイテムのアイコン画像 */
         .item-icon {
-            width: 32px;
-            height: 32px;
+            width: 48px;
+            height: 48px;
             object-fit: cover;
             border-radius: 4px;
             flex-shrink: 0;
@@ -1341,8 +1341,8 @@
         
         /* 画像がない場合のプレースホルダー */
         .item-icon-placeholder {
-            width: 32px;
-            height: 32px;
+            width: 48px;
+            height: 48px;
             background: var(--bg-base);
             border: 1px dashed var(--border-base);
             display: flex;
@@ -1354,6 +1354,19 @@
             border-radius: 4px;
         }
         
+        /* サイドバーリスト内のアイコンは32px */
+        .general-item-with-image .item-icon,
+        .treasure-item-with-image .item-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .general-item-with-image .item-icon-placeholder,
+        .treasure-item-with-image .item-icon-placeholder {
+            width: 32px;
+            height: 32px;
+        }
+
         /* 武将アイテムに画像を追加 */
         .general-item-with-image {
             display: flex;

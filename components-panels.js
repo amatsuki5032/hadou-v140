@@ -766,30 +766,28 @@ function TreasuresPanel({
                                                             alt={treasure.name}
                                                             rarity={isTreasureUR(treasure.id) ? 'UR' : 'normal'}
                                                         />
-                                                        <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1}}>
-                                                            <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+                                                        <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0}}>
+                                                            <span
+                                                                className="treasure-name"
+                                                                style={{
+                                                                    color: isTreasureUR(treasure.id) ? 'var(--rarity-ur)' : 'var(--text-primary)',
+                                                                    fontWeight: isTreasureUR(treasure.id) ? 'bold' : '700'
+                                                                }}
+                                                            >
+                                                                {treasure.name}{isTreasureUR(treasure.id) ? '(UR)' : ''}
+                                                            </span>
+                                                            <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
                                                                 {getTreasureForgeRank(treasure.id) >= 0 && (
                                                                     <span className={`treasure-forge-inline ${isTreasureUR(treasure.id) ? 'ur' : ''}`}>
                                                                         {isTreasureUR(treasure.id) ? '★' : '☆'}{getTreasureForgeRank(treasure.id)}
                                                                     </span>
                                                                 )}
-                                                                <span 
-                                                                    className="treasure-name"
-                                                                    style={{
-                                                                        color: isTreasureUR(treasure.id) ? 'var(--rarity-ur)' : 'var(--text-primary)',
-                                                                        fontWeight: isTreasureUR(treasure.id) ? 'bold' : '700'
-                                                                    }}
-                                                                >
-                                                                    {treasure.name}{isTreasureUR(treasure.id) ? '(UR)' : ''}
-                                                                </span>
-                                                            </div>
-                                                            <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
                                                                 {treasure.weapon_type && (
                                                                     <span className="treasure-type" style={{color: 'var(--text-muted)'}}>{getWeaponTypeName(treasure.weapon_type)}</span>
                                                                 )}
                                                                 {treasure.related && (
-                                                                    <span 
-                                                                        className="treasure-related" 
+                                                                    <span
+                                                                        className="treasure-related"
                                                                         style={{
                                                                             color: (() => {
                                                                                 const relatedGeneral = generals.find(g => g.name === treasure.related);
@@ -839,16 +837,14 @@ function TreasuresPanel({
                                                 alt={treasure.name}
                                                 rarity={isTreasureUR(treasure.id) ? 'UR' : 'normal'}
                                             />
-                                            <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1}}>
-                                                <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+                                            <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0}}>
+                                                <span className="treasure-name">{treasure.name}</span>
+                                                <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
                                                     {getTreasureForgeRank(treasure.id) >= 0 && (
                                                         <span className={`treasure-forge-inline ${isTreasureUR(treasure.id) ? 'ur' : ''}`}>
                                                             {isTreasureUR(treasure.id) ? '★' : '☆'}{getTreasureForgeRank(treasure.id)}
                                                         </span>
                                                     )}
-                                                    <span className="treasure-name">{treasure.name}</span>
-                                                </div>
-                                                <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
                                                     {treasure.weapon_type && (
                                                         <span className="treasure-type" style={{color: 'var(--text-muted)'}}>{getWeaponTypeName(treasure.weapon_type)}</span>
                                                     )}
