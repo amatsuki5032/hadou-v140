@@ -133,6 +133,7 @@ hadou-v140/
 セキュリティ ＞ 可読性 ＞ UI美観 ＞ 実装速度
 
 ## Git ワークフロー
+- 作業完了後は必ずコミットしてpushすること。pushせずに作業を終えない
 - 作業はmainブランチで行う（git checkout main && git pull origin main）
 - コミット後、まず git push origin main を試す
 - 成功すればそのまま完了
