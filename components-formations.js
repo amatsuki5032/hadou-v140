@@ -4,7 +4,7 @@
 /**
  * 部隊エリア（12部隊のグリッド表示・配置・D&D）
  */
-function FormationsArea({
+var FormationsArea = React.memo(function FormationsArea({
     currentFormations, treasures, collapsedFormations,
     showImages, showSkillEffects, setShowSkillEffects,
     showStatDetail, setShowStatDetail,
@@ -1153,6 +1153,6 @@ function FormationsArea({
             </div>
             ))}
         </div>
-        
+
     );
-}
+});

@@ -1,5 +1,19 @@
 // ユーティリティ関数群
 
+// 武将IDインデックス（遅延初期化・キャッシュ）
+var _generalsById = null;
+function getGeneralById(id) {
+    if (!_generalsById) {
+        _generalsById = {};
+        if (typeof EMBEDDED_GENERALS_DATA !== 'undefined') {
+            for (var i = 0; i < EMBEDDED_GENERALS_DATA.length; i++) {
+                _generalsById[EMBEDDED_GENERALS_DATA[i].id] = EMBEDDED_GENERALS_DATA[i];
+            }
+        }
+    }
+    return _generalsById[id] || null;
+}
+
 const FORMATION_TYPES = {
     '基本陣': ['主将', '副将1', '副将2', '補佐1', '補佐2'],
     '赤備陣': ['主将', '副将1', '副将2', '補佐1', '補佐2'],
