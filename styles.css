@@ -1210,8 +1210,9 @@
         
         .general-item-with-image, .treasure-item-with-image {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
+            flex-direction: row;
+            gap: 6px;
+            align-items: center;
         }
         
         .treasure-item-compact {
@@ -1323,8 +1324,8 @@
         
         /* 武将・名宝アイテムのアイコン画像 */
         .item-icon {
-            width: 48px;
-            height: 48px;
+            width: 32px;
+            height: 32px;
             object-fit: cover;
             border-radius: 4px;
             flex-shrink: 0;
@@ -1340,8 +1341,8 @@
         
         /* 画像がない場合のプレースホルダー */
         .item-icon-placeholder {
-            width: 48px;
-            height: 48px;
+            width: 32px;
+            height: 32px;
             background: var(--bg-base);
             border: 1px dashed var(--border-base);
             display: flex;
