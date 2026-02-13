@@ -1535,15 +1535,9 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 const bUsed = isTreasureUsed(b.id, b.name);
                 if (aUsed !== bUsed) return aUsed ? 1 : -1;
                 
-                // 2. 相性値順（昇順: 低→高）
-                // 関連武将から相性値を取得
-                const aGeneral = generals.find(g => g.name === a.related);
-                const bGeneral = generals.find(g => g.name === b.related);
-                const aAffinity = aGeneral ? aGeneral.affinity : 999; // 関連武将がいない場合は最後尾
-                const bAffinity = bGeneral ? bGeneral.affinity : 999;
-                
-                if (aAffinity !== bAffinity) {
-                    return aAffinity - bAffinity; // 昇順
+                // 2. ID順（昇順）
+                if (a.id !== b.id) {
+                    return a.id - b.id;
                 }
                 
                 // 3. カテゴリ順（武器→防具→文物）
