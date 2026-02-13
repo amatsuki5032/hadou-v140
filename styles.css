@@ -1835,3 +1835,778 @@
     font-size: 13px;
     margin-top: 12px;
 }
+
+/* ===================================================================
+   プロファイルパネル（研究・調査・軍馬）
+   =================================================================== */
+
+/* --- パネルコンテナ --- */
+.profile-panel {
+    flex: 1;
+    min-width: 280px;
+    max-width: 400px;
+    background: var(--bg-panel);
+    border-left: 1px solid var(--border-base);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.profile-panel.collapsed {
+    flex: 0 0 60px;
+    min-width: 60px;
+}
+
+.profile-panel.collapsed .profile-tab-bar,
+.profile-panel.collapsed .profile-tab-content {
+    display: none;
+}
+
+/* --- タブバー --- */
+.profile-tab-bar {
+    display: flex;
+    gap: 4px;
+    margin: 10px 10px 0 10px;
+    border-bottom: 1px solid var(--border-light);
+    flex-shrink: 0;
+}
+
+.profile-tab-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.profile-tab-btn:hover {
+    color: var(--accent);
+}
+
+.profile-tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* --- タブコンテンツ --- */
+.profile-tab-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    padding: 10px;
+}
+
+/* --- 空状態 --- */
+.profile-empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 30px 16px;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* ===================================================================
+   研究タブ
+   =================================================================== */
+
+.research-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* --- 専攻選択セクション --- */
+.research-spec-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-base);
+    border-left: 3px solid var(--bordeaux);
+    padding: 10px;
+}
+
+.research-spec-label {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.research-spec-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border-base);
+}
+
+.research-spec-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.research-spec-cat {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 65px;
+    flex-shrink: 0;
+}
+
+.research-spec-options {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* カスタムラジオボタン */
+.research-spec-radio {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--text-secondary);
+    padding: 3px 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.research-spec-radio:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.research-spec-radio input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--border-hover);
+    border-radius: 50%;
+    background: var(--bg-base);
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.research-spec-radio input[type="radio"]:checked {
+    border-color: var(--accent);
+    background: var(--bg-base);
+}
+
+.research-spec-radio input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.research-spec-radio input[type="radio"]:checked + span {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* --- 一括操作 --- */
+.research-bulk-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.research-bulk-btn {
+    padding: 5px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.research-bulk-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-hover);
+}
+
+.research-bulk-btn-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.research-bulk-btn-danger:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
+}
+
+/* --- 分野グループ（アコーディオン） --- */
+.research-field-group {
+    background: var(--bg-card);
+    border: 1px solid var(--border-base);
+    transition: all 0.2s;
+}
+
+.research-field-group.inactive {
+    opacity: 0.5;
+}
+
+.research-field-group.inactive:hover {
+    opacity: 0.7;
+}
+
+.research-field-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    cursor: pointer;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-base);
+    transition: background 0.2s;
+    user-select: none;
+}
+
+.research-field-header:hover {
+    background: var(--bg-hover);
+}
+
+.research-field-toggle {
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    width: 12px;
+    text-align: center;
+}
+
+.research-field-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.research-field-count {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.research-field-badge-inactive {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--bg-base);
+    border: 1px solid var(--border-light);
+    padding: 1px 6px;
+}
+
+.research-field-badge-master {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--bordeaux-text);
+    background: var(--bordeaux-bg);
+    border: 1px solid var(--bordeaux-border);
+    padding: 1px 6px;
+}
+
+/* --- 研究項目リスト --- */
+.research-field-items {
+    padding: 4px 0;
+}
+
+.research-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--border-base);
+    transition: background 0.15s;
+    font-size: 11px;
+}
+
+.research-item:last-child {
+    border-bottom: none;
+}
+
+.research-item:hover {
+    background: var(--bg-hover);
+}
+
+.research-item.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+/* カスタムチェックボックス */
+.research-item-check {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.research-item-check input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-hover);
+    background: var(--bg-base);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.research-item-check input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.research-item-check input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    width: 4px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.research-item-check input[type="checkbox"]:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.research-item-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 0;
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.research-item-effect {
+    font-size: 10px;
+    color: var(--text-secondary);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 値入力フィールド */
+.research-item-value {
+    width: 48px;
+    padding: 2px 4px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-light);
+    color: var(--text-body);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.research-item-value:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.research-item-value:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: var(--bg-card);
+}
+
+.research-item-value::-webkit-inner-spin-button,
+.research-item-value::-webkit-outer-spin-button {
+    opacity: 0;
+    width: 12px;
+}
+
+.research-item-value:hover::-webkit-inner-spin-button,
+.research-item-value:hover::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+.research-item-unit {
+    font-size: 10px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    width: 14px;
+}
+
+.research-item-badge-m {
+    font-size: 9px;
+    font-weight: 900;
+    color: var(--bordeaux-text);
+    background: var(--bordeaux-bg);
+    border: 1px solid var(--bordeaux-border);
+    padding: 0px 4px;
+    flex-shrink: 0;
+    line-height: 1.4;
+}
+
+/* ===================================================================
+   調査タブ
+   =================================================================== */
+
+.investigation-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.investigation-tribe {
+    background: var(--bg-card);
+    border: 1px solid var(--border-base);
+}
+
+.investigation-tribe-header {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--text-primary);
+    padding: 6px 10px;
+    background: var(--bg-elevated);
+    border-left: 3px solid var(--bordeaux);
+    border-bottom: 1px solid var(--border-base);
+}
+
+.investigation-tribe-skills {
+    padding: 4px 0;
+}
+
+.investigation-skill-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--border-base);
+    transition: background 0.15s;
+}
+
+.investigation-skill-row:last-child {
+    border-bottom: none;
+}
+
+.investigation-skill-row:hover {
+    background: var(--bg-hover);
+}
+
+.investigation-skill-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.investigation-skill-effect {
+    font-size: 10px;
+    color: var(--text-secondary);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.investigation-skill-level {
+    padding: 3px 6px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-light);
+    color: var(--text-body);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    min-width: 50px;
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+}
+
+.investigation-skill-level:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.investigation-skill-level:hover {
+    border-color: var(--border-hover);
+}
+
+.investigation-skill-value {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--success);
+    min-width: 55px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+/* ===================================================================
+   軍馬タブ
+   =================================================================== */
+
+.horse-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* --- 馬選択ボタン --- */
+.horse-selector {
+    display: flex;
+    gap: 4px;
+}
+
+.horse-selector-btn {
+    flex: 1;
+    padding: 6px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.horse-selector-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.horse-selector-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 900;
+}
+
+/* --- 馬設定エリア --- */
+.horse-config {
+    background: var(--bg-card);
+    border: 1px solid var(--border-base);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.horse-config-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.horse-config-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 32px;
+    flex-shrink: 0;
+}
+
+.horse-config-select {
+    padding: 4px 8px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-light);
+    color: var(--text-body);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    min-width: 80px;
+}
+
+.horse-config-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.horse-config-select:hover {
+    border-color: var(--border-hover);
+}
+
+.horse-config-select-sm {
+    min-width: 52px;
+    width: auto;
+}
+
+.horse-config-bonus {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--success);
+    padding: 2px 6px;
+    background: rgba(22, 163, 74, 0.1);
+    border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+/* 名馬トグル */
+.horse-config-meiba-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.horse-config-meiba-toggle input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-hover);
+    background: var(--bg-base);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.horse-config-meiba-toggle input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.horse-config-meiba-toggle input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    width: 4px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.horse-config-star-label {
+    font-size: 12px;
+    color: var(--rank-color);
+    flex-shrink: 0;
+}
+
+/* --- 名馬ステータス表示 --- */
+.horse-meiba-stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 6px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-base);
+    border-left: 3px solid var(--bordeaux);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.horse-meiba-skill {
+    color: var(--bordeaux-text);
+    padding: 1px 6px;
+    background: var(--bordeaux-bg);
+    border: 1px solid var(--bordeaux-border);
+    font-size: 10px;
+}
+
+/* --- 技能スロット --- */
+.horse-skills-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.horse-skill-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.horse-skill-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 40px;
+    flex-shrink: 0;
+}
+
+/* --- 合計サマリー --- */
+.horse-summary {
+    background: var(--bg-card);
+    border: 1px solid var(--border-base);
+    border-top: 2px solid var(--bordeaux);
+    padding: 10px;
+}
+
+.horse-summary-header {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.horse-summary-stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.horse-summary-skills {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.horse-summary-skill {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-primary);
+    padding: 2px 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+}
+
+.horse-summary-note {
+    font-size: 10px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
