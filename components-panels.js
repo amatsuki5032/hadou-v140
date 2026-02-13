@@ -779,7 +779,7 @@ function TreasuresPanel({
                                                             >
                                                                 {treasure.name}{isTreasureUR(treasure.id) ? '(UR)' : ''}
                                                             </span>
-                                                            <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
+                                                            <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px', whiteSpace: 'nowrap', overflow: 'hidden'}}>
                                                                 {getTreasureForgeRank(treasure.id) >= 0 && (
                                                                     <span className={`treasure-forge-inline ${isTreasureUR(treasure.id) ? 'ur' : ''}`}>
                                                                         {isTreasureUR(treasure.id) ? '★' : '☆'}{getTreasureForgeRank(treasure.id)}
@@ -842,7 +842,7 @@ function TreasuresPanel({
                                             />
                                             <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0}}>
                                                 <span className="treasure-name" style={{fontSize: treasure.name.length >= 6 ? '9px' : undefined}}>{treasure.name}</span>
-                                                <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px'}}>
+                                                <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px', whiteSpace: 'nowrap', overflow: 'hidden'}}>
                                                     {getTreasureForgeRank(treasure.id) >= 0 && (
                                                         <span className={`treasure-forge-inline ${isTreasureUR(treasure.id) ? 'ur' : ''}`}>
                                                             {isTreasureUR(treasure.id) ? '★' : '☆'}{getTreasureForgeRank(treasure.id)}
