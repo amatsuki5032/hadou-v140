@@ -1,6 +1,6 @@
 # 三國志覇道 DB定義書 v3
 
-> **更新日:** 2026-02-11（v1.50反映）  
+> **更新日:** 2026-02-13（v1.50+反映）
 > **用途:** Claude Code / Claude.ai ナレッジ用  
 > **関連:** 覇道ルール定義書（別文書）
 
@@ -28,8 +28,8 @@
 | data-survey.js | SURVEY_DATA | 23 | 調査（異民族）データ |
 | data-horse-skills.js | HORSE_SKILLS_DATA | 53 | 軍馬技能データ |
 | data-treasure-forge.js | TREASURE_FORGE | 187 | 名宝鍛錬データ（☆ランク→技能Lv） |
-| data-skill-effects.js | SKILL_EFFECTS_DATA | 499 | 技能→パラメータ効果値（手動抜粋）→ ⚠️ 廃止予定 |
-| data-combat-parameters.js | COMBAT_PARAMETERS | 171 | 戦闘6パラメータ効果値（手動抜粋）→ ⚠️ 廃止予定 |
+| ~~data-skill-effects.js~~ | ~~SKILL_EFFECTS_DATA~~ | ~~499~~ | ✅ 廃止済み（SKILL_DBに統合。ファイル削除済み） |
+| ~~data-combat-parameters.js~~ | ~~COMBAT_PARAMETERS~~ | ~~171~~ | ✅ 廃止済み（SKILL_DBに統合。ファイル削除済み） |
 | stat-calculator.js | TENPU_TABLE, FORMATION_RATES, calcActualStat() 等 | — | 天賦テーブル・陣形反映率・ステータス計算 |
 | skill-conditions.js | checkSkillCondition() | 44パターン | 技能発動条件の評価関数 |
 | calc-engine.js | calcCombatParams() 等 | — | 部隊パラメータ計算エンジン |
@@ -139,8 +139,8 @@ Power Queryフィルタ: `Text.EndsWith([Name], "DB") and [Name] <> "技能DB"`
 |--------|------|
 | クエリ1 | **武将マスタ統合ビュー**（447名、35列） |
 | format | テンプレート（データなし） |
-| LRDB | LR武将（88名） |
-| URDB | UR武将（107名） |
+| LRDB | LR武将（92名） |
+| URDB | UR武将（108名） |
 | 900DB〜800DB | SSR武将（天賦別） |
 | SRRNDB | SR/R/N武将（101名） |
 
@@ -503,3 +503,4 @@ Excel → Python/Claude ETL → JS → GitHub Pages
 | 11 | ~~名宝ステータス加算~~ | ~~高~~ | ✅ 完了。calc-engine.js の buildAllEntries() + collectTreasureSkillEntries() で実装。☆0・通常固定 |
 | 12 | 武将育成プロファイル | 中 | Lv/Grade/☆/五行/参軍Lvの個別管理。設計書作成済み。Lv/Grade/☆のUI実装済み |
 | 13 | ~~stat-calculator統合~~ | ~~中~~ | ✅ 完了。調査・軍馬・研究すべて反映済み。研究はcalcResearchBonuses()で基礎4項目（攻撃/防御/知力/兵力）の%ボーナスを計算 |
+| 14 | ~~練達効果の計算実装~~ | ~~高~~ | ✅ 完了。名宝技能の練達→武将技能Lvアップをcalc-engine.jsで実装。適用タイミングは付与解決後 |
