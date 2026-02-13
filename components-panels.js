@@ -828,20 +828,26 @@ function TreasuresPanel({
                                     key={`disabled-${treasure.id}-${treasure.name}`}
                                     className="treasure-item-wrapper"
                                 >
-                                    <div 
+                                    <div
                                         className="treasure-item"
                                     >
-                                        {isTreasureUR(treasure.id) && (
-                                            <div className="treasure-ur-badge">UR</div>
-                                        )}
                                         <div className="treasure-item-with-image">
-                                            <ItemImage 
+                                            <ItemImage
                                                 src={getImageUrl('treasure', treasure.id, null, treasure.name)}
                                                 alt={treasure.name}
                                                 rarity={isTreasureUR(treasure.id) ? 'UR' : 'normal'}
                                             />
                                             <div className="treasure-text-content" style={{display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0}}>
-                                                <span className="treasure-name" style={{fontSize: treasure.name.length >= 6 ? '9px' : undefined}}>{treasure.name}</span>
+                                                <span
+                                                    className="treasure-name"
+                                                    style={{
+                                                        color: isTreasureUR(treasure.id) ? 'var(--rarity-ur)' : 'var(--text-primary)',
+                                                        fontWeight: isTreasureUR(treasure.id) ? 'bold' : '700',
+                                                        fontSize: treasure.name.length >= 6 ? '9px' : undefined
+                                                    }}
+                                                >
+                                                    {treasure.name}{isTreasureUR(treasure.id) ? '(UR)' : ''}
+                                                </span>
                                                 <div style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '9px', whiteSpace: 'nowrap', overflow: 'hidden'}}>
                                                     {getTreasureForgeRank(treasure.id) >= 0 && (
                                                         <span className={`treasure-forge-inline ${isTreasureUR(treasure.id) ? 'ur' : ''}`}>
@@ -852,7 +858,16 @@ function TreasuresPanel({
                                                         <span className="treasure-type" style={{color: 'var(--text-muted)'}}>{getWeaponTypeName(treasure.weapon_type)}</span>
                                                     )}
                                                     {treasure.related && (
-                                                        <span className="treasure-related" style={{color: 'var(--text-muted)'}}>
+                                                        <span
+                                                            className="treasure-related"
+                                                            style={{
+                                                                color: (() => {
+                                                                    const relatedGeneral = generals.find(g => g.name === treasure.related);
+                                                                    return relatedGeneral ? getAffinityColor(relatedGeneral.affinity) : 'var(--text-muted)';
+                                                                })(),
+                                                                fontWeight: '600'
+                                                            }}
+                                                        >
                                                             {treasure.related}
                                                         </span>
                                                     )}
