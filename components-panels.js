@@ -348,11 +348,12 @@ function GeneralsPanel({
                                                         <div className="item-text-content">
                                                             <div style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px'}}>
                                                                 <span className="general-rarity" style={{fontSize: '10px'}}>{general.rarity}</span>
-                                                                <span 
-                                                                    className="general-name" 
+                                                                <span
+                                                                    className="general-name"
                                                                     style={{
                                                                         color: 'var(--text-primary)',
-                                                                        flex: 1
+                                                                        flex: 1,
+                                                                        fontSize: general.name.length >= 4 ? '9px' : undefined
                                                                     }}
                                                                 >
                                                                     {general.name}
@@ -406,11 +407,12 @@ function GeneralsPanel({
                                             <div className="item-text-content">
                                                 <div style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px'}}>
                                                     <span className="general-rarity" style={{fontSize: '10px'}}>{general.rarity}</span>
-                                                    <span 
-                                                        className="general-name" 
+                                                    <span
+                                                        className="general-name"
                                                         style={{
                                                             color: 'var(--text-primary)',
-                                                            flex: 1
+                                                            flex: 1,
+                                                            fontSize: general.name.length >= 4 ? '9px' : undefined
                                                         }}
                                                     >
                                                         {general.name}
