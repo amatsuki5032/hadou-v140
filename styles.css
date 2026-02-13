@@ -586,7 +586,7 @@
         .generals-panel {
             flex: 1;
             min-width: 280px;
-            max-width: 400px;
+            max-width: 450px;
             background: var(--bg-panel);
             border-right: 1px solid var(--border-base);
             display: flex;
@@ -906,7 +906,7 @@
         .treasures-panel {
             flex: 1;
             min-width: 280px;
-            max-width: 400px;
+            max-width: 450px;
             background: var(--bg-panel);
             display: flex;
             flex-direction: column;
