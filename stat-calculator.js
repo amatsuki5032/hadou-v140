@@ -211,7 +211,7 @@ function calcFormationBaseStats(formation, getProfileFn) {
         if (!slotData) continue;
 
         const generalId = typeof slotData === 'object' ? slotData.id : slotData;
-        const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
+        const general = getGeneralById(generalId);
         if (!general) continue;
 
         const profile = normalizeProfile(getProfileFn(general));
@@ -268,7 +268,7 @@ function calcAdvisorContribution(formation, getProfileFn, advisorLevel, facility
         if (!advisorData) continue;
 
         const generalId = typeof advisorData === 'object' ? advisorData.id : advisorData;
-        const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
+        const general = getGeneralById(generalId);
         if (!general) continue;
 
         const profile = normalizeProfile(getProfileFn(general));
@@ -561,7 +561,7 @@ function calcFormationBonuses(formationName, formation) {
         const slotData = formation.slots[slotName];
         if (!slotData) continue;
         const generalId = typeof slotData === 'object' ? slotData.id : slotData;
-        const general = generalId ? EMBEDDED_GENERALS_DATA.find(g => g.id === generalId) : null;
+        const general = generalId ? getGeneralById(generalId) : null;
         if (general) generals.push(general);
     }
 
@@ -629,7 +629,7 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     // 主将の兵科を取得（軍馬技能の兵科判定用）
     const mainSlot = formation.slots?.['主将'];
     const mainGeneralId = typeof mainSlot === 'object' ? mainSlot?.id : mainSlot;
-    const mainGeneral = mainGeneralId ? EMBEDDED_GENERALS_DATA.find(g => g.id === mainGeneralId) : null;
+    const mainGeneral = mainGeneralId ? getGeneralById(mainGeneralId) : null;
     const unitType = mainGeneral?.unit_type || '馬';
 
     // 参軍加算

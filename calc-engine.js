@@ -35,13 +35,13 @@ function getSkillLevel(skill, starRank) {
 function buildFormationContext(formation) {
     const mainData = formation.slots?.['主将'];
     const mainId = mainData ? (typeof mainData === 'object' ? mainData.id : mainData) : null;
-    const mainGeneral = mainId ? EMBEDDED_GENERALS_DATA.find(g => g.id === mainId) : null;
+    const mainGeneral = mainId ? getGeneralById(mainId) : null;
 
     const getAffinity = (slotName) => {
         const slotData = formation.slots?.[slotName];
         if (!slotData) return null;
         const gid = typeof slotData === 'object' ? slotData.id : slotData;
-        const g = EMBEDDED_GENERALS_DATA.find(gen => gen.id === gid);
+        const g = getGeneralById(gid);
         return g?.affinity ?? null;
     };
 
@@ -100,7 +100,7 @@ function collectSkillEntries(formation, getStarRankFn) {
         if (!generalData) return;
 
         const generalId = typeof generalData === 'object' ? generalData.id : generalData;
-        const general = EMBEDDED_GENERALS_DATA.find(g => g.id === generalId);
+        const general = getGeneralById(generalId);
 
         if (general?.skills) {
             const starRank = getStarRankFn(general);
@@ -116,7 +116,7 @@ function collectSkillEntries(formation, getStarRankFn) {
         const attendantData = formation.attendants?.[slotName];
         if (attendantData) {
             const attendantId = typeof attendantData === 'object' ? attendantData.id : attendantData;
-            const attendant = EMBEDDED_GENERALS_DATA.find(g => g.id === attendantId);
+            const attendant = getGeneralById(attendantId);
 
             if (attendant?.skills) {
                 const attStarRank = getStarRankFn(attendant);
@@ -467,7 +467,7 @@ function collectTreasureSkillEntries(formation) {
         var slotData = formation.slots && formation.slots[slotName];
         if (!slotData) continue;
         var generalId = typeof slotData === 'object' ? slotData.id : slotData;
-        var general = EMBEDDED_GENERALS_DATA.find(function(g) { return g.id === generalId; });
+        var general = getGeneralById(generalId);
         if (!general) continue;
 
         // TREASURE_FORGE key を取得

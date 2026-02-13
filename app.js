@@ -1,4 +1,4 @@
-const { useState, useEffect } = React;
+const { useState, useEffect, useMemo, useCallback } = React;
 
 // データを直接埋め込み（前のバージョンと同じデータを使用）
 // EMBEDDED_GENERALS_DATAは外部ファイル(data-all-generals.js)から読み込み
@@ -911,30 +911,30 @@ const { useState, useEffect } = React;
             };
             
             // 画像URL取得
-            const getImageUrl = (type, id, rarity, name) => {
+            const getImageUrl = useCallback((type, id, rarity, name) => {
                 // type: 'general' or 'treasure'
                 if (type === 'general') {
                     return getGeneralIconPath({ rarity, name });
                 } else if (type === 'treasure') {
                     // 名宝の場合、UR化状態をチェック
-                    const isUR = isTreasureUR(id);
+                    const isUR = treasureURStatus[id] || false;
                     return getTreasureIconPath({ name, isUR });
                 }
                 return '/icons/placeholder.png';
-            };
+            }, [treasureURStatus]);
             
             // 画像URL一括設定
             const saveImageUrls = (urls) => {
                 setImageUrls(urls);
             };
             // 武将の将星ランクを取得
-            const getGeneralStarRank = (general) => {
+            const getGeneralStarRank = useCallback((general) => {
                 const key = `${general.id}-${general.rarity}-${general.name}`;
                 return generalStarRank[key] || 0;
-            };
+            }, [generalStarRank]);
             
             // 武将の育成プロファイルを取得（stat-calculator用）
-            const getGeneralProfile = (general) => {
+            const getGeneralProfile = useCallback((general) => {
                 const key = `${general.id}-${general.rarity}-${general.name}`;
                 const star = generalStarRank[key] || 0;
                 const prof = generalProfiles[key] || {};
@@ -943,7 +943,7 @@ const { useState, useEffect } = React;
                     level: prof.level,   // undefined → calcActualStatでデフォルト適用
                     grade: prof.grade,   // undefined → calcActualStatで30
                 };
-            };
+            }, [generalStarRank, generalProfiles]);
             
             // 武将の将星ランクを設定
             const setGeneralStar = (general, rank) => {
@@ -1059,9 +1059,9 @@ const { useState, useEffect } = React;
             };
 
             // 名宝の鍛錬ランクを取得
-            const getTreasureForgeRank = (treasureId) => {
+            const getTreasureForgeRank = useCallback((treasureId) => {
                 return treasureForgeRank[treasureId] || 0;
-            };
+            }, [treasureForgeRank]);
             
             // 名宝の鍛錬ランクを設定
             const setTreasureForge = (treasureId, rank) => {
@@ -1092,9 +1092,9 @@ const { useState, useEffect } = React;
             };
             
             // 名宝がUR化されているかチェック
-            const isTreasureUR = (treasureId) => {
+            const isTreasureUR = useCallback((treasureId) => {
                 return treasureURStatus[treasureId] || false;
-            };
+            }, [treasureURStatus]);
 
             // ─── D&Dハンドラ（handlers-dnd.js） ───
             const {
@@ -1104,20 +1104,21 @@ const { useState, useEffect } = React;
                 handleRemoveGeneral, handleRemoveAttendant, handleRemoveAdvisor, handleRemoveTreasure,
                 autoAssignLRGeneral, autoAssignURGeneral, autoAssignTreasure,
                 handleGeneralDoubleClick
-            } = createDndHandlers({
+            } = useMemo(() => createDndHandlers({
                 formations, treasures, activeTab,
                 draggedGeneral, draggedTreasure,
                 collapsedFormations, recommendTargetFormation,
                 setFormations, setDraggedGeneral, setDraggedTreasure,
                 isGeneralUsed, isTreasureUsed, isURGeneralUsed
-            });
+            }), [formations, treasures, activeTab, draggedGeneral, draggedTreasure,
+                collapsedFormations, recommendTargetFormation]);
 
             // ─── テンプレート・パターン管理（handlers-template.js） ───
             const {
                 saveFormationTemplate, executeSaveTemplate,
                 loadFormationTemplate, executeLoadTemplate, deleteTemplate,
                 renamePattern, resetPattern, toggleDuplicateCheck, copyFromPattern
-            } = createTemplateHandlers({
+            } = useMemo(() => createTemplateHandlers({
                 formations, treasures,
                 formationPatterns, activePattern, currentProfile,
                 formationTemplates, collapsedFormations,
@@ -1129,7 +1130,9 @@ const { useState, useEffect } = React;
                 setTemplateName, setSelectedTemplate,
                 setOverwriteGenerals, setOverwriteTreasures,
                 setShowTemplateSaveDialog, setShowTemplateLoadDialog
-            });
+            }), [formations, treasures, formationPatterns, activePattern, currentProfile,
+                formationTemplates, collapsedFormations, templateName, selectedTemplate,
+                overwriteGenerals, overwriteTreasures, showTemplateSaveDialog, showTemplateLoadDialog]);
 
             // ─── データ入出力（data-io.js） ───
             const {
@@ -1156,7 +1159,7 @@ const { useState, useEffect } = React;
             });
 
             // ─── クリック移動（スクロール越しの入れ替え） ───
-            const handleClickMove = (targetFormationKey, targetSlotName, targetType, targetSubSlot) => {
+            const handleClickMove = useCallback((targetFormationKey, targetSlotName, targetType, targetSubSlot) => {
                 if (!selectedForMove) return;
                 const src = selectedForMove;
                 
@@ -1231,15 +1234,15 @@ const { useState, useEffect } = React;
                 });
                 
                 setSelectedForMove(null);
-            };
+            }, [selectedForMove]);
 
             // 部隊の技能効果を集計（calc-engine.js のラッパー）
-            const calcSkillEffects = (formationKey) => {
+            const calcSkillEffects = useCallback((formationKey) => {
                 return calculateSkillEffects(formations[formationKey], getGeneralStarRank);
-            };
+            }, [formations, generalStarRank]);
 
             // 部隊の技能一覧を取得（calc-engine.js のラッパー）
-            const calcSkillList = (formationKey) => {
+            const calcSkillList = useCallback((formationKey) => {
                 const formation = formations[formationKey];
                 if (!formation || typeof buildAllEntries !== 'function') return null;
                 try {
@@ -1249,15 +1252,15 @@ const { useState, useEffect } = React;
                     console.warn('calcSkillList error:', e);
                     return null;
                 }
-            };
-            
+            }, [formations, generalStarRank, generalProfiles]);
+
             // 部隊の戦闘パラメータを計算（calc-engine.js のラッパー）
-            const calcCombatParams = (formationKey) => {
+            const calcCombatParams = useCallback((formationKey) => {
                 return calculateCombatParameters(formations[formationKey], getGeneralStarRank);
-            };
-            
+            }, [formations, generalStarRank]);
+
             // 部隊ステータスを計算（stat-calculator.js のラッパー）
-            const calcFormationStats = (formationKey) => {
+            const calcFormationStats = useCallback((formationKey) => {
                 if (typeof calculateFormationStats !== 'function') {
                     console.warn('calculateFormationStats is not defined');
                     return null;
@@ -1271,10 +1274,10 @@ const { useState, useEffect } = React;
                     console.error('calcFormationStats error:', e);
                     return null;
                 }
-            };
+            }, [formations, generalStarRank, generalProfiles, profileConfig]);
             
             // 部隊をリセット
-            const resetFormation = (formationKey) => {
+            const resetFormation = useCallback((formationKey) => {
                 if (confirm('この部隊の全データ（武将・侍従・名宝・参軍）をリセットしますか？')) {
                     setFormations(prev => ({
                         ...prev,
@@ -1287,24 +1290,24 @@ const { useState, useEffect } = React;
                         }
                     }));
                 }
-            };
-            
+            }, []);
+
             // 部隊の折りたたみ状態を切り替え
-            const toggleFormationCollapse = (formationKey) => {
+            const toggleFormationCollapse = useCallback((formationKey) => {
                 setCollapsedFormations(prev => {
                     const newCollapsed = {
                         ...prev,
                         [formationKey]: !prev[formationKey]
                     };
-                    
+
                     // 部隊を開いた（折りたたみ解除した）場合、おススメ部隊に設定
                     if (prev[formationKey]) {
                         setRecommendTargetFormation(formationKey);
                     }
-                    
+
                     return newCollapsed;
                 });
-            };
+            }, []);
             // 陣形変更
             // フィルター適用
             const filteredGenerals = generals.filter(g => {
