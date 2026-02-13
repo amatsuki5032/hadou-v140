@@ -957,6 +957,8 @@
         
         .treasure-item-wrapper {
             position: relative;
+            min-width: 0;
+            overflow: hidden;
         }
         
         .treasure-move-btn {
