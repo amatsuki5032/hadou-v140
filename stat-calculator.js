@@ -554,14 +554,14 @@ function calcHorseSkillBonuses(profileConfig, unitType) {
         const skillData = HORSE_SKILL_DATA.find(s => s.name === skillName);
         if (!skillData) continue;
 
-        // 太固・勇叡は固定値加算、それ以外の基礎は%扱い
-        const isFixedSkill = skillName.startsWith('太固') || skillName.startsWith('勇叡');
+        // 大固・勇叡は固定値加算、それ以外の基礎は%扱い
+        const isFixedSkill = skillName.startsWith('大固') || skillName.startsWith('勇叡');
 
         for (const effect of skillData.effects) {
             const value = effect.levels?.[levelKey];
             if (value == null) continue;
             if (effect.type2 === '基礎' && isFixedSkill) {
-                // 太固・勇叡: データ値×100が実値（30→3000）
+                // 大固・勇叡: データ値×100が実値（30→3000）
                 const flatVal = value * 100;
                 if (effect.effect === '攻撃') fixBonuses.attack += flatVal;
                 else if (effect.effect === '防御') fixBonuses.defense += flatVal;
@@ -723,7 +723,7 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     // 軍馬技能ボーナス（固定値 + パラメータ%）
     const horseSkillBonus = calcHorseSkillBonuses(profileConfig, unitType);
 
-    // 軍馬技能の固定値加算（太固・勇叡）を技能fixBonusesに合算
+    // 軍馬技能の固定値加算（大固・勇叡）を技能fixBonusesに合算
     fixBonuses.attack += horseSkillBonus.fix.attack;
     fixBonuses.defense += horseSkillBonus.fix.defense;
     fixBonuses.intelligence += horseSkillBonus.fix.intelligence;
