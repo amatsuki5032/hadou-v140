@@ -1053,10 +1053,16 @@ var FormationsArea = React.memo(function FormationsArea({
                                                         <span style={{color: 'var(--text-primary)', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '18px'}}>
                                                             {(fStats.hp || 0).toLocaleString()}
                                                         </span>
-                                                        {showStatDetail && fStats.hpPct > 0 && (
+                                                        {showStatDetail && (fStats.hpPct > 0 || fStats.unitMatchBonus > 0) && (
                                                             <span style={{color: 'var(--text-muted)', fontSize: '12px'}}>
                                                                 ({(fStats.baseHp || 0).toLocaleString()}
-                                                                <span style={{color: 'var(--accent)'}}>+{(fStats.hpPct * 100).toFixed(0)}%</span>)
+                                                                {fStats.unitMatchBonus > 0 && (
+                                                                    <span style={{color: '#a78bfa'}}>{' \u00d7'}{((1 + fStats.unitMatchBonus) * 100).toFixed(0)}%</span>
+                                                                )}
+                                                                {fStats.hpPct > 0 && (
+                                                                    <span style={{color: 'var(--accent)'}}>{' \u00d7'}{((1 + fStats.hpPct) * 100).toFixed(0)}%</span>
+                                                                )}
+                                                                )
                                                             </span>
                                                         )}
                                                     </div>
@@ -1082,6 +1088,7 @@ var FormationsArea = React.memo(function FormationsArea({
                                                             {(fStats.profileBonuses?.pct?.attack > 0 || fStats.profileBonuses?.pct?.defense > 0) && ' / 調査'}
                                                             {(fStats.research?.attack > 0 || fStats.research?.defense > 0 || fStats.research?.intelligence > 0 || fStats.research?.hp > 0) && ' / 研究'}
                                                             {(fStats.formationBonus?.attack !== 0 || fStats.formationBonus?.defense !== 0 || fStats.formationBonus?.intelligence !== 0 || fStats.formationBonus?.hp !== 0) && ' / 陣形'}
+                                                            {fStats.unitMatchCount > 0 && ` / 兵科一致\u00d7${fStats.unitMatchCount}`}
                                                         </span>
                                                     </div>
                                                 )}
