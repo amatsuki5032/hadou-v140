@@ -207,10 +207,10 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
 
             {/* 一括操作 */}
             <div className="research-bulk-actions">
-                <button className="research-bulk-btn" onClick={handleUnlockAll}>全解除</button>
-                <button className="research-bulk-btn" onClick={handleLockAll}>全ロック</button>
-                <button className="research-bulk-btn research-bulk-btn-danger" onClick={handleSetAllMax}>全上限に設定</button>
                 <button className="research-bulk-btn research-bulk-btn-danger" onClick={handleResetAll}>全リセット</button>
+                <button className="research-bulk-btn" onClick={handleLockAll}>全ロック</button>
+                <button className="research-bulk-btn" onClick={handleUnlockAll}>全解除</button>
+                <button className="research-bulk-btn research-bulk-btn-danger" onClick={handleSetAllMax}>全上限に設定</button>
             </div>
 
             {/* 分野別研究リスト */}
