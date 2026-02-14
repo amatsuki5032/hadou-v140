@@ -382,7 +382,6 @@ function InvestigationTab({ profileConfig, setProfileConfig }) {
 
 function HorseTab({ profileConfig, setProfileConfig }) {
     const horses = profileConfig?.horses || createDefaultProfileData().horses;
-    const [selectedHorse, setSelectedHorse] = React.useState(0);
 
     const updateHorse = (index, updater) => {
         setProfileConfig(prev => {
@@ -394,7 +393,8 @@ function HorseTab({ profileConfig, setProfileConfig }) {
         });
     };
 
-    const skillOptions = HORSE_SKILL_SYSTEMS.map(s => s.name);
+    // HORSE_SKILL_DATA から個別スキル名リストを生成
+    const skillOptions = (typeof HORSE_SKILL_DATA !== 'undefined' ? HORSE_SKILL_DATA : []).map(s => s.name);
 
     const getUsedSkills = (horseIndex) => {
         const horse = horses[horseIndex];
@@ -402,7 +402,7 @@ function HorseTab({ profileConfig, setProfileConfig }) {
         return new Set(horse.skills.map(s => s.name).filter(Boolean));
     };
 
-    // 累積計算
+    // 累積計算（個別スキル名でそのまま集計）
     const totals = {};
     for (const horse of horses) {
         if (!horse) continue;
@@ -427,28 +427,20 @@ function HorseTab({ profileConfig, setProfileConfig }) {
 
     return (
         <div className="horse-tab">
-            <div className="horse-selector">
+            {/* 3頭カード横並び */}
+            <div className="horse-cards">
                 {horses.map((horse, i) => (
-                    <button
+                    <HorseConfig
                         key={i}
-                        className={`horse-selector-btn ${selectedHorse === i ? 'active' : ''}`}
-                        onClick={() => setSelectedHorse(i)}
-                    >
-                        {horse.isMeiba ? (horse.meibaName || '名馬') : (horse.coat || `馬${i + 1}`)}
-                    </button>
+                        horse={horse}
+                        index={i}
+                        updateHorse={updateHorse}
+                        skillOptions={skillOptions}
+                        getUsedSkills={getUsedSkills}
+                        ROMAN={ROMAN}
+                    />
                 ))}
             </div>
-
-            {horses[selectedHorse] && (
-                <HorseConfig
-                    horse={horses[selectedHorse]}
-                    index={selectedHorse}
-                    updateHorse={updateHorse}
-                    skillOptions={skillOptions}
-                    getUsedSkills={getUsedSkills}
-                    ROMAN={ROMAN}
-                />
-            )}
 
             {/* 合計 */}
             <div className="horse-summary">
@@ -507,30 +499,34 @@ function HorseConfig({ horse, index, updateHorse, skillOptions, getUsedSkills, R
         if (meiba) meibaStats = meiba.stats[horse.meibaStarRank] || meiba.stats[0];
     }
 
+    // カードヘッダーの表示名
+    const cardTitle = horse.isMeiba ? (horse.meibaName || '名馬') : (horse.coat || `馬${index + 1}`);
+
     return (
-        <div className="horse-config">
+        <div className="horse-card">
+            <div className="horse-card-header">{cardTitle}</div>
+
             {/* 毛色 */}
             <div className="horse-config-row">
-                <span className="horse-config-label">毛色</span>
                 <select
-                    className="horse-config-select"
+                    className="horse-config-select horse-config-select-full"
                     value={horse.coat || ''}
                     onChange={(e) => handleCoatChange(e.target.value || null)}
                 >
-                    <option value="">選択なし</option>
+                    <option value="">毛色なし</option>
                     {Object.keys(HORSE_COATS).map(coat => (
                         <option key={coat} value={coat}>{coat}</option>
                     ))}
                 </select>
-                {horse.coat && !horse.isMeiba && HORSE_COATS[horse.coat] && (
-                    <span className="horse-config-bonus">
-                        {Object.entries(HORSE_COATS[horse.coat])
-                            .filter(([_, v]) => v > 0)
-                            .map(([k, v]) => `${k === 'attack' ? '攻撃' : k === 'defense' ? '防御' : '知力'}+${v}`)
-                            .join(' ')}
-                    </span>
-                )}
             </div>
+            {horse.coat && !horse.isMeiba && HORSE_COATS[horse.coat] && (
+                <div className="horse-config-bonus">
+                    {Object.entries(HORSE_COATS[horse.coat])
+                        .filter(([_, v]) => v > 0)
+                        .map(([k, v]) => `${k === 'attack' ? '攻撃' : k === 'defense' ? '防御' : '知力'}+${v}`)
+                        .join(' ')}
+                </div>
+            )}
 
             {/* 名馬 */}
             <div className="horse-config-row">
@@ -542,38 +538,38 @@ function HorseConfig({ horse, index, updateHorse, skillOptions, getUsedSkills, R
                     />
                     <span>名馬</span>
                 </label>
-                {horse.isMeiba && (
-                    <React.Fragment>
-                        <select
-                            className="horse-config-select horse-config-select-sm"
-                            value={horse.meibaName || ''}
-                            onChange={(e) => updateHorse(index, prev => ({ ...prev, meibaName: e.target.value }))}
-                        >
-                            {Object.keys(MEIBA_DATA).map(name => (
-                                <option key={name} value={name}>{name}</option>
-                            ))}
-                        </select>
-                        <span className="horse-config-star-label">☆</span>
-                        <select
-                            className="horse-config-select horse-config-select-sm"
-                            value={horse.meibaStarRank}
-                            onChange={(e) => updateHorse(index, prev => ({ ...prev, meibaStarRank: parseInt(e.target.value) }))}
-                        >
-                            {[0,1,2,3,4,5,6,7].map(r => (
-                                <option key={r} value={r}>{r}</option>
-                            ))}
-                        </select>
-                    </React.Fragment>
-                )}
             </div>
+            {horse.isMeiba && (
+                <div className="horse-config-row">
+                    <select
+                        className="horse-config-select"
+                        value={horse.meibaName || ''}
+                        onChange={(e) => updateHorse(index, prev => ({ ...prev, meibaName: e.target.value }))}
+                    >
+                        {Object.keys(MEIBA_DATA).map(name => (
+                            <option key={name} value={name}>{name}</option>
+                        ))}
+                    </select>
+                    <span className="horse-config-star-label">☆</span>
+                    <select
+                        className="horse-config-select horse-config-select-sm"
+                        value={horse.meibaStarRank}
+                        onChange={(e) => updateHorse(index, prev => ({ ...prev, meibaStarRank: parseInt(e.target.value) }))}
+                    >
+                        {[0,1,2,3,4,5,6,7].map(r => (
+                            <option key={r} value={r}>{r}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
 
             {/* 名馬ステータス */}
             {meibaStats && (
                 <div className="horse-meiba-stats">
-                    <span>攻撃+{meibaStats.attack}</span>
-                    <span>防御+{meibaStats.defense}</span>
-                    <span>知力+{meibaStats.intelligence}</span>
-                    {meibaStats.mobility > 0 && <span>機動+{meibaStats.mobility}</span>}
+                    <span>攻+{meibaStats.attack}</span>
+                    <span>防+{meibaStats.defense}</span>
+                    <span>知+{meibaStats.intelligence}</span>
+                    {meibaStats.mobility > 0 && <span>機+{meibaStats.mobility}</span>}
                     {horse.meibaName && (() => {
                         const meiba = MEIBA_DATA[horse.meibaName];
                         const slv = meiba?.starRankToSkillLevel[horse.meibaStarRank] || 0;
@@ -585,14 +581,13 @@ function HorseConfig({ horse, index, updateHorse, skillOptions, getUsedSkills, R
             {/* 技能3枠 */}
             <div className="horse-skills-section">
                 {horse.skills.map((skill, si) => (
-                    <div key={si} className="horse-skill-row">
-                        <span className="horse-skill-label">技能{si + 1}</span>
+                    <div key={si} className="horse-skill-slot">
                         <select
-                            className="horse-config-select"
+                            className="horse-config-select horse-config-select-full"
                             value={skill.name || ''}
                             onChange={(e) => handleSkillChange(si, 'name', e.target.value)}
                         >
-                            <option value="">-</option>
+                            <option value="">技能{si + 1}</option>
                             {skillOptions.map(opt => {
                                 const isUsed = usedSkills.has(opt) && skill.name !== opt;
                                 return (

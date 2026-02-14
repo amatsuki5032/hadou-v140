@@ -2362,67 +2362,42 @@
     gap: 12px;
 }
 
-/* --- 馬選択ボタン --- */
-.horse-selector {
+/* --- 3頭カード横並び --- */
+.horse-cards {
     display: flex;
-    gap: 4px;
+    gap: 6px;
 }
 
-.horse-selector-btn {
+.horse-card {
     flex: 1;
-    padding: 6px 10px;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-light);
-    color: var(--text-secondary);
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.horse-selector-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-}
-
-.horse-selector-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    font-weight: 900;
-}
-
-/* --- 馬設定エリア --- */
-.horse-config {
+    min-width: 0;
     background: var(--bg-card);
     border: 1px solid var(--border-base);
-    padding: 10px;
+    padding: 8px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
+.horse-card-header {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--text-primary);
+    text-align: center;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--bordeaux);
+}
+
+/* --- 馬設定 --- */
 .horse-config-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     flex-wrap: wrap;
 }
 
-.horse-config-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    min-width: 32px;
-    flex-shrink: 0;
-}
-
 .horse-config-select {
-    padding: 4px 8px;
+    padding: 3px 4px;
     background: var(--bg-input);
     border: 1px solid var(--border-light);
     color: var(--text-body);
@@ -2430,7 +2405,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: border-color 0.2s;
-    min-width: 80px;
+    min-width: 0;
 }
 
 .horse-config-select:focus {
@@ -2442,18 +2417,24 @@
     border-color: var(--border-hover);
 }
 
+.horse-config-select-full {
+    width: 100%;
+}
+
 .horse-config-select-sm {
-    min-width: 52px;
+    min-width: 44px;
     width: auto;
+    flex-shrink: 0;
 }
 
 .horse-config-bonus {
     font-size: 10px;
     font-weight: 700;
     color: var(--success);
-    padding: 2px 6px;
+    padding: 2px 4px;
     background: rgba(22, 163, 74, 0.1);
     border: 1px solid rgba(22, 163, 74, 0.2);
+    text-align: center;
 }
 
 /* 名馬トグル */
@@ -2507,20 +2488,20 @@
 /* --- 名馬ステータス表示 --- */
 .horse-meiba-stats {
     display: flex;
-    gap: 8px;
+    gap: 4px;
     flex-wrap: wrap;
-    padding: 6px 10px;
+    padding: 4px 6px;
     background: var(--bg-elevated);
     border: 1px solid var(--border-base);
     border-left: 3px solid var(--bordeaux);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     color: var(--success);
 }
 
 .horse-meiba-skill {
     color: var(--bordeaux-text);
-    padding: 1px 6px;
+    padding: 1px 4px;
     background: var(--bordeaux-bg);
     border: 1px solid var(--bordeaux-border);
     font-size: 10px;
@@ -2530,21 +2511,14 @@
 .horse-skills-section {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
+    margin-top: auto;
 }
 
-.horse-skill-row {
+.horse-skill-slot {
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.horse-skill-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    min-width: 40px;
-    flex-shrink: 0;
+    gap: 3px;
 }
 
 /* --- 合計サマリー --- */
