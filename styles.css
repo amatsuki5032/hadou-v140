@@ -2437,48 +2437,6 @@
     text-align: center;
 }
 
-/* 名馬トグル */
-.horse-config-meiba-toggle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    user-select: none;
-}
-
-.horse-config-meiba-toggle input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border-hover);
-    background: var(--bg-base);
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    flex-shrink: 0;
-}
-
-.horse-config-meiba-toggle input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-}
-
-.horse-config-meiba-toggle input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 4px;
-    width: 4px;
-    height: 7px;
-    border: solid #fff;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
 .horse-config-star-label {
     font-size: 12px;
     color: var(--rank-color);
