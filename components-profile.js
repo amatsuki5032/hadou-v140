@@ -130,9 +130,9 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
     }
     const fieldOrder = Object.values(RESEARCH_FIELDS).flatMap(f => f.choices);
 
-    // 一括操作: 全アクティブ項目を解除（チェックON）
+    // 一括操作: 全アクティブ項目を解除（アンロック）
     const handleUnlockAll = () => {
-        if (!confirm('有効な研究項目をすべて解除（チェックON）します。\nよろしいですか？')) return;
+        if (!confirm('有効な研究項目をすべて解除（アンロック）します。\nよろしいですか？')) return;
         setProfileConfig(prev => {
             const newItems = { ...(prev.research?.items || {}) };
             for (const item of RESEARCH_DATA) {
@@ -146,9 +146,9 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
         });
     };
 
-    // 一括操作: 全ロック（チェックOFF）
+    // 一括操作: 全ロック
     const handleLockAll = () => {
-        if (!confirm('すべての研究項目をロック（チェックOFF）します。\nよろしいですか？')) return;
+        if (!confirm('すべての研究項目をロックします。\nよろしいですか？')) return;
         setProfileConfig(prev => {
             const newItems = { ...(prev.research?.items || {}) };
             for (const key of Object.keys(newItems)) {
@@ -171,6 +171,14 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
                 }
             }
             return { ...prev, research: { ...prev.research, items: newItems } };
+        });
+    };
+
+    // 一括操作: 全リセット（全項目をロック＋値を0に戻す）
+    const handleResetAll = () => {
+        if (!confirm('すべての研究項目をリセットします。\n（全項目ロック＋値を初期化）\nよろしいですか？')) return;
+        setProfileConfig(prev => {
+            return { ...prev, research: { ...prev.research, items: {} } };
         });
     };
 
@@ -204,6 +212,7 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
                 <button className="research-bulk-btn" onClick={handleUnlockAll}>全解除</button>
                 <button className="research-bulk-btn" onClick={handleLockAll}>全ロック</button>
                 <button className="research-bulk-btn research-bulk-btn-danger" onClick={handleSetAllMax}>全上限に設定</button>
+                <button className="research-bulk-btn research-bulk-btn-danger" onClick={handleResetAll}>全リセット</button>
             </div>
 
             {/* 分野別研究リスト */}
@@ -264,14 +273,12 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
 
                         return (
                             <div key={key} className={`research-item ${isDisabled ? 'disabled' : ''}`}>
-                                <label className="research-item-check">
-                                    <input
-                                        type="checkbox"
-                                        checked={!!saved.unlocked}
-                                        disabled={isDisabled}
-                                        onChange={(e) => onItemChange(key, 'unlocked', e.target.checked)}
-                                    />
-                                </label>
+                                <button
+                                    className={`research-item-lock ${saved.unlocked ? 'unlocked' : ''}`}
+                                    disabled={isDisabled}
+                                    onClick={() => onItemChange(key, 'unlocked', !saved.unlocked)}
+                                    title={saved.unlocked ? 'クリックでロック' : 'クリックで解除'}
+                                >{saved.unlocked ? '\u{1F513}' : '\u{1F512}'}</button>
                                 <span className="research-item-name">{item.name}</span>
                                 <span className="research-item-effect">{effectLabel}</span>
                                 <input

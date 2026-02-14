@@ -2155,44 +2155,29 @@
     pointer-events: none;
 }
 
-/* カスタムチェックボックス */
-.research-item-check {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.research-item-check input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border-hover);
-    background: var(--bg-base);
+/* ロック/アンロックアイコンボタン */
+.research-item-lock {
+    background: none;
+    border: none;
     cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
+    font-size: 14px;
+    padding: 0 2px;
+    flex-shrink: 0;
+    line-height: 1;
+    opacity: 0.5;
+    transition: opacity 0.2s;
 }
 
-.research-item-check input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
+.research-item-lock.unlocked {
+    opacity: 1;
 }
 
-.research-item-check input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 4px;
-    width: 4px;
-    height: 7px;
-    border: solid #fff;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+.research-item-lock:hover:not(:disabled) {
+    opacity: 0.8;
 }
 
-.research-item-check input[type="checkbox"]:disabled {
-    opacity: 0.3;
+.research-item-lock:disabled {
+    opacity: 0.2;
     cursor: not-allowed;
 }
 
