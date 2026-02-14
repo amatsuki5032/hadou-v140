@@ -1,6 +1,6 @@
 # 三國志覇道 DB定義書 v3
 
-> **更新日:** 2026-02-13（v1.50+反映）
+> **更新日:** 2026-02-15（v1.50+反映）
 > **用途:** Claude Code / Claude.ai ナレッジ用  
 > **関連:** 覇道ルール定義書（別文書）
 
@@ -26,11 +26,11 @@
 | data-skill-db.js | SKILL_DB | 1,783 | 技能DB全量（自動生成、calc-engine.jsが参照） |
 | data-research.js | RESEARCH_FIELDS, RESEARCH_DATA | 127 | 研究マスタ（M/専攻分類付き） |
 | data-survey.js | SURVEY_DATA | 23 | 調査（異民族）データ |
-| data-horse-skills.js | HORSE_SKILLS_DATA | 53 | 軍馬技能データ |
+| data-horse-skills.js | HORSE_SKILL_DATA, HORSE_COLOR_BONUS, NAMED_HORSE_STATS | 29技能(52効果行) | 軍馬技能データ・毛色ボーナス・名馬ステータス |
 | data-treasure-forge.js | TREASURE_FORGE | 187 | 名宝鍛錬データ（☆ランク→技能Lv） |
 | ~~data-skill-effects.js~~ | ~~SKILL_EFFECTS_DATA~~ | ~~499~~ | ✅ 廃止済み（SKILL_DBに統合。ファイル削除済み） |
 | ~~data-combat-parameters.js~~ | ~~COMBAT_PARAMETERS~~ | ~~171~~ | ✅ 廃止済み（SKILL_DBに統合。ファイル削除済み） |
-| stat-calculator.js | TENPU_TABLE, FORMATION_RATES, calcActualStat() 等 | — | 天賦テーブル・陣形反映率・ステータス計算 |
+| stat-calculator.js | TENPU_TABLE, FORMATION_RATES, TROOP_LEVEL_TABLE, HP_BY_TROOP_LEVEL, calcActualStat() 等 | — | 天賦テーブル・陣形反映率・兵科Lvテーブル・兵力計算・ステータス計算 |
 | skill-conditions.js | checkSkillCondition() | 44パターン | 技能発動条件の評価関数 |
 | calc-engine.js | calcCombatParams() 等 | — | 部隊パラメータ計算エンジン |
 | data-profile.js | loadProfileData(), saveProfileData() 等 | — | プロファイルデータ管理（localStorage） |
