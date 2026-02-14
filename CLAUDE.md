@@ -74,7 +74,8 @@ hadou-v140/
 │   ├── generals/
 │   └── treasures/
 ├── docs/                    ← ドキュメント
-└── tools/                   ← ETLスクリプト（Python）
+├── tools/                   ← ETLスクリプト（Python）
+└── tasks/                   ← 残課題
 ```
 
 ## データ共有ルール
