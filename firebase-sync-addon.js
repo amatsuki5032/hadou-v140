@@ -29,8 +29,8 @@ localStorage.setItem = function(key, value) {
             // セッションIDを追加
             allData._sessionId = sessionId;
             
-            FirebaseSync.saveData(allData).catch(err => {
-                console.error('Firebase保存エラー:', err);
+            FirebaseSync.saveData(allData).catch(() => {
+                // saveData内でユーザー通知済み
             });
         }
     }
@@ -38,21 +38,15 @@ localStorage.setItem = function(key, value) {
 
 // アプリ起動時にFirebaseからデータを読み込み
 window.addEventListener('DOMContentLoaded', async () => {
-    console.log('Firebase同期を初期化中...');
-    console.log('セッションID:', sessionId);
-    
     if (typeof FirebaseSync !== 'undefined') {
         try {
             isSyncing = true; // 同期開始
             
             const firebaseData = await FirebaseSync.loadData();
-            
+
             if (firebaseData) {
-                console.log('Firebaseからデータを読み込みました');
-                
                 // 自分自身のセッションの場合はスキップ
                 if (firebaseData._sessionId === sessionId) {
-                    console.log('自分のセッションのデータなのでスキップ');
                     isSyncing = false;
                 } else {
                     // Firebaseのデータの方が新しければ、LocalStorageを更新
@@ -60,7 +54,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                     const firebaseTimestamp = firebaseData.lastUpdated;
                     
                     if (!localTimestamp || (firebaseTimestamp && firebaseTimestamp.seconds * 1000 > new Date(localTimestamp).getTime())) {
-                        console.log('Firebaseのデータの方が新しいので更新します');
                         
                         // LocalStorageを更新
                         Object.keys(firebaseData).forEach(key => {
@@ -82,7 +75,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
             } else {
-                console.log('Firebaseにデータがありません（初回起動）');
                 isSyncing = false;
             }
             
@@ -92,7 +84,6 @@ window.addEventListener('DOMContentLoaded', async () => {
             FirebaseSync.watchChanges((data) => {
                 // 自分自身のセッションの場合は無視
                 if (data._sessionId === sessionId) {
-                    console.log('自分の更新なので通知しない');
                     return;
                 }
                 
@@ -103,9 +94,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                 
                 // 1秒待ってから更新確認
                 updateTimeout = setTimeout(() => {
-                    console.log('他のデバイスからの更新を検出');
-                    console.log('更新元セッションID:', data._sessionId);
-                    
                     const firebaseTimestamp = data.lastUpdated;
                     const localTimestamp = localStorage.getItem('lastUpdated');
                     
@@ -129,16 +117,10 @@ window.addEventListener('DOMContentLoaded', async () => {
                 }, 1000);
             });
             
-            console.log('Firebase同期が有効になりました');
-            console.log('Firebaseの監視を開始');
-            
         } catch (error) {
             console.error('Firebase初期化エラー:', error);
+            alert('Firebase同期の初期化に失敗しました。同期機能が無効です。');
             isSyncing = false;
         }
-    } else {
-        console.warn('FirebaseSyncが見つかりません');
     }
 });
-
-console.log('Firebase同期モジュールが読み込まれました');

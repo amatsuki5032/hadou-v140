@@ -123,6 +123,7 @@ function saveProfileToStorage(data) {
         localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
         console.error('プロファイル保存エラー:', e);
+        alert('プロファイルの保存に失敗しました。ストレージ容量を確認してください。');
     }
 }
 
