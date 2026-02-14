@@ -548,11 +548,18 @@ function calcHorseSkillBonuses(profileConfig, unitType) {
     // 2) 累積レベルで効果値を取得
     const LK = { 1:'Ⅰ', 2:'Ⅱ', 3:'Ⅲ', 4:'Ⅳ', 5:'Ⅴ', 6:'Ⅵ', 7:'Ⅶ', 8:'Ⅷ', 9:'Ⅸ', 10:'Ⅹ' };
 
+    // 部隊兵科→スキル兵科サフィックスのマッピング
+    const unitSuffixMap = { '馬': '騎', '槍': '歩', '弓': '弓' };
+    const formationSuffix = unitSuffixMap[unitType] || '騎';
+
     for (const [skillName, totalLevel] of Object.entries(skillTotals)) {
         const levelKey = LK[totalLevel];
         if (!levelKey) continue;
         const skillData = HORSE_SKILL_DATA.find(s => s.name === skillName);
         if (!skillData) continue;
+
+        // 兵科依存スキルは部隊の兵科と一致しなければスキップ
+        if (skillData.unitType && skillData.unitType !== formationSuffix) continue;
 
         // 大固・兵科 / 勇叡・兵科 は固定値加算、それ以外の基礎は%扱い
         const isFixedSkill = skillName.startsWith('大固') || skillName.startsWith('勇叡');
