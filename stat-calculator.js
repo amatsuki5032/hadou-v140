@@ -765,9 +765,18 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
         intelligence: base.intelligence + advisorBonus.intelligence + horseStatBonus.intelligence,
     };
 
-    // 兵力計算: 各武将の兵科Lv別兵力 × 陣形反映率 → HP%ボーナス適用
+    // 兵力計算: 各武将の兵科Lv別兵力 × 陣形反映率 → 兵科一致 → HP%ボーナス適用
     const baseHp = calcFormationBaseHp(base.memberStats, base.rates);
-    const finalHp = Math.floor(baseHp * (1 + totalPct.hp));
+
+    // 兵科一致ボーナス: 副将・補佐のうち主将と同じ兵科の人数 × 10%
+    let unitMatchCount = 0;
+    for (const [slotName, data] of Object.entries(base.memberStats)) {
+        if (slotName === '主将') continue;
+        if (data.general.unit_type === unitType) unitMatchCount++;
+    }
+    const unitMatchBonus = unitMatchCount * 0.10;
+    const hpAfterMatch = Math.floor(baseHp * (1 + unitMatchBonus));
+    const finalHp = Math.floor(hpAfterMatch * (1 + totalPct.hp));
 
     // 機動・射程: 主将の兵科から固定値
     const unitFixed = UNIT_TYPE_PARAMS[unitType] || UNIT_TYPE_PARAMS['馬'];
@@ -789,9 +798,11 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
             defense: Math.floor(baseWithAll.defense * (1 + totalPct.defense)) + fixBonuses.defense,
             intelligence: Math.floor(baseWithAll.intelligence * (1 + totalPct.intelligence)) + fixBonuses.intelligence,
         },
-        // 兵力（基礎兵力にHP%ボーナス適用後）
+        // 兵力（基礎兵力 × 兵科一致 × HP%ボーナス）
         hp: finalHp,
         baseHp: baseHp,
+        unitMatchCount: unitMatchCount,
+        unitMatchBonus: unitMatchBonus,
         hpPct: totalPct.hp,
         // 兵科Lv補正（攻撃・防御に適用済み）
         troopLvBonus: troopLvBonus,
