@@ -1046,6 +1046,33 @@ var FormationsArea = React.memo(function FormationsArea({
                                                         );
                                                     })}
                                                 </div>
+                                                {/* 兵力・機動・射程 */}
+                                                <div className="stat-row-grid" style={{borderTop: '1px solid var(--border-light)', paddingTop: '4px', marginTop: '2px'}}>
+                                                    <div className="param-row">
+                                                        <span className="param-label" style={{color: 'var(--success, #22c55e)', fontWeight: 'bold'}}>兵力:</span>
+                                                        <span style={{color: 'var(--text-primary)', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '18px'}}>
+                                                            {(fStats.hp || 0).toLocaleString()}
+                                                        </span>
+                                                        {showStatDetail && fStats.hpPct > 0 && (
+                                                            <span style={{color: 'var(--text-muted)', fontSize: '12px'}}>
+                                                                ({(fStats.baseHp || 0).toLocaleString()}
+                                                                <span style={{color: 'var(--accent)'}}>+{(fStats.hpPct * 100).toFixed(0)}%</span>)
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-label" style={{color: 'var(--text-secondary)', fontWeight: 'bold'}}>機動:</span>
+                                                        <span style={{color: 'var(--text-primary)', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '18px'}}>
+                                                            {fStats.mobility || 0}
+                                                        </span>
+                                                    </div>
+                                                    <div className="param-row">
+                                                        <span className="param-label" style={{color: 'var(--text-secondary)', fontWeight: 'bold'}}>射程:</span>
+                                                        <span style={{color: 'var(--text-primary)', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '18px'}}>
+                                                            {(fStats.range || 0).toFixed(1)}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                                 {showStatDetail && (
                                                     <div className="param-row" style={{borderBottom: '1px solid var(--border-light)', paddingBottom: '4px', marginBottom: '4px'}}>
                                                         <span style={{fontSize: '12px', color: 'var(--text-muted)'}}>

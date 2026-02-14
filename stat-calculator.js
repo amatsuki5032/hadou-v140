@@ -44,6 +44,56 @@ const FORMATION_RATES = {
     '斬心陣':     { main: 0.624, sub: 0.276, advisor: 0.188 },
 };
 
+// === 兵科Lvテーブル（レアリティ×☆ランク → 兵科Lv）===
+// ルール定義書§1.7
+const TROOP_LEVEL_TABLE = {
+    'LR':  [9, 10, 10, 11, 11, 11, 12, 12],
+    'UR':  [5,  6,  6,  7,  7,  7,  8,  8],
+    'SSR': [2,  2,  3,  3,  4,  5,  6,  7],
+    'SR':  [2,  2,  3,  3,  4,  5,  5,  6],
+    'R':   [1,  1,  1,  1,  1,  1,  1,  1],
+    'N':   [1,  1,  1,  1,  1,  1,  1,  1],
+};
+
+// 兵科Lv別 基礎兵力
+const HP_BY_TROOP_LEVEL = {
+    1: 2000, 2: 2500, 3: 3000, 4: 3500, 5: 4000, 6: 4400,
+    7: 4800, 8: 5200, 9: 8500, 10: 9000, 11: 9500, 12: 10000,
+};
+
+// 兵科固有値（機動・射程）
+const UNIT_TYPE_PARAMS = {
+    '槍': { mobility: 100, range: 1.0 },
+    '弓': { mobility: 100, range: 1.5 },
+    '馬': { mobility: 120, range: 1.0 },
+};
+
+/**
+ * 兵科Lvを取得する
+ */
+function getTroopLevel(rarity, starRank) {
+    const table = TROOP_LEVEL_TABLE[rarity];
+    if (!table) return 1;
+    const star = Math.min(Math.max(starRank || 0, 0), 7);
+    return table[star];
+}
+
+/**
+ * 部隊の基礎兵力を計算する
+ * 各武将の兵科Lv別兵力 × 陣形反映率 の合計
+ */
+function calcFormationBaseHp(memberStats, rates) {
+    let totalHp = 0;
+    for (const [slotName, data] of Object.entries(memberStats)) {
+        const troopLv = getTroopLevel(data.general.rarity, data.starRank);
+        const baseHp = HP_BY_TROOP_LEVEL[troopLv] || 2000;
+        const category = getPositionCategory(slotName);
+        const rate = rates[category] || 0;
+        totalHp += Math.floor(baseHp * rate);
+    }
+    return totalHp;
+}
+
 // === 陣形固有効果（基礎ステータスに影響する数値付き効果のみ） ===
 // SKILL_DB source='陣形DB' から抽出。levels=null の定性効果(↑/↓)はスキップ。
 // type: 'fixed' = 固定%, 'perUnitType' = 兵科人数×%, 'unitCountThreshold' = 人数条件,
@@ -700,6 +750,13 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
         intelligence: base.intelligence + advisorBonus.intelligence + horseStatBonus.intelligence,
     };
 
+    // 兵力計算: 各武将の兵科Lv別兵力 × 陣形反映率 → HP%ボーナス適用
+    const baseHp = calcFormationBaseHp(base.memberStats, base.rates);
+    const finalHp = Math.floor(baseHp * (1 + totalPct.hp));
+
+    // 機動・射程: 主将の兵科から固定値
+    const unitFixed = UNIT_TYPE_PARAMS[unitType] || UNIT_TYPE_PARAMS['馬'];
+
     return {
         // 基礎（天賦×将星＋陣形反映率のみ）
         base: {
@@ -717,6 +774,13 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
             defense: Math.floor(baseWithAll.defense * (1 + totalPct.defense)) + fixBonuses.defense,
             intelligence: Math.floor(baseWithAll.intelligence * (1 + totalPct.intelligence)) + fixBonuses.intelligence,
         },
+        // 兵力（基礎兵力にHP%ボーナス適用後）
+        hp: finalHp,
+        baseHp: baseHp,
+        hpPct: totalPct.hp,
+        // 機動・射程（兵科固有値）
+        mobility: unitFixed.mobility,
+        range: unitFixed.range,
         // 技能ボーナス詳細
         bonuses: { pct: pctBonuses, fix: fixBonuses },
         // プロファイルボーナス詳細（調査+軍馬技能+研究の%合計）
