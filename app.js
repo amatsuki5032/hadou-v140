@@ -16,7 +16,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
             // ─── 画面制御 ───
             const [viewMode, setViewMode] = useState('formation'); // 'formation' or 'rank'
             const [activeTab, setActiveTab] = useState('main');
-            const [rankTab, setRankTab] = useState('general'); // 'general' or 'treasure'
+            const [rankTab, setRankTab] = useState(() => localStorage.getItem('hadou-rankTab') || 'general');
             const [showResetMenu, setShowResetMenu] = useState(false);
             const [expandedRarities, setExpandedRarities] = useState(() => {
                 const saved = localStorage.getItem('expandedRarities');
@@ -711,6 +711,11 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 localStorage.setItem('expandedTreasureCategories', JSON.stringify(expandedTreasureCategories));
             }, [expandedTreasureCategories]);
             
+            // ランク設定タブの選択状態をlocalStorageに保存
+            useEffect(() => {
+                localStorage.setItem('hadou-rankTab', rankTab);
+            }, [rankTab]);
+
             // 武将レアリティの折りたたみ状態をlocalStorageに保存
             useEffect(() => {
                 localStorage.setItem('expandedRarities', JSON.stringify(expandedRarities));
