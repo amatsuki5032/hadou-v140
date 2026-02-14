@@ -557,10 +557,12 @@ function calcHorseSkillBonuses(profileConfig, unitType) {
             const value = effect.levels?.[levelKey];
             if (value == null) continue;
             if (effect.type2 === '基礎') {
-                if (effect.effect === '攻撃') pctBonuses.attack += value;
-                else if (effect.effect === '防御') pctBonuses.defense += value;
-                else if (effect.effect === '知力') pctBonuses.intelligence += value;
-                else if (effect.effect === '兵力') pctBonuses.hp += value;
+                // HORSE_SKILL_DATAは整数%（30=30%）なので小数に変換
+                const pctVal = value / 100;
+                if (effect.effect === '攻撃') pctBonuses.attack += pctVal;
+                else if (effect.effect === '防御') pctBonuses.defense += pctVal;
+                else if (effect.effect === '知力') pctBonuses.intelligence += pctVal;
+                else if (effect.effect === '兵力') pctBonuses.hp += pctVal;
                 else paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
             } else if (effect.type2 === 'パラメータ') {
                 paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
@@ -735,10 +737,23 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
         profileParams[k] = (profileParams[k] || 0) + v;
     }
 
+    // 兵科Lv補正（主将の兵科Lvで部隊全体に適用）
+    // 歩兵/騎兵: (Lv-1)%, 弓兵: (Lv-11)%
+    let troopLvBonus = 0;
+    if (mainGeneral && base.memberStats?.['主将']) {
+        const mainStar = base.memberStats['主将'].starRank;
+        const mainTroopLv = getTroopLevel(mainGeneral.rarity, mainStar);
+        if (unitType === '弓') {
+            troopLvBonus = (mainTroopLv - 11) / 100;
+        } else {
+            troopLvBonus = (mainTroopLv - 1) / 100;
+        }
+    }
+
     // 全%ボーナス合算
     const totalPct = {
-        attack: pctBonuses.attack + profilePct.attack,
-        defense: pctBonuses.defense + profilePct.defense,
+        attack: pctBonuses.attack + profilePct.attack + troopLvBonus,
+        defense: pctBonuses.defense + profilePct.defense + troopLvBonus,
         intelligence: pctBonuses.intelligence + profilePct.intelligence,
         hp: (pctBonuses.hp || 0) + profilePct.hp,
     };
@@ -778,6 +793,8 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
         hp: finalHp,
         baseHp: baseHp,
         hpPct: totalPct.hp,
+        // 兵科Lv補正（攻撃・防御に適用済み）
+        troopLvBonus: troopLvBonus,
         // 機動・射程（兵科固有値）
         mobility: unitFixed.mobility,
         range: unitFixed.range,
