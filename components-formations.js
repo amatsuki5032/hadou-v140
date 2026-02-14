@@ -1053,7 +1053,7 @@ var FormationsArea = React.memo(function FormationsArea({
                                                         <span style={{color: 'var(--text-primary)', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '18px'}}>
                                                             {(fStats.hp || 0).toLocaleString()}
                                                         </span>
-                                                        {showStatDetail && (fStats.hpPct > 0 || fStats.unitMatchBonus > 0) && (
+                                                        {showStatDetail && (fStats.hpPct > 0 || fStats.unitMatchBonus > 0 || fStats.hpFixBonus > 0) && (
                                                             <span style={{color: 'var(--text-muted)', fontSize: '12px'}}>
                                                                 ({(fStats.baseHp || 0).toLocaleString()}
                                                                 {fStats.unitMatchBonus > 0 && (
@@ -1061,6 +1061,9 @@ var FormationsArea = React.memo(function FormationsArea({
                                                                 )}
                                                                 {fStats.hpPct > 0 && (
                                                                     <span style={{color: 'var(--accent)'}}>{' \u00d7'}{((1 + fStats.hpPct) * 100).toFixed(0)}%</span>
+                                                                )}
+                                                                {fStats.hpFixBonus > 0 && (
+                                                                    <span style={{color: '#a78bfa'}}>{' +'}{fStats.hpFixBonus.toLocaleString()}</span>
                                                                 )}
                                                                 )
                                                             </span>

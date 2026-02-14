@@ -526,9 +526,10 @@ function calcResearchBonuses(profileConfig) {
  */
 function calcHorseSkillBonuses(profileConfig, unitType) {
     const pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
+    const fixBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
     const paramBonuses = {};
     const horses = profileConfig?.horses;
-    if (!Array.isArray(horses) || typeof HORSE_SKILL_DATA === 'undefined') return { pct: pctBonuses, params: paramBonuses };
+    if (!Array.isArray(horses) || typeof HORSE_SKILL_DATA === 'undefined') return { pct: pctBonuses, fix: fixBonuses, params: paramBonuses };
 
     // 1) 全3頭の技能を系統名で集計（累積上限Ⅹ=10）
     const skillTotals = {};
@@ -553,11 +554,22 @@ function calcHorseSkillBonuses(profileConfig, unitType) {
         const skillData = HORSE_SKILL_DATA.find(s => s.name === skillName);
         if (!skillData) continue;
 
+        // 太固・勇叡は固定値加算、それ以外の基礎は%扱い
+        const isFixedSkill = skillName.startsWith('太固') || skillName.startsWith('勇叡');
+
         for (const effect of skillData.effects) {
             const value = effect.levels?.[levelKey];
             if (value == null) continue;
-            if (effect.type2 === '基礎') {
-                // HORSE_SKILL_DATAは整数%（30=30%）なので小数に変換
+            if (effect.type2 === '基礎' && isFixedSkill) {
+                // 太固・勇叡: データ値×100が実値（30→3000）
+                const flatVal = value * 100;
+                if (effect.effect === '攻撃') fixBonuses.attack += flatVal;
+                else if (effect.effect === '防御') fixBonuses.defense += flatVal;
+                else if (effect.effect === '知力') fixBonuses.intelligence += flatVal;
+                else if (effect.effect === '兵力') fixBonuses.hp += flatVal;
+                else paramBonuses[effect.effect] = (paramBonuses[effect.effect] || 0) + value;
+            } else if (effect.type2 === '基礎') {
+                // その他の基礎効果は%扱い（データ値/100が小数: 30→0.30）
                 const pctVal = value / 100;
                 if (effect.effect === '攻撃') pctBonuses.attack += pctVal;
                 else if (effect.effect === '防御') pctBonuses.defense += pctVal;
@@ -589,7 +601,7 @@ function calcHorseSkillBonuses(profileConfig, unitType) {
         }
     }
 
-    return { pct: pctBonuses, params: paramBonuses };
+    return { pct: pctBonuses, fix: fixBonuses, params: paramBonuses };
 }
 
 // === 陣形固有効果ボーナス ===
@@ -708,8 +720,13 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     // 軍馬ステータスボーナス（固定値）
     const horseStatBonus = calcHorseStatBonus(profileConfig);
 
-    // 軍馬技能ボーナス（%値）
+    // 軍馬技能ボーナス（固定値 + パラメータ%）
     const horseSkillBonus = calcHorseSkillBonuses(profileConfig, unitType);
+
+    // 軍馬技能の固定値加算（太固・勇叡）を技能fixBonusesに合算
+    fixBonuses.attack += horseSkillBonus.fix.attack;
+    fixBonuses.defense += horseSkillBonus.fix.defense;
+    fixBonuses.intelligence += horseSkillBonus.fix.intelligence;
 
     // 調査ボーナス（%値）
     const surveyBonus = calcSurveyBonuses(profileConfig);
@@ -776,7 +793,8 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     }
     const unitMatchBonus = unitMatchCount * 0.10;
     const hpAfterMatch = Math.floor(baseHp * (1 + unitMatchBonus));
-    const finalHp = Math.floor(hpAfterMatch * (1 + totalPct.hp));
+    const hpFixBonus = horseSkillBonus.fix.hp || 0;
+    const finalHp = Math.floor(hpAfterMatch * (1 + totalPct.hp)) + hpFixBonus;
 
     // 機動・射程: 主将の兵科から固定値
     const unitFixed = UNIT_TYPE_PARAMS[unitType] || UNIT_TYPE_PARAMS['馬'];
@@ -798,12 +816,13 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
             defense: Math.floor(baseWithAll.defense * (1 + totalPct.defense)) + fixBonuses.defense,
             intelligence: Math.floor(baseWithAll.intelligence * (1 + totalPct.intelligence)) + fixBonuses.intelligence,
         },
-        // 兵力（基礎兵力 × 兵科一致 × HP%ボーナス）
+        // 兵力（基礎兵力 × 兵科一致 × HP%ボーナス + 固定値）
         hp: finalHp,
         baseHp: baseHp,
         unitMatchCount: unitMatchCount,
         unitMatchBonus: unitMatchBonus,
         hpPct: totalPct.hp,
+        hpFixBonus: hpFixBonus,
         // 兵科Lv補正（攻撃・防御に適用済み）
         troopLvBonus: troopLvBonus,
         // 機動・射程（兵科固有値）
