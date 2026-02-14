@@ -477,7 +477,7 @@ function ImageSettingsModal({ show, imageUrls, onSave, onClose }) {
                         保存
                     </button>
                     <button className="image-modal-button image-modal-button-cancel" onClick={onClose}>
-                        ✕ キャンセル
+                        キャンセル
                     </button>
                 </div>
             </div>

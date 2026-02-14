@@ -36,17 +36,14 @@ hadou-v140/
 ├── calc-engine.js          ← 計算エンジン
 ├── stat-calculator.js      ← ステータス計算
 ├── skill-conditions.js     ← 技能発動条件
-├── common-theme.css        ← 共通テーマCSS
+├── styles.css              ← 共通テーマCSS
+├── data-io.js              ← データ入出力（手動管理）
+├── data-profile.js         ← プロファイルデータ管理（手動管理）
 ├── firebase-config.js      ← Firebase設定
 ├── icon-checker.html       ← アイコン不足チェッカー
 ├── icons/                  ← アイコン画像
 │   ├── generals/
 │   └── treasures/
-├── tier-list/              ← TIER表ツール
-│   ├── index.html
-│   ├── app.js
-│   ├── style.css
-│   └── firebase-config.js
 └── (今後のツールもサブディレクトリで追加)
 ```
 

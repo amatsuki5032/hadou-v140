@@ -872,7 +872,7 @@ function RankSettingsPanel({
                                             textAlign: 'center'
                                         }}
                                     >
-                                        {isUR ? '✓ UR化' : 'UR化'}
+                                        {isUR ? 'UR化済' : 'UR化'}
                                     </button>
                                     <div style={{textAlign: 'center', minWidth: '180px'}}>
                                         {Array.from({length: 10}, (_, i) => {

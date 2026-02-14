@@ -194,7 +194,7 @@ function GeneralsPanel({
                                 color: showOnlyFavorites ? 'var(--text-primary)' : 'var(--text-primary)'
                             }}
                         >
-                            ★お気に入り
+                            お気に入り
                         </button>
                         <button
                             className={`filter-chip ${showOnlyRecommendedGenerals ? 'active' : ''}`}
@@ -616,7 +616,7 @@ function TreasuresPanel({
                                 color: showOnlyFavoriteTreasures ? 'var(--bg-base)' : 'var(--text-body)'
                             }}
                         >
-                            ★お気に入り
+                            お気に入り
                         </button>
                         <button
                             className={`filter-chip ${showOnlyRecommendedTreasures ? 'active' : ''}`}
