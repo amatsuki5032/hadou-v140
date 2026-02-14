@@ -17,8 +17,8 @@
 
 ## 待機中（優先度高）
 
-- [ ] **data-research.js 再生成** — 91→140項目。詳細は tasks/研究データ更新/TASK.md 参照。入力: tasks/研究データ更新/研究データ一覧_v4.csv + tasks/研究データ更新/all_research_effects.json
-- [ ] **components-profile.js maxValue対応** — 研究タブの入力上限をmaxValueで制限、効果値最大を表示。tasks/研究データ更新/TASK.md §components-profile.js 参照
+- [ ] **data-research.js 再生成** — 91→140項目。詳細は tasks/research-update/TASK.md 参照。入力: tasks/research-update/research_v4.csv + tasks/research-update/effects.json
+- [ ] **components-profile.js maxValue対応** — 研究タブの入力上限をmaxValueで制限、効果値最大を表示。tasks/research-update/TASK.md §components-profile.js 参照
 - [ ] **覇道DB定義書_v3.md 更新** — data-research.jsの構造説明を140項目・新フィールド（no, maxValue, maxLevel, category, target）に合わせて更新
 
 ## 待機中（優先度中）
