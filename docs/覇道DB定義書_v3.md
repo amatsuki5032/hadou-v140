@@ -540,3 +540,4 @@ Excel → Python/Claude ETL → JS → GitHub Pages
 | 12 | 武将育成プロファイル | 中 | Lv/Grade/☆/五行/参軍Lvの個別管理。設計書作成済み。Lv/Grade/☆のUI実装済み |
 | 13 | ~~stat-calculator統合~~ | ~~中~~ | ✅ 完了。調査・軍馬・研究すべて反映済み。研究はcalcResearchBonuses()で基礎4項目（攻撃/防御/知力/兵力）の%ボーナスを計算 |
 | 14 | ~~練達効果の計算実装~~ | ~~高~~ | ✅ 完了。名宝技能の練達→武将技能Lvアップをcalc-engine.jsで実装。適用タイミングは付与解決後 |
+| 15 | 弓兵知力の名前不整合（Excel側） | 中 | data-skill-db.js L146711に「弓平知力」(id:5081)が存在。data-research.jsは修正済み（弓兵知力①/②）。自動生成のため元Excel修正→再生成が必要 |
