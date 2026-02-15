@@ -158,14 +158,17 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
 
     // 一括操作: 全上限に設定
     const handleSetAllMax = () => {
-        if (!confirm('有効な研究項目の値をすべて上限（100%）に設定します。\nよろしいですか？')) return;
+        if (!confirm('有効な研究項目の値をすべて上限に設定します。\nよろしいですか？')) return;
         setProfileConfig(prev => {
             const newItems = { ...(prev.research?.items || {}) };
             for (const item of RESEARCH_DATA) {
                 const key = `${item.field}:${item.name}`;
                 const isActive = activeFields.has(item.field) || item.isMaster;
                 if (isActive) {
-                    newItems[key] = { unlocked: true, value: 100 };
+                    const maxPct = (item.maxValue != null && typeof item.maxValue === 'number' && item.maxValue <= 1)
+                        ? item.maxValue * 100
+                        : (item.maxValue || 0);
+                    newItems[key] = { ...newItems[key], unlocked: true, value: maxPct };
                 }
             }
             return { ...prev, research: { ...prev.research, items: newItems } };
@@ -278,7 +281,13 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
                                     title={saved.unlocked ? 'クリックでロック' : 'クリックで解除'}
                                 >{saved.unlocked ? '\u{1F513}' : '\u{1F512}'}</button>
                                 <span className="research-item-name">{item.name}</span>
-                                <span className="research-item-effect">{effectLabel}</span>
+                                <span className="research-item-effect">
+                                    {item.maxValue != null
+                                        ? (typeof item.maxValue === 'number' && item.maxValue <= 1
+                                            ? `最大${(item.maxValue * 100).toFixed(0)}%`
+                                            : `最大${item.maxValue}`)
+                                        : '—'}
+                                </span>
                                 <input
                                     type="number"
                                     className="research-item-value"
@@ -286,7 +295,11 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
                                     placeholder="0"
                                     step="0.5"
                                     min="0"
-                                    max="100"
+                                    max={item.maxValue != null
+                                        ? (typeof item.maxValue === 'number' && item.maxValue <= 1
+                                            ? item.maxValue * 100
+                                            : 100)
+                                        : 100}
                                     disabled={isDisabled || !saved.unlocked}
                                     onChange={(e) => onItemChange(key, 'value', parseFloat(e.target.value) || 0)}
                                 />

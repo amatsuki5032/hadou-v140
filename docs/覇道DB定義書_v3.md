@@ -24,7 +24,7 @@
 | data-generals.js | EMBEDDED_GENERALS_DATA | 447 | 全武将統合（LR92+UR108+SSR146+SR43+R38+N20） |
 | data-all-treasures.js | EMBEDDED_TREASURES_DATA | 209 | 名宝マスタ（カテゴリ・武器種・関連武将・技能名） |
 | data-skill-db.js | SKILL_DB | 1,783 | 技能DB全量（自動生成、calc-engine.jsが参照） |
-| data-research.js | RESEARCH_FIELDS, RESEARCH_DATA | 127 | 研究マスタ（M/専攻分類付き） |
+| data-research.js | RESEARCH_FIELDS, RESEARCH_DATA | 140 | 研究マスタ（M/専攻分類付き、no/maxValue/maxLevel/category/target付き） |
 | data-survey.js | SURVEY_DATA | 23 | 調査（異民族）データ |
 | data-horse-skills.js | HORSE_SKILL_DATA, HORSE_COLOR_BONUS, NAMED_HORSE_STATS | 29技能(52効果行) | 軍馬技能データ・毛色ボーナス・名馬ステータス |
 | data-treasure-forge.js | TREASURE_FORGE | 187 | 名宝鍛錬データ（☆ランク→技能Lv） |
@@ -433,7 +433,43 @@ const TREASURE_FORGE = {
 // ヘルパー: getTreasureSkillNames(treasureId) → [技能名]
 ```
 
-### 6.4 レガシーデータファイル（廃止予定）
+### 6.4 RESEARCH_DATA（研究マスタ）
+
+```javascript
+// data-research.js — 140件（序論23 + 都市開発15 + 都市軍備15 + 都市防衛15
+//                      + 歩兵術14 + 弓兵術14 + 騎兵術14 + 君主護衛10 + 君主相対10 + 要地攻防10）
+// M（マスター/常時有効）項目: 48件
+
+const RESEARCH_FIELDS = {
+    "序論":     { category: "序論",   choices: ["序論"],                     fixed: true },
+    "都市運営": { category: "都市運営", choices: ["都市開発", "都市軍備", "都市防衛"] },
+    "部隊運用": { category: "部隊運用", choices: ["歩兵術", "弓兵術", "騎兵術"] },
+    "第4枠":    { category: "第4枠",   choices: ["君主護衛", "君主相対", "要地攻防"] },
+};
+
+const RESEARCH_DATA = [
+    {
+        id: 5001,             // 連番 5000〜5139
+        no: 2,                // 分野内の連番
+        name: "兵糧生産量",
+        isMaster: true,       // M/専攻（trueなら専攻外でも有効）
+        field: "序論",        // 所属分野（RESEARCH_FIELDSのchoicesに対応）
+        category: "—",        // カテゴリ（—/都市運営/部隊運用/特化戦術）
+        maxValue: 0.2,        // 効果値上限（小数=%、整数=固定値、文字列="Lv+10"、null=なし）
+        maxLevel: 30,         // 最大レベル
+        target: "非戦闘",     // 効果対象（非戦闘/全部隊/歩兵/弓兵/騎兵/駐屯部隊/防衛要素 等）
+        effects: [
+            {type2: "内政", effect: "生産", condition: "常に", levels: null}
+        ]
+    },
+    // ...
+];
+// localStorage キー形式: "分野:項目名"（例: "序論:兵糧生産量"）
+// components-profile.js の ResearchFieldGroup が表示・入力を担当
+// stat-calculator.js の calcResearchBonuses() が effects[].type2/effect を参照して計算
+```
+
+### 6.5 レガシーデータファイル（廃止予定）
 
 ```javascript
 // 旧武将ファイル（v1.45でdata-generals.jsに統合済み）:

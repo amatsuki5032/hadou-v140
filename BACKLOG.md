@@ -17,15 +17,11 @@
 
 ## 待機中（優先度高）
 
-- [ ] **data-research.js 再生成** — 91→140項目。詳細は tasks/research-update/TASK.md 参照。入力: tasks/research-update/research_v4.csv + tasks/research-update/effects.json
-- [ ] **components-profile.js maxValue対応** — 研究タブの入力上限をmaxValueで制限、効果値最大を表示。tasks/research-update/TASK.md §components-profile.js 参照
-- [ ] **覇道DB定義書_v3.md 更新** — data-research.jsの構造説明を140項目・新フィールド（no, maxValue, maxLevel, category, target）に合わせて更新
+（なし）
 
 ## 待機中（優先度中）
 
-- [ ] **弓兵知力の名前不整合チェック** — 旧data-research.jsで「弓平知力」(id:5081)。data-skill-db.jsにも同名の誤りがないか確認。あれば修正
-- [ ] **研究データETLスクリプト作成** — tools/etl_research.py。CSV → data-research.js の自動生成。他のETLスクリプト（etl_skill_db.py等）と同じパターンで作成
-- [ ] **覇道アプリ設計書_v1.md 更新** — 研究データ更新の完了をチェックリスト・リリース実績に追記
+- [ ] **弓兵知力の名前不整合（Excel側）** — data-skill-db.js L146711に「弓平知力」(id:5081)が存在。data-research.jsは修正済み（弓兵知力①/②）。data-skill-db.jsは自動生成のため元Excel修正が必要
 
 ## 待機中（優先度低）
 
@@ -37,4 +33,9 @@
 
 | 日付 | タスク |
 |------|--------|
-| — | （まだなし） |
+| 2026-02-15 | data-research.js 再生成（91→140項目、新フィールド追加） |
+| 2026-02-15 | components-profile.js maxValue対応（入力上限・効果値最大表示・全上限設定） |
+| 2026-02-15 | 覇道DB定義書_v3.md 更新（§6.4 RESEARCH_DATA構造追加、件数更新） |
+| 2026-02-15 | 弓兵知力の名前不整合チェック（data-skill-db.jsに存在確認、Excel要修正） |
+| 2026-02-15 | 研究データETLスクリプト作成（tools/etl_research.py） |
+| 2026-02-15 | 覇道アプリ設計書_v1.md 更新（チェックリスト・リリース実績追記） |

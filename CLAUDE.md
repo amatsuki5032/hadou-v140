@@ -62,7 +62,7 @@ hadou-v140/
 ├── data-generals.js         ← 武将データ（全447名）
 ├── data-skill-db.js         ← 技能データ（1,783技能）
 ├── data-all-treasures.js    ← 名宝データ（209件）
-├── data-research.js         ← 研究データ（127件）
+├── data-research.js         ← 研究データ（140件）
 ├── data-survey.js           ← 調査データ（23件）
 ├── data-horse-skills.js     ← 軍馬技能データ（29技能）
 ├── data-treasure-forge.js   ← 名宝鍛錬データ（187件）
