@@ -2311,10 +2311,10 @@ const { useState, useEffect, useMemo, useCallback } = React;
                         {typeof RESEARCH_SPECIALIZATION_CATEGORIES !== 'undefined' && (() => {
                             const specs = profileConfig?.research?.specializations || {};
                             return (
-                                <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '12px', paddingLeft: '12px', borderLeft: '1px solid var(--border-base)'}}>
+                                <div style={{display: 'flex', alignItems: 'flex-start', gap: '12px', marginLeft: '12px', paddingLeft: '12px', borderLeft: '1px solid var(--border-base)'}}>
                                     {RESEARCH_SPECIALIZATION_CATEGORIES.map(cat => (
-                                        <div key={cat.id} style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-                                            <span className="research-spec-cat">{cat.label}</span>
+                                        <div key={cat.id} style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+                                            <span className="research-spec-cat" style={{textAlign: 'center'}}>{cat.label}</span>
                                             <div style={{display: 'flex', gap: '2px'}}>
                                                 {cat.options.map(opt => (
                                                     <label key={opt} className="research-spec-radio">
