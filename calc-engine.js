@@ -537,3 +537,81 @@ function buildAllEntries(formation, getProfileFn) {
 
     return { allEntries: allEntries, fmtCtx: fmtCtx };
 }
+
+/**
+ * 兵科一致スキルによる強制一致スロットを収集する
+ * @param {Array} allEntries - buildAllEntriesの結果
+ * @param {Object} fmtCtx - buildFormationContextの結果
+ * @param {Object} formation - 部隊データ
+ * @returns {Set} 兵科一致として扱うスロット名のSet
+ */
+function collectUnitMatchOverrides(allEntries, fmtCtx, formation) {
+    var overrideSlots = new Set();
+
+    // 技能名でグループ化
+    var bySkillName = {};
+    for (var i = 0; i < allEntries.length; i++) {
+        var entry = allEntries[i];
+        if (!bySkillName[entry.skillName]) bySkillName[entry.skillName] = [];
+        bySkillName[entry.skillName].push(entry);
+    }
+
+    var subSlots = ['副将1', '副将2', '補佐1', '補佐2'];
+
+    for (var skillName in bySkillName) {
+        var skillData = SKILL_DB?.[skillName];
+        if (!skillData) continue;
+
+        var skillEntries = bySkillName[skillName];
+
+        for (var e = 0; e < skillData.effects.length; e++) {
+            var eff = skillData.effects[e];
+            if (eff.effect !== '兵科一致') continue;
+
+            // 発動Lv確認
+            var validLevel = sumValidLevels(skillEntries, fmtCtx, eff.condition);
+            if (validLevel <= 0) continue;
+
+            var cond2 = eff.condition2 || '';
+
+            if (cond2.indexOf('副将と補佐を兵科一致') >= 0) {
+                // 全副将・補佐を兵科一致
+                for (var s = 0; s < subSlots.length; s++) overrideSlots.add(subSlots[s]);
+            } else if (cond2.indexOf('好相性の副将と補佐を兵科一致') >= 0) {
+                // 好相性の副将・補佐のみ
+                for (var s = 0; s < subSlots.length; s++) {
+                    var slotData = formation.slots?.[subSlots[s]];
+                    if (!slotData) continue;
+                    var gid = typeof slotData === 'object' ? slotData.id : slotData;
+                    var g = getGeneralById(gid);
+                    if (g && isAffinityGood(fmtCtx.mainAffinity, g.affinity)) {
+                        overrideSlots.add(subSlots[s]);
+                    }
+                }
+            } else if (cond2.indexOf('騎兵の副将と補佐を兵科一致') >= 0) {
+                // 騎兵の副将・補佐のみ
+                for (var s = 0; s < subSlots.length; s++) {
+                    var slotData = formation.slots?.[subSlots[s]];
+                    if (!slotData) continue;
+                    var gid = typeof slotData === 'object' ? slotData.id : slotData;
+                    var g = getGeneralById(gid);
+                    if (g && g.unit_type === '馬') {
+                        overrideSlots.add(subSlots[s]);
+                    }
+                }
+            } else if (cond2.indexOf('自身を兵科一致') >= 0) {
+                // 自身（スキル所持者のスロット）を兵科一致
+                for (var i2 = 0; i2 < skillEntries.length; i2++) {
+                    var entrySlot = skillEntries[i2].slotName;
+                    if (entrySlot !== '主将') {
+                        if (isConditionActive(eff.condition, entrySlot, skillEntries[i2].general, fmtCtx)) {
+                            overrideSlots.add(entrySlot);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return overrideSlots;
+}

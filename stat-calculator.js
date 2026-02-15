@@ -712,10 +712,14 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     // 技能加算（武将技能 + 名宝技能）
     let pctBonuses = { attack: 0, defense: 0, intelligence: 0, hp: 0 };
     let fixBonuses = { attack: 0, defense: 0, intelligence: 0 };
+    let cachedAllEntries = null;
+    let cachedFmtCtx = null;
 
     if (typeof buildAllEntries === 'function') {
         try {
             const { allEntries, fmtCtx } = buildAllEntries(formation, getProfileFn);
+            cachedAllEntries = allEntries;
+            cachedFmtCtx = fmtCtx;
             const bonuses = collectSkillStatBonuses(allEntries, fmtCtx);
             pctBonuses = bonuses.pctBonuses;
             fixBonuses = bonuses.fixBonuses;
@@ -793,10 +797,19 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
     const baseHp = calcFormationBaseHp(base.memberStats, base.rates);
 
     // 兵科一致ボーナス: 副将・補佐のうち主将と同じ兵科の人数 × 10%
+    // 兵科一致スキルによる強制一致を考慮
+    let unitMatchOverrides = new Set();
+    if (cachedAllEntries && cachedFmtCtx && typeof collectUnitMatchOverrides === 'function') {
+        try {
+            unitMatchOverrides = collectUnitMatchOverrides(cachedAllEntries, cachedFmtCtx, formation);
+        } catch (e) {
+            // フォールバック: スキル未考慮
+        }
+    }
     let unitMatchCount = 0;
     for (const [slotName, data] of Object.entries(base.memberStats)) {
         if (slotName === '主将') continue;
-        if (data.general.unit_type === unitType) unitMatchCount++;
+        if (data.general.unit_type === unitType || unitMatchOverrides.has(slotName)) unitMatchCount++;
     }
     const unitMatchBonus = unitMatchCount * 0.10;
     const hpAfterMatch = Math.floor(baseHp * (1 + unitMatchBonus));

@@ -22,6 +22,7 @@
 ## 待機中（優先度中）
 
 - [ ] **弓兵知力の名前不整合（Excel側）** — data-skill-db.js L146711に「弓平知力」(id:5081)が存在。data-research.jsは修正済み（弓兵知力①/②）。data-skill-db.jsは自動生成のため元Excel修正が必要
+- [ ] **「統制」がSKILL_DBに未登録（Excel側）** — LR袁紹のスキルC「統制」がdata-skill-db.jsに存在しない。Excel技能DBシートへの追加→再生成が必要
 
 ## 待機中（優先度低）
 
