@@ -2306,6 +2306,42 @@ const { useState, useEffect, useMemo, useCallback } = React;
                         >
                             ⟲ 戻す
                         </button>
+
+                        {/* 研究専攻トグル */}
+                        {typeof RESEARCH_SPECIALIZATION_CATEGORIES !== 'undefined' && (() => {
+                            const specs = profileConfig?.research?.specializations || {};
+                            return (
+                                <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '12px', paddingLeft: '12px', borderLeft: '1px solid var(--border-base)'}}>
+                                    {RESEARCH_SPECIALIZATION_CATEGORIES.map(cat => (
+                                        <div key={cat.id} style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+                                            <span className="research-spec-cat">{cat.label}</span>
+                                            <div style={{display: 'flex', gap: '2px'}}>
+                                                {cat.options.map(opt => (
+                                                    <label key={opt} className="research-spec-radio">
+                                                        <input
+                                                            type="radio"
+                                                            name={`tab-spec-${cat.id}`}
+                                                            checked={specs[cat.id] === opt}
+                                                            onChange={() => setProfileConfig(prev => ({
+                                                                ...prev,
+                                                                research: {
+                                                                    ...prev.research,
+                                                                    specializations: {
+                                                                        ...(prev.research?.specializations || {}),
+                                                                        [cat.id]: opt,
+                                                                    },
+                                                                },
+                                                            }))}
+                                                        />
+                                                        <span>{opt}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })()}
                     </div>
                     
                     <div className="main-content">
