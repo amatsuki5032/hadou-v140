@@ -1535,6 +1535,56 @@
     font-size: 13px;
 }
 
+/* ─── 簡易モード ─── */
+.formation-card.compact-mode {
+    padding: 6px;
+    margin-bottom: 4px;
+}
+.formation-card.compact-mode .formation-header {
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+}
+.formation-card.compact-mode .template-slots {
+    gap: 2px;
+}
+.formation-card.compact-mode .slot-row {
+    gap: 3px;
+    grid-template-columns: 50px 180px 55px 150px;
+}
+.formation-card.compact-mode .slot-drop-zone {
+    min-height: 28px;
+    padding: 2px 4px;
+}
+.formation-card.compact-mode .slot-general-name {
+    font-size: 12px;
+}
+.formation-card.compact-mode .slot-general-details {
+    font-size: 9px;
+}
+.formation-card.compact-mode .attendant-zone {
+    height: 40px;
+    padding: 1px;
+}
+.formation-card.compact-mode .treasures-zone {
+    gap: 2px;
+}
+.formation-card.compact-mode .treasure-mini-slot {
+    min-height: 28px;
+    padding: 1px;
+    font-size: 8px;
+}
+.formation-card.compact-mode .treasure-name-mini {
+    font-size: 6px;
+}
+.formation-card.compact-mode .item-image,
+.formation-card.compact-mode .item-image-placeholder {
+    height: 28px;
+}
+.formation-card.compact-mode .advisor-section .item-image,
+.formation-card.compact-mode .advisor-section .item-image-placeholder {
+    height: 24px;
+}
+
 /* ============================================
    モーダル共通
    ============================================ */

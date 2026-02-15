@@ -24,12 +24,13 @@ var FormationsArea = React.memo(function FormationsArea({
     getImageUrl, getGeneralStarRank, getTreasureForgeRank,
     isTreasureUR, calcCombatParams, calcFormationStats, calcSkillEffects,
     showSkillList, calcSkillList,
+    compactMode,
     ItemImage
 }) {
     return (
         <div className="formations-area">
             {currentFormations.map(({ key, number, data }) => (
-                <div key={key} className="formation-card">
+                <div key={key} className={`formation-card${compactMode ? ' compact-mode' : ''}`}>
                     <div className="formation-header">
                         <div style={{display: 'flex', alignItems: 'center', gap: '12px', flex: 1}}>
                             <input
@@ -170,7 +171,8 @@ var FormationsArea = React.memo(function FormationsArea({
                     {/* 折りたたみ時は非表示 */}
                     {!collapsedFormations[key] && (
                     <div>
-                    {/* コメント入力欄 */}
+                    {/* コメント入力欄（簡易モード時非表示） */}
+                    {!compactMode && (
                     <div style={{
                         padding: '8px 12px',
                         borderBottom: '1px solid var(--border-base)',
@@ -201,6 +203,7 @@ var FormationsArea = React.memo(function FormationsArea({
                             }}
                         />
                     </div>
+                    )}
                     {/* 技能効果表示（内訳付き） */}
                     {showSkillEffects[key] && (() => {
                         const effects = calcSkillEffects(key);
@@ -384,15 +387,15 @@ var FormationsArea = React.memo(function FormationsArea({
                         );
                     })()}
                     {/* 陣形と編制枠を横並び */}
-                    <div style={{display: 'flex', gap: '16px', position: 'relative'}}>
+                    <div style={{display: 'flex', gap: compactMode ? '8px' : '16px', position: 'relative'}}>
                         {/* 左：陣形グリッド（相対位置指定でSVGオーバーレイ用） */}
                         <div style={{flex: '0 0 auto', position: 'relative'}}>
                             {/* グリッド */}
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: 'repeat(3, 60px)',
-                                gridTemplateRows: 'repeat(3, 60px)',
-                                gap: '4px'
+                                gridTemplateColumns: compactMode ? 'repeat(3, 40px)' : 'repeat(3, 60px)',
+                                gridTemplateRows: compactMode ? 'repeat(3, 40px)' : 'repeat(3, 60px)',
+                                gap: compactMode ? '2px' : '4px'
                             }}>
                                 {(() => {
                                     const formationType = data.formationType || '基本陣形';
@@ -487,13 +490,13 @@ var FormationsArea = React.memo(function FormationsArea({
                             </div>
                             
                             {/* SVG接続線（グリッドの上にオーバーレイ） */}
-                            <svg 
+                            <svg
                                 style={{
                                     position: 'absolute',
                                     top: 0,
                                     left: 0,
-                                    width: '196px',  // 60*3 + 4*2
-                                    height: '196px',
+                                    width: compactMode ? '124px' : '196px',
+                                    height: compactMode ? '124px' : '196px',
                                     pointerEvents: 'none'
                                 }}
                             >
@@ -511,8 +514,8 @@ var FormationsArea = React.memo(function FormationsArea({
                                         if (!generalCoords) return;
                                         
                                         // 座標を計算（セルの中心）
-                                        const cellSize = 60;
-                                        const gap = 4;
+                                        const cellSize = compactMode ? 40 : 60;
+                                        const gap = compactMode ? 2 : 4;
                                         
                                         const generalX = generalCoords[1] * (cellSize + gap) + cellSize / 2;
                                         const generalY = generalCoords[0] * (cellSize + gap) + cellSize / 2;
@@ -790,19 +793,19 @@ var FormationsArea = React.memo(function FormationsArea({
                         
                         {/* 参軍配置エリア */}
                         <div className="advisor-section" style={{
-                            marginTop: '12px',
-                            padding: '8px',
+                            marginTop: compactMode ? '4px' : '12px',
+                            padding: compactMode ? '4px' : '8px',
                             background: 'var(--bg-card)',
                             borderRadius: '4px',
                             border: '1px solid var(--border-base)'
                         }}>
                             <div style={{
-                                fontSize: '12px',
+                                fontSize: compactMode ? '10px' : '12px',
                                 fontWeight: 'bold',
                                 color: 'var(--text-primary)',
-                                marginBottom: '8px',
+                                marginBottom: compactMode ? '4px' : '8px',
                                 borderBottom: '1px solid var(--border-base)',
-                                paddingBottom: '4px'
+                                paddingBottom: compactMode ? '2px' : '4px'
                             }}>
                                 参軍配置
                             </div>
@@ -866,11 +869,11 @@ var FormationsArea = React.memo(function FormationsArea({
                                                     }
                                                 }}
                                                 style={{
-                                                    padding: '4px',
+                                                    padding: compactMode ? '2px' : '4px',
                                                     background: advisorGeneral ? 'rgba(37, 99, 235, 0.08)' : 'var(--bg-base)',
                                                     border: `1px solid ${advisorGeneral ? advisor.color : 'var(--bg-elevated)'}`,
                                                     borderRadius: '3px',
-                                                    minHeight: '52px',
+                                                    minHeight: compactMode ? '28px' : '52px',
                                                     display: 'flex',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
@@ -962,7 +965,8 @@ var FormationsArea = React.memo(function FormationsArea({
                         </div>
                     </div>
 
-                    {/* 部隊ステータス・パラメータ統合パネル（フルワイド） */}
+                    {/* 部隊ステータス・パラメータ統合パネル（フルワイド・簡易モード時非表示） */}
+                    {!compactMode && (
                     <div className="combat-parameters-panel">
                         <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '4px'}}>
                             <button
@@ -1185,6 +1189,7 @@ var FormationsArea = React.memo(function FormationsArea({
                             })()}
                         </div>
                     </div>
+                    )}
 
                 </div>
                 )}

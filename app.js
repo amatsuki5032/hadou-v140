@@ -34,6 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
             }); // 名宝カテゴリごとの折りたたみ状態
             const [showSkillEffects, setShowSkillEffects] = useState({}); // 技能効果表示状態
             const [showSkillList, setShowSkillList] = useState(false); // 技能一覧表示トグル
+            const [compactMode, setCompactMode] = useState(false); // 簡易モード
             
             // ─── おススメフィルタ ───
             const [recommendTargetFormation, setRecommendTargetFormation] = useState(() => {
@@ -1798,6 +1799,22 @@ const { useState, useEffect, useMemo, useCallback } = React;
                                 技能
                             </button>
                             <button
+                                onClick={() => setCompactMode(prev => !prev)}
+                                style={{
+                                    padding: '8px 12px',
+                                    background: compactMode ? 'var(--accent)' : 'transparent',
+                                    border: `1px solid ${compactMode ? 'var(--accent)' : 'var(--border-light)'}`,
+                                    borderRadius: '4px',
+                                    color: compactMode ? 'var(--text-primary)' : 'var(--text-muted)',
+                                    cursor: 'pointer',
+                                    fontSize: '11px',
+                                    fontWeight: 'bold'
+                                }}
+                                title={compactMode ? '簡易モードを解除' : '簡易モードに切替'}
+                            >
+                                簡易
+                            </button>
+                            <button
                                 onClick={toggleTheme}
                                 style={{
                                     padding: '8px 12px',
@@ -2386,6 +2403,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             calcSkillEffects={calcSkillEffects}
                             showSkillList={showSkillList}
                             calcSkillList={calcSkillList}
+                            compactMode={compactMode}
                             ItemImage={ItemImage}
                         />
 
