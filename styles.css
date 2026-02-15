@@ -2150,9 +2150,8 @@
     background: var(--bg-hover);
 }
 
-.research-item.disabled {
-    opacity: 0.35;
-    pointer-events: none;
+.research-item.inactive {
+    opacity: 0.5;
 }
 
 /* ロック/アンロックアイコンボタン */

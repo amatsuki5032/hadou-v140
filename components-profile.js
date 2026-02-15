@@ -130,16 +130,13 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
     }
     const fieldOrder = Object.values(RESEARCH_FIELDS).flatMap(f => f.choices);
 
-    // 一括操作: 全アクティブ項目を解除（アンロック）
+    // 一括操作: 全項目を解除（アンロック）
     const handleUnlockAll = () => {
         setProfileConfig(prev => {
             const newItems = { ...(prev.research?.items || {}) };
             for (const item of RESEARCH_DATA) {
                 const key = `${item.field}:${item.name}`;
-                const isActive = activeFields.has(item.field) || item.isMaster;
-                if (isActive) {
-                    newItems[key] = { ...(newItems[key] || {}), unlocked: true };
-                }
+                newItems[key] = { ...(newItems[key] || {}), unlocked: true };
             }
             return { ...prev, research: { ...prev.research, items: newItems } };
         });
@@ -156,20 +153,17 @@ function ResearchTab({ profileConfig, setProfileConfig }) {
         });
     };
 
-    // 一括操作: 全上限に設定
+    // 一括操作: 全上限に設定（専攻に関係なく全項目）
     const handleSetAllMax = () => {
-        if (!confirm('有効な研究項目の値をすべて上限に設定します。\nよろしいですか？')) return;
+        if (!confirm('すべての研究項目の値を上限に設定します。\nよろしいですか？')) return;
         setProfileConfig(prev => {
             const newItems = { ...(prev.research?.items || {}) };
             for (const item of RESEARCH_DATA) {
                 const key = `${item.field}:${item.name}`;
-                const isActive = activeFields.has(item.field) || item.isMaster;
-                if (isActive) {
-                    const maxPct = (item.maxValue != null && typeof item.maxValue === 'number' && item.maxValue <= 1)
-                        ? item.maxValue * 100
-                        : (item.maxValue || 0);
-                    newItems[key] = { ...newItems[key], unlocked: true, value: maxPct };
-                }
+                const maxPct = (item.maxValue != null && typeof item.maxValue === 'number' && item.maxValue <= 1)
+                    ? item.maxValue * 100
+                    : (item.maxValue || 0);
+                newItems[key] = { ...newItems[key], unlocked: true, value: maxPct };
             }
             return { ...prev, research: { ...prev.research, items: newItems } };
         });
@@ -269,14 +263,13 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
                         const isMaster = item.isMaster;
                         const key = `${item.field}:${item.name}`;
                         const saved = items[key] || {};
-                        const isDisabled = !isActive && !isMaster;
+                        const isInactive = !isActive && !isMaster;
                         const effectLabel = (item.effects || []).map(e => e.effect).filter(Boolean).join(', ');
 
                         return (
-                            <div key={key} className={`research-item ${isDisabled ? 'disabled' : ''}`}>
+                            <div key={key} className={`research-item ${isInactive ? 'inactive' : ''}`}>
                                 <button
                                     className={`research-item-lock ${saved.unlocked ? 'unlocked' : ''}`}
-                                    disabled={isDisabled}
                                     onClick={() => onItemChange(key, 'unlocked', !saved.unlocked)}
                                     title={saved.unlocked ? 'クリックでロック' : 'クリックで解除'}
                                 >{saved.unlocked ? '\u{1F513}' : '\u{1F512}'}</button>
@@ -300,7 +293,7 @@ function ResearchFieldGroup({ fieldName, fieldItems, isActive, items, onItemChan
                                             ? item.maxValue * 100
                                             : 100)
                                         : 100}
-                                    disabled={isDisabled || !saved.unlocked}
+                                    disabled={!saved.unlocked}
                                     onChange={(e) => onItemChange(key, 'value', parseFloat(e.target.value) || 0)}
                                 />
                                 <span className="research-item-unit">%</span>
