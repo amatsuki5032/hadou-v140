@@ -2353,6 +2353,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             showImages={showImages}
                             showSkillEffects={showSkillEffects}
                             setShowSkillEffects={setShowSkillEffects}
+                            setFormations={setFormations}
                             recommendTargetFormation={recommendTargetFormation}
                             setRecommendTargetFormation={setRecommendTargetFormation}
                             selectedForMove={selectedForMove}

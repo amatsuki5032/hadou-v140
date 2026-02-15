@@ -7,6 +7,7 @@
 var FormationsArea = React.memo(function FormationsArea({
     currentFormations, treasures, collapsedFormations,
     showImages, showSkillEffects, setShowSkillEffects,
+    setFormations,
     showStatDetail, setShowStatDetail,
     recommendTargetFormation, setRecommendTargetFormation,
     selectedForMove, setSelectedForMove, handleClickMove,
