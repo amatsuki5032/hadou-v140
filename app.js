@@ -1282,7 +1282,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
             }, [formations, generalStarRank, generalProfiles, profileConfig]);
             
             // 部隊をリセット
-            const resetFormation = useCallback((formationKey) => {
+            const resetFormation = (formationKey) => {
                 if (confirm('この部隊の全データ（武将・侍従・名宝・参軍）をリセットしますか？')) {
                     setFormations(prev => ({
                         ...prev,
@@ -1295,10 +1295,10 @@ const { useState, useEffect, useMemo, useCallback } = React;
                         }
                     }));
                 }
-            }, []);
+            };
 
             // 部隊の折りたたみ状態を切り替え
-            const toggleFormationCollapse = useCallback((formationKey) => {
+            const toggleFormationCollapse = (formationKey) => {
                 setCollapsedFormations(prev => {
                     const newCollapsed = {
                         ...prev,
@@ -1312,7 +1312,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
 
                     return newCollapsed;
                 });
-            }, []);
+            };
             // 陣形変更
             // フィルター適用
             const filteredGenerals = generals.filter(g => {
