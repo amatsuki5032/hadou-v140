@@ -1594,9 +1594,15 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     );
                 } else if (type === 'faction') {
                     // 勢力フィルタは排他的（1つだけON）
-                    setFactionFilter(prev => 
+                    const willActivate = !factionFilter.includes(value);
+                    setFactionFilter(prev =>
                         prev.includes(value) ? [] : [value]
                     );
+                    // 勢力ON時はおススメ・お気に入りをOFF
+                    if (willActivate) {
+                        setShowOnlyFavorites(false);
+                        setShowOnlyRecommendedGenerals(false);
+                    }
                 } else if (type === 'attendant') {
                     // 侍従フィルタは排他的（1つだけON）
                     const willActivate = !attendantFilter.includes(value);

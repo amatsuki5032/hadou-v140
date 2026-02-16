@@ -187,7 +187,13 @@ function GeneralsPanel({
                         ))}
                         <button
                             className={`filter-chip ${showOnlyFavorites ? 'active' : ''}`}
-                            onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                            onClick={() => {
+                                const willActivate = !showOnlyFavorites;
+                                setShowOnlyFavorites(willActivate);
+                                if (willActivate) {
+                                    setFactionFilter([]);
+                                }
+                            }}
                             style={{
                                 background: showOnlyFavorites ? 'var(--rank-color)' : 'var(--bg-elevated)',
                                 borderColor: 'var(--accent)',
@@ -202,7 +208,11 @@ function GeneralsPanel({
                                 const targetFormation = formations[recommendTargetFormation];
                                 const mainGeneral = targetFormation?.slots?.['主将'];
                                 if (mainGeneral) {
-                                    setShowOnlyRecommendedGenerals(!showOnlyRecommendedGenerals);
+                                    const willActivate = !showOnlyRecommendedGenerals;
+                                    setShowOnlyRecommendedGenerals(willActivate);
+                                    if (willActivate) {
+                                        setFactionFilter([]);
+                                    }
                                 }
                             }}
                             disabled={!formations[recommendTargetFormation]?.slots?.['主将']}
