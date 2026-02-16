@@ -727,24 +727,26 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 localStorage.setItem('recommendTargetFormation', recommendTargetFormation);
             }, [recommendTargetFormation]);
             
-            // 対象部隊が折りたたまれた場合、次の開いている部隊に自動切り替え
+            // 対象部隊が折りたたまれた場合、同じタブ内の開いている部隊に自動切り替え
             useEffect(() => {
                 // 対象部隊が折りたたまれているかチェック
                 if (collapsedFormations[recommendTargetFormation]) {
-                    // 全部隊のキーリスト（表示順）
-                    const allFormationKeys = [
-                        'main-0', 'main-1', 'main-2', 'main-3', 'main-4', 'main-5',
-                        'city-0', 'city-1', 'city-2',
-                        'outpost-0', 'outpost-1', 'outpost-2'
-                    ];
-                    
-                    // 開いている部隊を探す
-                    const openFormations = allFormationKeys.filter(key => !collapsedFormations[key]);
-                    
+                    // 対象部隊と同じタブの部隊キーを取得
+                    const tabPrefix = recommendTargetFormation.replace(/-\d+$/, '');
+                    const tabCounts = { main: 6, city: 3, outpost: 3 };
+                    const count = tabCounts[tabPrefix] || 6;
+                    const sameTabKeys = [];
+                    for (let i = 0; i < count; i++) {
+                        sameTabKeys.push(`${tabPrefix}-${i}`);
+                    }
+
+                    // 同じタブ内で開いている部隊を探す
+                    const openFormations = sameTabKeys.filter(key => !collapsedFormations[key]);
+
                     if (openFormations.length > 0) {
-                        // 最初の開いている部隊に切り替え
                         setRecommendTargetFormation(openFormations[0]);
                     }
+                    // 同タブ内すべて折りたたまれている場合は現在の選択を維持
                 }
             }, [collapsedFormations, recommendTargetFormation]);
             
