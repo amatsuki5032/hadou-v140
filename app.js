@@ -1599,9 +1599,16 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     );
                 } else if (type === 'attendant') {
                     // 侍従フィルタは排他的（1つだけON）
-                    setAttendantFilter(prev => 
+                    const willActivate = !attendantFilter.includes(value);
+                    setAttendantFilter(prev =>
                         prev.includes(value) ? [] : [value]
                     );
+                    // 侍従方向を選択した場合、LRタブに自動切替
+                    if (willActivate && !expandedRarities.LR) {
+                        setExpandedRarities({
+                            LR: true, UR: false, SSR: false, SR: false, R: false
+                        });
+                    }
                 } else if (type === 'treasureWeapon') {
                     setTreasureWeaponFilter(prev => 
                         prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]

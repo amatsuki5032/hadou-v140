@@ -142,8 +142,8 @@ function GeneralsPanel({
                                     // レアリティは排他的（1つだけON）
                                     const isCurrentlyActive = expandedRarities[rarity];
                                     
-                                    // LRがOFFになる場合、侍従タグもクリア
-                                    if (rarity === 'LR' && isCurrentlyActive) {
+                                    // LR以外に変更、またはLRをOFFにする場合は侍従タグをクリア
+                                    if (rarity !== 'LR' || isCurrentlyActive) {
                                         setAttendantFilter([]);
                                     }
                                     
@@ -353,7 +353,7 @@ function GeneralsPanel({
                                                                     style={{
                                                                         color: 'var(--text-primary)',
                                                                         flex: 1,
-                                                                        fontSize: general.name.length >= 4 ? '9px' : undefined
+                                                                        fontSize: general.name.length >= 4 ? '11px' : undefined
                                                                     }}
                                                                 >
                                                                     {general.name}
@@ -412,7 +412,7 @@ function GeneralsPanel({
                                                         style={{
                                                             color: 'var(--text-primary)',
                                                             flex: 1,
-                                                            fontSize: general.name.length >= 4 ? '9px' : undefined
+                                                            fontSize: general.name.length >= 4 ? '11px' : undefined
                                                         }}
                                                     >
                                                         {general.name}
