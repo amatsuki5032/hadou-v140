@@ -608,6 +608,7 @@ var FormationsArea = React.memo(function FormationsArea({
                                                     alt={data.slots[slotName].name}
                                                     rarity={data.slots[slotName].rarity}
                                                 />
+                                                {!(compactMode && showImages) && (
                                                 <div style={{flex: 1}}>
                                                     <div className="slot-general-name" style={{color: 'var(--text-primary)'}}>
                                                         {data.slots[slotName].name}
@@ -633,6 +634,7 @@ var FormationsArea = React.memo(function FormationsArea({
                                                     </span>
                                                 </div>
                                             </div>
+                                                )}
                                             </div>
                                         </div>
                                     ) : (
@@ -770,7 +772,8 @@ var FormationsArea = React.memo(function FormationsArea({
                                                             alt={equippedTreasure.name}
                                                             rarity={isTreasureUR(equippedTreasure.id) ? 'UR' : 'normal'}
                                                         />
-                                                        <div 
+                                                        {!(compactMode && showImages) && (
+                                                        <div
                                                             className="treasure-name-mini"
                                                             style={{
                                                                 color: isTreasureUR(equippedTreasure.id) ? 'var(--rarity-ur)' : 'var(--text-body)',
@@ -779,6 +782,7 @@ var FormationsArea = React.memo(function FormationsArea({
                                                         >
                                                             {equippedTreasure.name}{isTreasureUR(equippedTreasure.id) ? '(UR)' : ''}
                                                         </div>
+                                                        )}
                                                     </>
                                                 ) : (
                                                     labels[idx]
