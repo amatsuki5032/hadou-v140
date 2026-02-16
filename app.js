@@ -1609,11 +1609,14 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     setAttendantFilter(prev =>
                         prev.includes(value) ? [] : [value]
                     );
-                    // 侍従方向を選択した場合、LRタブに自動切替
-                    if (willActivate && !expandedRarities.LR) {
-                        setExpandedRarities({
-                            LR: true, UR: false, SSR: false, SR: false, R: false
-                        });
+                    // 侍従方向を選択した場合、LRタブに自動切替＋兵科リセット
+                    if (willActivate) {
+                        if (!expandedRarities.LR) {
+                            setExpandedRarities({
+                                LR: true, UR: false, SSR: false, SR: false, R: false
+                            });
+                        }
+                        setUnitTypeFilter([]);
                     }
                 } else if (type === 'treasureWeapon') {
                     setTreasureWeaponFilter(prev => 
