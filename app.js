@@ -1895,19 +1895,17 @@ const { useState, useEffect, useMemo, useCallback } = React;
                                                             setOpenPatternMenu(openPatternMenu === patternIndex ? null : patternIndex);
                                                         }}
                                                         style={{
-                                                            background: openPatternMenu === patternIndex ? 'var(--accent)' : 'var(--bg-elevated)',
-                                                            border: '1px solid var(--border-light)',
-                                                            borderRadius: '3px',
-                                                            color: openPatternMenu === patternIndex ? '#fff' : 'var(--text-secondary)',
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: openPatternMenu === patternIndex ? 'var(--accent)' : 'var(--text-muted)',
                                                             cursor: 'pointer',
-                                                            padding: '1px 6px',
-                                                            fontSize: '12px',
-                                                            fontWeight: 'bold',
-                                                            lineHeight: '1.2'
+                                                            padding: '0 4px',
+                                                            fontSize: '14px',
+                                                            lineHeight: '1'
                                                         }}
                                                         title="メニュー（エクスポート・インポート等）"
                                                     >
-                                                        ≡
+                                                        ▼
                                                 </button>
                                             </button>
                                             
