@@ -22,6 +22,8 @@ function GeneralsPanel({
     attendantFilter, setAttendantFilter,
     showOnlyFavorites, setShowOnlyFavorites,
     showOnlyRecommendedGenerals, setShowOnlyRecommendedGenerals,
+    showOnlyRangeSkill, setShowOnlyRangeSkill,
+    showOnlySwiftSkill, setShowOnlySwiftSkill,
     recommendTargetFormation,
     // コールバック
     handleDragStart, handleGeneralDoubleClick,
@@ -226,6 +228,30 @@ function GeneralsPanel({
                             title={!formations[recommendTargetFormation]?.slots?.['主将'] ? '対象部隊に主将を配置してください' : '好相性の武将のみ表示'}
                         >
                             好相性
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlyRangeSkill ? 'active' : ''}`}
+                            onClick={() => setShowOnlyRangeSkill(!showOnlyRangeSkill)}
+                            style={{
+                                background: showOnlyRangeSkill ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlyRangeSkill ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="射程スキル持ち武将のみ表示"
+                        >
+                            遠射
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlySwiftSkill ? 'active' : ''}`}
+                            onClick={() => setShowOnlySwiftSkill(!showOnlySwiftSkill)}
+                            style={{
+                                background: showOnlySwiftSkill ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlySwiftSkill ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="戦法速度スキル持ち武将のみ表示"
+                        >
+                            敏活
                         </button>
                     </div>
                     <div className="filter-group" style={{marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px'}}>

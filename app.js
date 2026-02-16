@@ -52,6 +52,8 @@ const { useState, useEffect, useMemo, useCallback } = React;
             });
             const [showOnlyRecommendedGenerals, setShowOnlyRecommendedGenerals] = useState(false);
             const [showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures] = useState(false);
+            const [showOnlyRangeSkill, setShowOnlyRangeSkill] = useState(false);
+            const [showOnlySwiftSkill, setShowOnlySwiftSkill] = useState(false);
             
             // ─── プロファイル ───
             const [currentProfile, setCurrentProfile] = useState(() => {
@@ -1010,7 +1012,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 { name: '張角', center: 7, color: 'var(--text-muted)' },
                 { name: '魏', center: 25, color: 'var(--accent-hover)' },
                 { name: '蜀', center: 75, color: 'var(--success)' },
-                { name: '袁紹', center: 101, color: 'var(--faction-yuan)' },
+                { name: '袁紹', center: 101, range: 13, color: 'var(--faction-yuan)' },
                 { name: '呉', center: 125, color: 'var(--danger)' },
                 { name: '呂布', center: 145, color: 'var(--stat-politics)' }
             ];
@@ -1023,13 +1025,39 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     const diff = Math.abs(affinity - faction.center);
                     const circularDiff = Math.min(diff, 150 - diff);
                     
-                    if (circularDiff <= 10) {
+                    if (circularDiff <= (faction.range || 10)) {
                         tags.push(faction.name);
                     }
                 });
                 return tags;
             };
             
+            // 射程・敏活スキル名のルックアップ
+            const rangeSkillNames = useMemo(() => {
+                const names = new Set();
+                if (typeof SKILL_DB !== 'undefined') {
+                    Object.entries(SKILL_DB).forEach(([name, data]) => {
+                        if (data.effects?.some(e => e.effect === '射程')) names.add(name);
+                    });
+                }
+                return names;
+            }, []);
+            const swiftSkillNames = useMemo(() => {
+                const names = new Set();
+                if (typeof SKILL_DB !== 'undefined') {
+                    Object.entries(SKILL_DB).forEach(([name, data]) => {
+                        if (data.effects?.some(e => e.effect === '戦法速度')) names.add(name);
+                    });
+                }
+                return names;
+            }, []);
+
+            // 武将が特定スキルセットを持つか判定
+            const generalHasSkillIn = (general, skillNameSet) => {
+                if (!general.skills) return false;
+                return Object.values(general.skills).some(s => s && skillNameSet.has(s.name));
+            };
+
             // お気に入り武将の切り替え
             const toggleFavorite = (general) => {
                 const key = `${general.id}-${general.rarity}-${general.name}`;
@@ -1383,7 +1411,13 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     // ±10の範囲外は除外
                     if (minDiff > 10) return false;
                 }
-                
+
+                // 遠射（射程スキル）フィルタ
+                if (showOnlyRangeSkill && !generalHasSkillIn(g, rangeSkillNames)) return false;
+
+                // 敏活（戦法速度スキル）フィルタ
+                if (showOnlySwiftSkill && !generalHasSkillIn(g, swiftSkillNames)) return false;
+
                 return true;
             });
             
@@ -2501,6 +2535,8 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             showOnlyFavorites={showOnlyFavorites} setShowOnlyFavorites={setShowOnlyFavorites}
                             showOnlyRecommendedGenerals={showOnlyRecommendedGenerals}
                             setShowOnlyRecommendedGenerals={setShowOnlyRecommendedGenerals}
+                            showOnlyRangeSkill={showOnlyRangeSkill} setShowOnlyRangeSkill={setShowOnlyRangeSkill}
+                            showOnlySwiftSkill={showOnlySwiftSkill} setShowOnlySwiftSkill={setShowOnlySwiftSkill}
                             recommendTargetFormation={recommendTargetFormation}
                             handleDragStart={handleDragStart} handleGeneralDoubleClick={handleGeneralDoubleClick}
                             isGeneralUsed={isGeneralUsed} moveToDisabled={moveToDisabled} moveToActive={moveToActive}
