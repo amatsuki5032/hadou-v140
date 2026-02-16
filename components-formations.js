@@ -555,7 +555,7 @@ var FormationsArea = React.memo(function FormationsArea({
                         </div>}
 
                         {/* 右：編制枠 */}
-                        <div className="template-slots" style={{flex: (compactMode && showAdvisorSection) ? '0 1 auto' : '1'}}>
+                        <div className="template-slots" style={{flex: '1'}}>
                         {['主将', '副将1', '副将2', '補佐1', '補佐2'].map(slotName => (
                             <div key={slotName} className="slot-row" style={compactMode && showImages ? {gridTemplateColumns: '40px 62px 58px minmax(166px, 1fr)', gap: '4px'} : undefined}>
                                 <div className="slot-label">{slotName}</div>
@@ -812,7 +812,7 @@ var FormationsArea = React.memo(function FormationsArea({
                             background: 'var(--bg-card)',
                             borderRadius: '4px',
                             border: '1px solid var(--border-base)',
-                            flex: compactMode ? '1' : undefined
+                            flex: compactMode ? '0 0 auto' : undefined
                         }}>
                             <div style={{
                                 fontSize: compactMode ? '10px' : '12px',
