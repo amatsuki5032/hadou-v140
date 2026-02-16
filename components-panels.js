@@ -353,7 +353,7 @@ function GeneralsPanel({
                                                                     style={{
                                                                         color: 'var(--text-primary)',
                                                                         flex: 1,
-                                                                        fontSize: general.name.length >= 4 ? '11px' : undefined
+                                                                        fontSize: general.name.length >= 4 ? '13px' : undefined
                                                                     }}
                                                                 >
                                                                     {general.name}
@@ -412,7 +412,7 @@ function GeneralsPanel({
                                                         style={{
                                                             color: 'var(--text-primary)',
                                                             flex: 1,
-                                                            fontSize: general.name.length >= 4 ? '11px' : undefined
+                                                            fontSize: general.name.length >= 4 ? '13px' : undefined
                                                         }}
                                                     >
                                                         {general.name}

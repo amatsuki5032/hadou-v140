@@ -847,9 +847,9 @@
         }
         
         .general-name {
-            font-size: 13px;
-            font-weight: 700; 
-            color: var(--text-primary); 
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 2px;
             overflow: hidden;
             text-overflow: ellipsis;
