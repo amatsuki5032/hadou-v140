@@ -1321,7 +1321,11 @@ const { useState, useEffect, useMemo, useCallback } = React;
             const collapseAllFormations = (formationKeys) => {
                 setCollapsedFormations(prev => {
                     const newCollapsed = { ...prev };
-                    formationKeys.forEach(k => { newCollapsed[k] = true; });
+                    formationKeys.forEach(k => {
+                        if (k !== recommendTargetFormation) {
+                            newCollapsed[k] = true;
+                        }
+                    });
                     return newCollapsed;
                 });
             };
@@ -2347,6 +2351,22 @@ const { useState, useEffect, useMemo, useCallback } = React;
                         {/* 部隊一括折りたたみ/展開 */}
                         <div style={{display: 'flex', flexDirection: 'column', gap: '2px', marginLeft: '8px'}}>
                             <button
+                                onClick={() => collapseAllFormations(currentFormations.map(f => f.key))}
+                                style={{
+                                    padding: '2px 8px',
+                                    background: 'var(--bg-elevated)',
+                                    color: 'var(--text-body)',
+                                    border: '1px solid var(--border-base)',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    fontSize: '14px',
+                                    lineHeight: 1
+                                }}
+                                title="全折りたたみ（注目部隊を除く）"
+                            >
+                                ⊟
+                            </button>
+                            <button
                                 onClick={() => expandAllFormations(currentFormations.map(f => f.key))}
                                 style={{
                                     padding: '2px 8px',
@@ -2361,22 +2381,6 @@ const { useState, useEffect, useMemo, useCallback } = React;
                                 title="全展開"
                             >
                                 ⊞
-                            </button>
-                            <button
-                                onClick={() => collapseAllFormations(currentFormations.map(f => f.key))}
-                                style={{
-                                    padding: '2px 8px',
-                                    background: 'var(--bg-elevated)',
-                                    color: 'var(--text-body)',
-                                    border: '1px solid var(--border-base)',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    fontSize: '14px',
-                                    lineHeight: 1
-                                }}
-                                title="全折りたたみ"
-                            >
-                                ⊟
                             </button>
                         </div>
 
