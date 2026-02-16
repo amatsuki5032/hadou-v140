@@ -797,7 +797,8 @@ var FormationsArea = React.memo(function FormationsArea({
                             padding: compactMode ? '4px' : '8px',
                             background: 'var(--bg-card)',
                             borderRadius: '4px',
-                            border: '1px solid var(--border-base)'
+                            border: '1px solid var(--border-base)',
+                            flex: compactMode ? '1' : undefined
                         }}>
                             <div style={{
                                 fontSize: compactMode ? '10px' : '12px',
