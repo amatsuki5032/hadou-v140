@@ -1608,6 +1608,10 @@
     width: 50px;
     height: 28px;
 }
+.formation-card.compact-mode .formation-grid .item-icon {
+    width: 36px;
+    height: 36px;
+}
 
 /* ============================================
    モーダル共通

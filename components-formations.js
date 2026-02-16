@@ -401,7 +401,7 @@ var FormationsArea = React.memo(function FormationsArea({
                         {/* 左：陣形グリッド（相対位置指定でSVGオーバーレイ用） */}
                         {(!compactMode || showFormationGrid) && <div style={{flex: '0 0 auto', position: 'relative'}}>
                             {/* グリッド */}
-                            <div style={{
+                            <div className="formation-grid" style={{
                                 display: 'grid',
                                 gridTemplateColumns: compactMode ? 'repeat(3, 40px)' : 'repeat(3, 60px)',
                                 gridTemplateRows: compactMode ? 'repeat(3, 40px)' : 'repeat(3, 60px)',
@@ -455,7 +455,8 @@ var FormationsArea = React.memo(function FormationsArea({
                                                         padding: '2px',
                                                         textAlign: 'center',
                                                         flexDirection: 'column',
-                                                        gap: '1px'
+                                                        gap: '1px',
+                                                        overflow: 'hidden'
                                                     }}
                                                 >
                                                     {general ? (
