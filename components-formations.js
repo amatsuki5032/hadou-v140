@@ -18,7 +18,7 @@ var FormationsArea = React.memo(function FormationsArea({
     handleTreasureSlotDragStart,
     handleRemoveGeneral, handleRemoveAttendant,
     handleRemoveAdvisor, handleRemoveTreasure,
-    resetFormation, toggleFormationCollapse, toggleAllFormationsCollapse,
+    resetFormation, toggleFormationCollapse,
     saveFormationTemplate, loadFormationTemplate,
     // 計算・ユーティリティ
     getImageUrl, getGeneralStarRank, getTreasureForgeRank,
