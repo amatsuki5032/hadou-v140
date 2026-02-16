@@ -23,8 +23,8 @@
 
 - [ ] **弓兵知力の名前不整合（Excel側）** — data-skill-db.js L146711に「弓平知力」(id:5081)が存在。data-research.jsは修正済み（弓兵知力①/②）。data-skill-db.jsは自動生成のため元Excel修正が必要
 - [ ] **「統制」がSKILL_DBに未登録（Excel側）** — LR袁紹のスキルC「統制」がdata-skill-db.jsに存在しない。Excel技能DBシートへの追加→再生成が必要
-- [ ] **SSR袁術がいない？** — data-generals.jsにSSR袁術が存在しない可能性。要確認
-- [ ] **SSR羊祜が2人いる** — data-generals.jsにSSR羊祜が重複登録されている可能性。要確認
+- [ ] **SSR袁術がいない（Excel側）** — data-generals.jsに袁術が一切存在しない。Excel武将シートへの追加→再生成が必要
+- [ ] **SSR羊祜が重複（Excel側）** — SSR羊祜がid:4052(ステータス全0)とid:5041の2件存在。id:4052は空データ。Excel側で重複行を削除→再生成が必要
 
 ## 待機中（優先度低）
 
