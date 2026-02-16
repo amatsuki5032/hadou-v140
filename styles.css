@@ -1546,14 +1546,19 @@
 }
 .formation-card.compact-mode .template-slots {
     gap: 2px;
+    min-width: 0;
+    overflow: hidden;
 }
 .formation-card.compact-mode .slot-row {
     gap: 3px;
     grid-template-columns: 50px 180px 55px 150px;
+    overflow: hidden;
 }
 .formation-card.compact-mode .slot-drop-zone {
     min-height: 28px;
     padding: 2px 4px;
+    min-width: 0;
+    overflow: hidden;
 }
 .formation-card.compact-mode .slot-general-name {
     font-size: 12px;
@@ -1564,14 +1569,21 @@
 .formation-card.compact-mode .attendant-zone {
     height: 40px;
     padding: 1px;
+    min-width: 0;
+    overflow: hidden;
 }
 .formation-card.compact-mode .treasures-zone {
     gap: 2px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-width: 0;
+    overflow: hidden;
 }
 .formation-card.compact-mode .treasure-mini-slot {
     min-height: 20px;
     padding: 1px;
     font-size: 8px;
+    min-width: 0;
+    overflow: hidden;
 }
 .formation-card.compact-mode .treasure-name-mini {
     font-size: 6px;
