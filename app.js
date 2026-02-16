@@ -34,7 +34,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
             }); // 名宝カテゴリごとの折りたたみ状態
             const [showSkillEffects, setShowSkillEffects] = useState({}); // 技能効果表示状態
             const [showSkillList, setShowSkillList] = useState(false); // 技能一覧表示トグル
-            const [compactMode, setCompactMode] = useState(false); // 簡易モード
+            const [compactMode, setCompactMode] = useState(() => localStorage.getItem('compactMode') === 'true'); // 簡易モード
             
             // ─── おススメフィルタ ───
             const [recommendTargetFormation, setRecommendTargetFormation] = useState(() => {
@@ -1799,7 +1799,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                                 技能
                             </button>
                             <button
-                                onClick={() => setCompactMode(prev => !prev)}
+                                onClick={() => setCompactMode(prev => { const next = !prev; localStorage.setItem('compactMode', next); return next; })}
                                 style={{
                                     padding: '8px 12px',
                                     background: compactMode ? 'var(--accent)' : 'transparent',

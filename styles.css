@@ -57,19 +57,19 @@
         }
 
         [data-theme="light"] {
-            --bg-base: #f8f9fc;
-            --bg-card: #f0f2f8;
-            --bg-elevated: #e8eaf0;
-            --bg-hover: #dcdee6;
-            --bg-panel: #f4f5fa;
+            --bg-base: #f0f1f5;
+            --bg-card: #ffffff;
+            --bg-elevated: #e8eaef;
+            --bg-hover: #dddfe6;
+            --bg-panel: #f5f6f9;
             --bg-input: #ffffff;
-            --text-primary: #1a1d28;
-            --text-body: #2a2e3a;
-            --text-secondary: #555a6a;
-            --text-muted: #8a8e9e;
-            --border-base: #d8dce8;
-            --border-light: #d8dce8;
-            --border-hover: #c8ccd8;
+            --text-primary: #0f1118;
+            --text-body: #1c2030;
+            --text-secondary: #3e4458;
+            --text-muted: #686e82;
+            --border-base: #c8ccd8;
+            --border-light: #d8dbe4;
+            --border-hover: #b0b5c4;
             --accent: #2563eb;
             --accent-hover: #1d4ed8;
             --danger: #dc2626;
@@ -77,31 +77,31 @@
             --success: #16a34a;
             --success-hover: #15803d;
             --bordeaux: #800020;
-            --bordeaux-border: #daa0b0;
-            --bordeaux-text: #800020;
-            --bordeaux-bg: #fdf0f3;
-            --scrollbar-track: #e8eaf0;
-            --scrollbar-thumb: #c8ccd8;
+            --bordeaux-border: #d0909e;
+            --bordeaux-text: #6b0018;
+            --bordeaux-bg: #faebef;
+            --scrollbar-track: #e8eaef;
+            --scrollbar-thumb: #bcc0cc;
 
             /* UI状態カラー（ライト） */
-            --border-dim: #c8ccd8;
-            --gold: #9a7b0a;
-            --gold-bright: #b8960f;
-            --attendant: #4a7ec8;
+            --border-dim: #b8bcc8;
+            --gold: #8a6d08;
+            --gold-bright: #a88510;
+            --attendant: #3a6eb8;
 
             /* ステータスカラー（ライト） */
-            --stat-attack: #c45e10;
-            --stat-politics: #6b4090;
-            --stat-charm: #108a6e;
-            --faction-yuan: #c47a08;
+            --stat-attack: #b85210;
+            --stat-politics: #5e3680;
+            --stat-charm: #0e7a62;
+            --faction-yuan: #b86e08;
 
             /* フィルタチップカラー（ライト） */
-            --filter-weapon: #e0877e;
-            --filter-armor: #e8a8a0;
-            --filter-artifact: #b090c0;
-            --filter-all: #d89840;
-            --filter-yuan: #c4a018;
-            --filter-wu: #c84838;
+            --filter-weapon: #d07068;
+            --filter-armor: #d09088;
+            --filter-artifact: #9878b0;
+            --filter-all: #c08028;
+            --filter-yuan: #a88018;
+            --filter-wu: #b03828;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
