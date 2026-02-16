@@ -24,6 +24,9 @@ function GeneralsPanel({
     showOnlyRecommendedGenerals, setShowOnlyRecommendedGenerals,
     showOnlyRangeSkill, setShowOnlyRangeSkill,
     showOnlySwiftSkill, setShowOnlySwiftSkill,
+    showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation,
+    showOnlyDamageDealt, setShowOnlyDamageDealt,
+    showOnlyDamageTaken, setShowOnlyDamageTaken,
     recommendTargetFormation,
     // コールバック
     handleDragStart, handleGeneralDoubleClick,
@@ -252,6 +255,42 @@ function GeneralsPanel({
                             title="戦法速度スキル持ち武将のみ表示"
                         >
                             敏活
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlyAntiAnnihilation ? 'active' : ''}`}
+                            onClick={() => setShowOnlyAntiAnnihilation(!showOnlyAntiAnnihilation)}
+                            style={{
+                                background: showOnlyAntiAnnihilation ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlyAntiAnnihilation ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="即壊滅回避スキル持ち武将のみ表示"
+                        >
+                            即壊滅回避
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlyDamageDealt ? 'active' : ''}`}
+                            onClick={() => setShowOnlyDamageDealt(!showOnlyDamageDealt)}
+                            style={{
+                                background: showOnlyDamageDealt ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlyDamageDealt ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="与ダメージパラメータ持ち武将のみ表示"
+                        >
+                            与ダメージ
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlyDamageTaken ? 'active' : ''}`}
+                            onClick={() => setShowOnlyDamageTaken(!showOnlyDamageTaken)}
+                            style={{
+                                background: showOnlyDamageTaken ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlyDamageTaken ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="被ダメージパラメータ持ち武将のみ表示"
+                        >
+                            被ダメージ
                         </button>
                     </div>
                     <div className="filter-group" style={{marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px'}}>
@@ -495,6 +534,9 @@ function TreasuresPanel({
     treasureFactionFilter, setTreasureFactionFilter,
     showOnlyFavoriteTreasures, setShowOnlyFavoriteTreasures,
     showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures,
+    showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation,
+    showOnlyDamageDealt, setShowOnlyDamageDealt,
+    showOnlyDamageTaken, setShowOnlyDamageTaken,
     recommendTargetFormation,
     // コールバック
     handleTreasureDragStart, autoAssignTreasure,
@@ -718,6 +760,42 @@ function TreasuresPanel({
                             })()}
                         >
                             関連名宝
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlyAntiAnnihilation ? 'active' : ''}`}
+                            onClick={() => setShowOnlyAntiAnnihilation(!showOnlyAntiAnnihilation)}
+                            style={{
+                                background: showOnlyAntiAnnihilation ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlyAntiAnnihilation ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="即壊滅回避スキル持ち名宝のみ表示"
+                        >
+                            即壊滅回避
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlyDamageDealt ? 'active' : ''}`}
+                            onClick={() => setShowOnlyDamageDealt(!showOnlyDamageDealt)}
+                            style={{
+                                background: showOnlyDamageDealt ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlyDamageDealt ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="与ダメージパラメータ持ち名宝のみ表示"
+                        >
+                            与ダメージ
+                        </button>
+                        <button
+                            className={`filter-chip ${showOnlyDamageTaken ? 'active' : ''}`}
+                            onClick={() => setShowOnlyDamageTaken(!showOnlyDamageTaken)}
+                            style={{
+                                background: showOnlyDamageTaken ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlyDamageTaken ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="被ダメージパラメータ持ち名宝のみ表示"
+                        >
+                            被ダメージ
                         </button>
                     </div>
                 </div>

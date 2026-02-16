@@ -56,7 +56,10 @@ const { useState, useEffect, useMemo, useCallback } = React;
             const [showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures] = useState(false);
             const [showOnlyRangeSkill, setShowOnlyRangeSkill] = useState(false);
             const [showOnlySwiftSkill, setShowOnlySwiftSkill] = useState(false);
-            
+            const [showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation] = useState(false);
+            const [showOnlyDamageDealt, setShowOnlyDamageDealt] = useState(false);
+            const [showOnlyDamageTaken, setShowOnlyDamageTaken] = useState(false);
+
             // ─── プロファイル ───
             const [currentProfile, setCurrentProfile] = useState(() => {
                 const saved = localStorage.getItem('currentProfile');
@@ -1053,11 +1056,44 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 }
                 return names;
             }, []);
+            const antiAnnihilationSkillNames = useMemo(() => {
+                const names = new Set();
+                if (typeof SKILL_DB !== 'undefined') {
+                    Object.entries(SKILL_DB).forEach(([name, data]) => {
+                        if (data.effects?.some(e => e.type2 === '回避' && e.effect === '即壊滅' && e.type1 !== '武装')) names.add(name);
+                    });
+                }
+                return names;
+            }, []);
+            const damageDealtSkillNames = useMemo(() => {
+                const names = new Set();
+                if (typeof SKILL_DB !== 'undefined') {
+                    Object.entries(SKILL_DB).forEach(([name, data]) => {
+                        if (data.effects?.some(e => e.type2 === 'パラメータ' && e.effect === '与ダメージ' && e.type1 !== '武装')) names.add(name);
+                    });
+                }
+                return names;
+            }, []);
+            const damageTakenSkillNames = useMemo(() => {
+                const names = new Set();
+                if (typeof SKILL_DB !== 'undefined') {
+                    Object.entries(SKILL_DB).forEach(([name, data]) => {
+                        if (data.effects?.some(e => e.type2 === 'パラメータ' && e.effect === '被ダメージ' && e.type1 !== '武装')) names.add(name);
+                    });
+                }
+                return names;
+            }, []);
 
             // 武将が特定スキルセットを持つか判定
             const generalHasSkillIn = (general, skillNameSet) => {
                 if (!general.skills) return false;
                 return Object.values(general.skills).some(s => s && skillNameSet.has(s.name));
+            };
+
+            // 名宝が特定スキルセットを持つか判定
+            const treasureHasSkillIn = (treasure, skillNameSet) => {
+                if (!treasure.skills) return false;
+                return treasure.skills.some(name => skillNameSet.has(name));
             };
 
             // お気に入り武将の切り替え
@@ -1420,6 +1456,15 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 // 敏活（戦法速度スキル）フィルタ
                 if (showOnlySwiftSkill && !generalHasSkillIn(g, swiftSkillNames)) return false;
 
+                // 即壊滅回避フィルタ
+                if (showOnlyAntiAnnihilation && !generalHasSkillIn(g, antiAnnihilationSkillNames)) return false;
+
+                // 与ダメージ（パラメータ）フィルタ
+                if (showOnlyDamageDealt && !generalHasSkillIn(g, damageDealtSkillNames)) return false;
+
+                // 被ダメージ（パラメータ）フィルタ
+                if (showOnlyDamageTaken && !generalHasSkillIn(g, damageTakenSkillNames)) return false;
+
                 return true;
             });
             
@@ -1506,11 +1551,16 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     }
                 }
                 
+                // スキル系フィルタ
+                if (showOnlyAntiAnnihilation && !treasureHasSkillIn(t, antiAnnihilationSkillNames)) return false;
+                if (showOnlyDamageDealt && !treasureHasSkillIn(t, damageDealtSkillNames)) return false;
+                if (showOnlyDamageTaken && !treasureHasSkillIn(t, damageTakenSkillNames)) return false;
+
                 // お気に入りフィルタ
                 if (showOnlyFavoriteTreasures && !isFavoriteTreasure(t)) {
                     return false;
                 }
-                
+
                 // おススメフィルタ（部隊内の武将に関連する名宝）
                 if (showOnlyRecommendedTreasures && recommendTargetFormation) {
                     const targetFormation = formations[recommendTargetFormation];
@@ -2577,6 +2627,9 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             setShowOnlyRecommendedGenerals={setShowOnlyRecommendedGenerals}
                             showOnlyRangeSkill={showOnlyRangeSkill} setShowOnlyRangeSkill={setShowOnlyRangeSkill}
                             showOnlySwiftSkill={showOnlySwiftSkill} setShowOnlySwiftSkill={setShowOnlySwiftSkill}
+                            showOnlyAntiAnnihilation={showOnlyAntiAnnihilation} setShowOnlyAntiAnnihilation={setShowOnlyAntiAnnihilation}
+                            showOnlyDamageDealt={showOnlyDamageDealt} setShowOnlyDamageDealt={setShowOnlyDamageDealt}
+                            showOnlyDamageTaken={showOnlyDamageTaken} setShowOnlyDamageTaken={setShowOnlyDamageTaken}
                             recommendTargetFormation={recommendTargetFormation}
                             handleDragStart={handleDragStart} handleGeneralDoubleClick={handleGeneralDoubleClick}
                             isGeneralUsed={isGeneralUsed} moveToDisabled={moveToDisabled} moveToActive={moveToActive}
@@ -2602,6 +2655,9 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             setShowOnlyFavoriteTreasures={setShowOnlyFavoriteTreasures}
                             showOnlyRecommendedTreasures={showOnlyRecommendedTreasures}
                             setShowOnlyRecommendedTreasures={setShowOnlyRecommendedTreasures}
+                            showOnlyAntiAnnihilation={showOnlyAntiAnnihilation} setShowOnlyAntiAnnihilation={setShowOnlyAntiAnnihilation}
+                            showOnlyDamageDealt={showOnlyDamageDealt} setShowOnlyDamageDealt={setShowOnlyDamageDealt}
+                            showOnlyDamageTaken={showOnlyDamageTaken} setShowOnlyDamageTaken={setShowOnlyDamageTaken}
                             recommendTargetFormation={recommendTargetFormation}
                             handleTreasureDragStart={handleTreasureDragStart}
                             autoAssignTreasure={autoAssignTreasure}
