@@ -29,15 +29,6 @@ var FormationsArea = React.memo(function FormationsArea({
 }) {
     return (
         <div className="formations-area" style={compactMode && showImages ? {width: '650px'} : undefined}>
-            <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '4px'}}>
-                <button
-                    onClick={() => toggleAllFormationsCollapse(currentFormations.map(f => f.key))}
-                    className="btn-small"
-                    style={{fontSize: '11px', padding: '2px 8px'}}
-                >
-                    {currentFormations.every(f => collapsedFormations[f.key]) ? '全展開' : '全折りたたみ'}
-                </button>
-            </div>
             {currentFormations.map(({ key, number, data }) => (
                 <div key={key} className={`formation-card${compactMode ? ' compact-mode' : ''}`}>
                     <div className="formation-header">

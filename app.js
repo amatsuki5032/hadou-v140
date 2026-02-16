@@ -2336,6 +2336,24 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             ⟲ 戻す
                         </button>
 
+                        {/* 部隊一括折りたたみ/展開 */}
+                        <button
+                            onClick={() => toggleAllFormationsCollapse(currentFormations.map(f => f.key))}
+                            style={{
+                                padding: '8px 16px',
+                                background: 'var(--bg-elevated)',
+                                color: 'var(--text-body)',
+                                border: '1px solid var(--border-base)',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '13px',
+                                fontWeight: 'bold',
+                                marginLeft: '8px'
+                            }}
+                        >
+                            {currentFormations.every(f => collapsedFormations[f.key]) ? '全展開' : '全折りたたみ'}
+                        </button>
+
                         {/* 研究専攻トグル */}
                         {typeof RESEARCH_SPECIALIZATION_CATEGORIES !== 'undefined' && (() => {
                             const specs = profileConfig?.research?.specializations || {};
