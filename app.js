@@ -1037,7 +1037,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 const names = new Set();
                 if (typeof SKILL_DB !== 'undefined') {
                     Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.effect === '射程')) names.add(name);
+                        if (data.effects?.some(e => e.effect === '射程' && e.type1 !== '武装')) names.add(name);
                     });
                 }
                 return names;
@@ -1046,7 +1046,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 const names = new Set();
                 if (typeof SKILL_DB !== 'undefined') {
                     Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.effect === '戦法速度')) names.add(name);
+                        if (data.effects?.some(e => e.effect === '戦法速度' && e.type1 !== '武装')) names.add(name);
                     });
                 }
                 return names;
