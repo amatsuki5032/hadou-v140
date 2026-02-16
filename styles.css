@@ -1567,7 +1567,6 @@
     font-size: 9px;
 }
 .formation-card.compact-mode .attendant-zone {
-    height: 40px;
     padding: 1px;
     min-width: 0;
     overflow: hidden;
@@ -1590,15 +1589,18 @@
 }
 .formation-card.compact-mode .item-image,
 .formation-card.compact-mode .item-image-placeholder {
+    width: 50px;
     height: 28px;
 }
 .formation-card.compact-mode .treasures-zone .item-image,
 .formation-card.compact-mode .treasures-zone .item-image-placeholder {
+    width: 50px;
     height: 28px;
 }
 .formation-card.compact-mode .advisor-section .item-image,
 .formation-card.compact-mode .advisor-section .item-image-placeholder {
-    height: 24px;
+    width: 50px;
+    height: 28px;
 }
 
 /* ============================================

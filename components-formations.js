@@ -28,7 +28,7 @@ var FormationsArea = React.memo(function FormationsArea({
     ItemImage
 }) {
     return (
-        <div className="formations-area" style={compactMode && showImages ? {width: '600px'} : undefined}>
+        <div className="formations-area" style={compactMode && showImages ? {width: '650px'} : undefined}>
             {currentFormations.map(({ key, number, data }) => (
                 <div key={key} className={`formation-card${compactMode ? ' compact-mode' : ''}`}>
                     <div className="formation-header">
@@ -547,7 +547,7 @@ var FormationsArea = React.memo(function FormationsArea({
                         {/* 右：編制枠 */}
                         <div className="template-slots" style={{flex: compactMode ? '0 1 auto' : '1'}}>
                         {['主将', '副将1', '副将2', '補佐1', '補佐2'].map(slotName => (
-                            <div key={slotName} className="slot-row" style={compactMode && showImages ? {gridTemplateColumns: '40px 70px 56px 130px', gap: '6px'} : undefined}>
+                            <div key={slotName} className="slot-row" style={compactMode && showImages ? {gridTemplateColumns: '40px 62px 58px 166px', gap: '4px'} : undefined}>
                                 <div className="slot-label">{slotName}</div>
                                 
                                 {/* 武将枠 */}
@@ -672,7 +672,7 @@ var FormationsArea = React.memo(function FormationsArea({
                                             draggable={true}
                                             onDragStart={(e) => handleAttendantDragStart(e, data.attendants[slotName], key, slotName)}
                                             onDoubleClick={() => handleRemoveAttendant(key, slotName)}
-                                            style={{cursor: 'grab', width: '100%', height: '100%', padding: '4px', position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
+                                            style={{cursor: 'grab', width: '100%', height: '100%', padding: compactMode && showImages ? '1px' : '4px', position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
                                             title="ドラッグで移動、ダブルクリックで削除"
                                         >
                                             <button
@@ -816,7 +816,7 @@ var FormationsArea = React.memo(function FormationsArea({
                             </div>
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: compactMode && showImages ? '32px 40px' : '50px 1fr',
+                                gridTemplateColumns: compactMode && showImages ? '32px 56px' : '50px 1fr',
                                 gap: compactMode && showImages ? '3px' : '6px',
                                 alignItems: 'center'
                             }}>
