@@ -1897,7 +1897,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                                                         style={{
                                                             background: 'none',
                                                             border: 'none',
-                                                            color: openPatternMenu === patternIndex ? 'var(--accent)' : 'var(--text-muted)',
+                                                            color: 'inherit',
                                                             cursor: 'pointer',
                                                             padding: '0 4px',
                                                             fontSize: '14px',
