@@ -25,6 +25,7 @@ var FormationsArea = React.memo(function FormationsArea({
     isTreasureUR, calcCombatParams, calcFormationStats, calcSkillEffects,
     showSkillList, calcSkillList,
     compactMode,
+    showFormationGrid, showAdvisorSection,
     ItemImage
 }) {
     return (
@@ -398,7 +399,7 @@ var FormationsArea = React.memo(function FormationsArea({
                     {/* 陣形と編制枠を横並び */}
                     <div style={{display: 'flex', gap: compactMode ? '8px' : '16px', position: 'relative'}}>
                         {/* 左：陣形グリッド（相対位置指定でSVGオーバーレイ用） */}
-                        <div style={{flex: '0 0 auto', position: 'relative'}}>
+                        {(!compactMode || showFormationGrid) && <div style={{flex: '0 0 auto', position: 'relative'}}>
                             {/* グリッド */}
                             <div style={{
                                 display: 'grid',
@@ -551,8 +552,8 @@ var FormationsArea = React.memo(function FormationsArea({
                                 })()}
                             </svg>
 
-                        </div>
-                        
+                        </div>}
+
                         {/* 右：編制枠 */}
                         <div className="template-slots" style={{flex: compactMode ? '0 1 auto' : '1'}}>
                         {['主将', '副将1', '副将2', '補佐1', '補佐2'].map(slotName => (
@@ -805,7 +806,7 @@ var FormationsArea = React.memo(function FormationsArea({
                         </div>
                         
                         {/* 参軍配置エリア */}
-                        <div className="advisor-section" style={{
+                        {(!compactMode || showAdvisorSection) && <div className="advisor-section" style={{
                             marginTop: compactMode ? '4px' : '12px',
                             padding: compactMode ? '4px' : '8px',
                             background: 'var(--bg-card)',
@@ -976,7 +977,7 @@ var FormationsArea = React.memo(function FormationsArea({
                                     );
                                 })}
                             </div>
-                        </div>
+                        </div>}
                     </div>
 
                     {/* 部隊ステータス・パラメータ統合パネル（フルワイド・簡易モード時非表示） */}

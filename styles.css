@@ -609,7 +609,7 @@
         }
         
         .panel-header {
-            padding: 15px;
+            padding: 8px 15px;
             background: var(--bg-card);
             border-bottom: 2px solid var(--bordeaux);
             flex-shrink: 0;
@@ -617,7 +617,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 6px;
         }
         
         .collapsed .panel-header {
@@ -630,13 +630,13 @@
             margin: 0;
         }
         
-        .panel-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+        .panel-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
         
         .panel-toggle {
             display: flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
             padding: 6px;
             background: var(--bg-elevated);
             border-radius: 4px;

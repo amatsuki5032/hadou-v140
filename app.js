@@ -35,6 +35,8 @@ const { useState, useEffect, useMemo, useCallback } = React;
             const [showSkillEffects, setShowSkillEffects] = useState({}); // 技能効果表示状態
             const [showSkillList, setShowSkillList] = useState(false); // 技能一覧表示トグル
             const [compactMode, setCompactMode] = useState(() => localStorage.getItem('compactMode') === 'true'); // 簡易モード
+            const [showFormationGrid, setShowFormationGrid] = useState(() => localStorage.getItem('showFormationGrid') !== 'false');
+            const [showAdvisorSection, setShowAdvisorSection] = useState(() => localStorage.getItem('showAdvisorSection') !== 'false');
             
             // ─── おススメフィルタ ───
             const [recommendTargetFormation, setRecommendTargetFormation] = useState(() => {
@@ -1886,6 +1888,42 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             >
                                 簡易
                             </button>
+                            {compactMode && (
+                                <>
+                                    <button
+                                        onClick={() => setShowFormationGrid(prev => { const next = !prev; localStorage.setItem('showFormationGrid', next); return next; })}
+                                        style={{
+                                            padding: '8px 12px',
+                                            background: showFormationGrid ? 'var(--accent)' : 'transparent',
+                                            border: `1px solid ${showFormationGrid ? 'var(--accent)' : 'var(--border-light)'}`,
+                                            borderRadius: '4px',
+                                            color: showFormationGrid ? 'var(--text-primary)' : 'var(--text-muted)',
+                                            cursor: 'pointer',
+                                            fontSize: '11px',
+                                            fontWeight: 'bold'
+                                        }}
+                                        title={showFormationGrid ? '陣形グリッドを非表示' : '陣形グリッドを表示'}
+                                    >
+                                        陣形
+                                    </button>
+                                    <button
+                                        onClick={() => setShowAdvisorSection(prev => { const next = !prev; localStorage.setItem('showAdvisorSection', next); return next; })}
+                                        style={{
+                                            padding: '8px 12px',
+                                            background: showAdvisorSection ? 'var(--accent)' : 'transparent',
+                                            border: `1px solid ${showAdvisorSection ? 'var(--accent)' : 'var(--border-light)'}`,
+                                            borderRadius: '4px',
+                                            color: showAdvisorSection ? 'var(--text-primary)' : 'var(--text-muted)',
+                                            cursor: 'pointer',
+                                            fontSize: '11px',
+                                            fontWeight: 'bold'
+                                        }}
+                                        title={showAdvisorSection ? '参軍を非表示' : '参軍を表示'}
+                                    >
+                                        参軍
+                                    </button>
+                                </>
+                            )}
                             <button
                                 onClick={toggleTheme}
                                 style={{
@@ -2514,6 +2552,8 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             showSkillList={showSkillList}
                             calcSkillList={calcSkillList}
                             compactMode={compactMode}
+                            showFormationGrid={showFormationGrid}
+                            showAdvisorSection={showAdvisorSection}
                             ItemImage={ItemImage}
                         />
 
