@@ -223,9 +223,9 @@ function GeneralsPanel({
                                 opacity: !formations[recommendTargetFormation]?.slots?.['主将'] ? 0.5 : 1,
                                 cursor: !formations[recommendTargetFormation]?.slots?.['主将'] ? 'not-allowed' : 'pointer'
                             }}
-                            title={!formations[recommendTargetFormation]?.slots?.['主将'] ? '対象部隊に主将を配置してください' : 'おススメ武将のみ表示'}
+                            title={!formations[recommendTargetFormation]?.slots?.['主将'] ? '対象部隊に主将を配置してください' : '好相性の武将のみ表示'}
                         >
-                            おススメ
+                            好相性
                         </button>
                     </div>
                     <div className="filter-group" style={{marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px'}}>
@@ -641,7 +641,7 @@ function TreasuresPanel({
                                 if (hasGeneral) {
                                     const newState = !showOnlyRecommendedTreasures;
                                     setShowOnlyRecommendedTreasures(newState);
-                                    // おススメON時に武器・防具・文物を全て展開
+                                    // 関連名宝ON時に武器・防具・文物を全て展開
                                     if (newState) {
                                         setExpandedTreasureCategories({'武器': true, '防具': true, '文物': true});
                                     }
@@ -687,11 +687,11 @@ function TreasuresPanel({
                                     targetFormation?.slots?.['補佐1'] ||
                                     targetFormation?.slots?.['補佐2'] ||
                                     (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a))) 
-                                    ? 'おススメ名宝のみ表示' 
+                                    ? '関連名宝のみ表示'
                                     : '対象部隊に武将を配置してください';
                             })()}
                         >
-                            おススメ
+                            関連名宝
                         </button>
                     </div>
                 </div>

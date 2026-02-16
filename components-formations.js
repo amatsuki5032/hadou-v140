@@ -66,12 +66,21 @@ var FormationsArea = React.memo(function FormationsArea({
                                 htmlFor={`collapse-${key}`}
                                 style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'}}
                             >
-                                <div className="formation-number">部隊 {number}</div>
+                                <div className="formation-number">部隊{number}</div>
                                 {data.slots?.['主将'] && (
                                     <div style={{
-                                        fontSize: '11px', 
+                                        fontSize: '12px',
                                         color: 'var(--text-primary)',
-                                        padding: '2px 6px',
+                                        fontWeight: 600
+                                    }}>
+                                        {data.slots['主将'].name}
+                                    </div>
+                                )}
+                                {data.slots?.['主将'] && (
+                                    <div style={{
+                                        fontSize: '11px',
+                                        color: 'var(--text-secondary)',
+                                        padding: '1px 5px',
                                         background: 'rgba(37, 99, 235, 0.08)',
                                         borderRadius: '3px',
                                         border: '1px solid rgba(37, 99, 235, 0.15)'

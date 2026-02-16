@@ -204,15 +204,15 @@ function createDndHandlers({
         }
 
         // 移動元がある場合（配置済み武将の移動）
-        if (draggedGeneral.sourceFormation && draggedGeneral.sourceSlot) {
+        if (draggedGeneral.sourceFormation && (draggedGeneral.sourceSlot || draggedGeneral.sourceAdvisorType)) {
             setFormations(prev => {
                 const newFormations = { ...prev };
 
                 // 移動先に既に武将がいるかチェック
                 const targetGeneral = newFormations[formationKey]?.slots?.[slotName];
 
-                if (targetGeneral) {
-                    // 位置交換：移動先の武将を移動元に配置
+                if (targetGeneral && !draggedGeneral.sourceAdvisorType) {
+                    // 位置交換：移動先の武将を移動元に配置（参軍からの移動時は交換しない）
                     const targetGeneralData = {
                         id: targetGeneral.id,
                         name: targetGeneral.name,
@@ -247,8 +247,17 @@ function createDndHandlers({
                         };
                     }
                 } else {
-                    // 移動元から削除（移動先が空の場合）
-                    if (draggedGeneral.isFromAttendant) {
+                    // 移動元から削除（移動先が空の場合、または参軍からの移動）
+                    if (draggedGeneral.sourceAdvisorType) {
+                        // 参軍からの移動
+                        newFormations[draggedGeneral.sourceFormation] = {
+                            ...newFormations[draggedGeneral.sourceFormation],
+                            advisors: {
+                                ...newFormations[draggedGeneral.sourceFormation].advisors,
+                                [draggedGeneral.sourceAdvisorType]: null
+                            }
+                        };
+                    } else if (draggedGeneral.isFromAttendant) {
                         newFormations[draggedGeneral.sourceFormation] = {
                             ...newFormations[draggedGeneral.sourceFormation],
                             attendants: {
@@ -269,18 +278,19 @@ function createDndHandlers({
 
                 // ドラッグした武将を移動先に配置
                 const generalData = {
-                    id: draggedGeneral.id,
-                    name: draggedGeneral.name,
-                    rarity: draggedGeneral.rarity,
-                    unit_type: draggedGeneral.unit_type,
-                    leadership: draggedGeneral.leadership,
-                    attack: draggedGeneral.attack,
-                    intelligence: draggedGeneral.intelligence,
-                    affinity: draggedGeneral.affinity
+                    id: draggedGeneral.general?.id || draggedGeneral.id,
+                    name: draggedGeneral.general?.name || draggedGeneral.name,
+                    rarity: draggedGeneral.general?.rarity || draggedGeneral.rarity,
+                    unit_type: draggedGeneral.general?.unit_type || draggedGeneral.unit_type,
+                    leadership: draggedGeneral.general?.leadership || draggedGeneral.leadership,
+                    attack: draggedGeneral.general?.attack || draggedGeneral.attack,
+                    intelligence: draggedGeneral.general?.intelligence || draggedGeneral.intelligence,
+                    affinity: draggedGeneral.general?.affinity || draggedGeneral.affinity
                 };
 
-                if (draggedGeneral.attendant_position) {
-                    generalData.attendant_position = draggedGeneral.attendant_position;
+                const srcGeneral = draggedGeneral.general || draggedGeneral;
+                if (srcGeneral.attendant_position) {
+                    generalData.attendant_position = srcGeneral.attendant_position;
                 }
 
                 newFormations[formationKey] = {
@@ -339,15 +349,15 @@ function createDndHandlers({
         }
 
         // 移動元がある場合（配置済み武将の移動）
-        if (draggedGeneral.sourceFormation && draggedGeneral.sourceSlot) {
+        if (draggedGeneral.sourceFormation && (draggedGeneral.sourceSlot || draggedGeneral.sourceAdvisorType)) {
             setFormations(prev => {
                 const newFormations = { ...prev };
 
                 // 移動先に既に侍従がいるかチェック
                 const targetAttendant = newFormations[formationKey]?.attendants?.[slotName];
 
-                if (targetAttendant) {
-                    // 位置交換
+                if (targetAttendant && !draggedGeneral.sourceAdvisorType) {
+                    // 位置交換（参軍からの移動時は交換しない）
                     const targetAttendantData = {
                         id: targetAttendant.id,
                         name: targetAttendant.name,
@@ -379,8 +389,17 @@ function createDndHandlers({
                         };
                     }
                 } else {
-                    // 移動元から削除（移動先が空の場合）
-                    if (draggedGeneral.isFromAttendant) {
+                    // 移動元から削除（移動先が空の場合、または参軍からの移動）
+                    if (draggedGeneral.sourceAdvisorType) {
+                        // 参軍からの移動
+                        newFormations[draggedGeneral.sourceFormation] = {
+                            ...newFormations[draggedGeneral.sourceFormation],
+                            advisors: {
+                                ...newFormations[draggedGeneral.sourceFormation].advisors,
+                                [draggedGeneral.sourceAdvisorType]: null
+                            }
+                        };
+                    } else if (draggedGeneral.isFromAttendant) {
                         newFormations[draggedGeneral.sourceFormation] = {
                             ...newFormations[draggedGeneral.sourceFormation],
                             attendants: {
@@ -400,15 +419,16 @@ function createDndHandlers({
                 }
 
                 // ドラッグした武将を移動先の侍従枠に配置
+                const srcGeneral = draggedGeneral.general || draggedGeneral;
                 const generalData = {
-                    id: draggedGeneral.id,
-                    name: draggedGeneral.name,
-                    rarity: draggedGeneral.rarity,
-                    unit_type: draggedGeneral.unit_type,
-                    leadership: draggedGeneral.leadership,
-                    attack: draggedGeneral.attack,
-                    intelligence: draggedGeneral.intelligence,
-                    affinity: draggedGeneral.affinity
+                    id: srcGeneral.id,
+                    name: srcGeneral.name,
+                    rarity: srcGeneral.rarity,
+                    unit_type: srcGeneral.unit_type,
+                    leadership: srcGeneral.leadership,
+                    attack: srcGeneral.attack,
+                    intelligence: srcGeneral.intelligence,
+                    affinity: srcGeneral.affinity
                 };
 
                 newFormations[formationKey] = {
