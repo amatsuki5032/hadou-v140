@@ -1314,6 +1314,16 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     return newCollapsed;
                 });
             };
+
+            // 部隊の一括折りたたみ/展開
+            const toggleAllFormationsCollapse = (formationKeys) => {
+                setCollapsedFormations(prev => {
+                    const allCollapsed = formationKeys.every(k => prev[k]);
+                    const newCollapsed = { ...prev };
+                    formationKeys.forEach(k => { newCollapsed[k] = !allCollapsed; });
+                    return newCollapsed;
+                });
+            };
             // 陣形変更
             // フィルター適用
             const filteredGenerals = generals.filter(g => {
@@ -2392,6 +2402,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             handleRemoveTreasure={handleRemoveTreasure}
                             resetFormation={resetFormation}
                             toggleFormationCollapse={toggleFormationCollapse}
+                            toggleAllFormationsCollapse={toggleAllFormationsCollapse}
                             saveFormationTemplate={saveFormationTemplate}
                             loadFormationTemplate={loadFormationTemplate}
                             getImageUrl={getImageUrl}
