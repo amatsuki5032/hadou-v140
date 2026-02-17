@@ -18,7 +18,7 @@ var FormationsArea = React.memo(function FormationsArea({
     handleTreasureSlotDragStart,
     handleRemoveGeneral, handleRemoveAttendant,
     handleRemoveAdvisor, handleRemoveTreasure,
-    resetFormation, toggleFormationCollapse,
+    resetFormation, swapFormations, toggleFormationCollapse,
     saveFormationTemplate, loadFormationTemplate,
     // 計算・ユーティリティ
     getImageUrl, getGeneralStarRank, getTreasureForgeRank,
@@ -90,6 +90,40 @@ var FormationsArea = React.memo(function FormationsArea({
                                     </div>
                                 )}
                             </label>
+                            {number > 1 && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const tabId = key.split('-')[0];
+                                        const idx = parseInt(key.split('-')[1]);
+                                        swapFormations(key, `${tabId}-${idx - 1}`);
+                                    }}
+                                    style={{
+                                        padding: '2px 6px', background: 'var(--bg-elevated)',
+                                        border: '1px solid var(--border-dim)', borderRadius: '3px',
+                                        color: 'var(--text-muted)', cursor: 'pointer',
+                                        fontSize: '11px', lineHeight: '1'
+                                    }}
+                                    title="上の部隊と入れ替え"
+                                >▲</button>
+                            )}
+                            {number < currentFormations.length && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const tabId = key.split('-')[0];
+                                        const idx = parseInt(key.split('-')[1]);
+                                        swapFormations(key, `${tabId}-${idx + 1}`);
+                                    }}
+                                    style={{
+                                        padding: '2px 6px', background: 'var(--bg-elevated)',
+                                        border: '1px solid var(--border-dim)', borderRadius: '3px',
+                                        color: 'var(--text-muted)', cursor: 'pointer',
+                                        fontSize: '11px', lineHeight: '1'
+                                    }}
+                                    title="下の部隊と入れ替え"
+                                >▼</button>
+                            )}
                         </div>
                         <button
                             onClick={() => saveFormationTemplate(key)}

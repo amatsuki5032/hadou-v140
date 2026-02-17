@@ -605,65 +605,36 @@ function createDndHandlers({
         setDraggedTreasure(null);
     };
 
-    // 武将を削除
-    const handleRemoveGeneral = (formationKey, slotName) => {
+    // 共通: 部隊スロットのnull化
+    const handleRemoveSlot = (formationKey, field, slotKey) => {
         setFormations(prev => ({
             ...prev,
             [formationKey]: {
                 ...prev[formationKey],
-                slots: {
-                    ...prev[formationKey].slots,
-                    [slotName]: null
+                [field]: {
+                    ...prev[formationKey][field],
+                    [slotKey]: null
                 }
             }
         }));
         setRecommendTargetFormation(formationKey);
     };
+
+    // 武将を削除
+    const handleRemoveGeneral = (formationKey, slotName) =>
+        handleRemoveSlot(formationKey, 'slots', slotName);
 
     // 侍従を削除
-    const handleRemoveAttendant = (formationKey, slotName) => {
-        setFormations(prev => ({
-            ...prev,
-            [formationKey]: {
-                ...prev[formationKey],
-                attendants: {
-                    ...prev[formationKey].attendants,
-                    [slotName]: null
-                }
-            }
-        }));
-        setRecommendTargetFormation(formationKey);
-    };
+    const handleRemoveAttendant = (formationKey, slotName) =>
+        handleRemoveSlot(formationKey, 'attendants', slotName);
 
     // 参軍の削除
-    const handleRemoveAdvisor = (formationKey, advisorType) => {
-        setFormations(prev => ({
-            ...prev,
-            [formationKey]: {
-                ...prev[formationKey],
-                advisors: {
-                    ...prev[formationKey].advisors,
-                    [advisorType]: null
-                }
-            }
-        }));
-        setRecommendTargetFormation(formationKey);
-    };
+    const handleRemoveAdvisor = (formationKey, advisorType) =>
+        handleRemoveSlot(formationKey, 'advisors', advisorType);
 
     // 名宝削除
-    const handleRemoveTreasure = (formationKey, slotName, treasureSlot) => {
-        setFormations(prev => ({
-            ...prev,
-            [formationKey]: {
-                ...prev[formationKey],
-                treasures: {
-                    ...prev[formationKey].treasures,
-                    [`${slotName}-${treasureSlot}`]: null
-                }
-            }
-        }));
-        setRecommendTargetFormation(formationKey);
-    };
+    const handleRemoveTreasure = (formationKey, slotName, treasureSlot) =>
+        handleRemoveSlot(formationKey, 'treasures', `${slotName}-${treasureSlot}`);
 
     // 名宝のUR化状態を切り替え
     // LR武将を空いている主将/副将/補佐枠に自動配置

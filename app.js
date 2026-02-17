@@ -1048,62 +1048,27 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 return tags;
             };
             
-            // 射程・敏活スキル名のルックアップ
-            const rangeSkillNames = useMemo(() => {
-                const names = new Set();
+            // 技能名セットの一括構築（SKILL_DBを1回スキャン）
+            const skillNameSets = useMemo(() => {
+                const range = new Set();
+                const swift = new Set();
+                const antiAnnihilation = new Set();
+                const damageDealt = new Set();
+                const damageTaken = new Set();
+                const swiftRendatsu = new Set();
                 if (typeof SKILL_DB !== 'undefined') {
                     Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.effect === '射程' && e.type1 !== '武装')) names.add(name);
+                        data.effects?.forEach(e => {
+                            if (e.effect === '射程' && e.type1 !== '武装') range.add(name);
+                            if (e.effect === '戦法速度' && e.type2 === 'パラメータ' && e.type1 !== '武装') swift.add(name);
+                            if (e.effect === '即壊滅' && e.type2 === '回避' && e.type1 !== '武装') antiAnnihilation.add(name);
+                            if (e.effect === '与ダメージ' && e.type2 === 'パラメータ' && e.type1 !== '武装') damageDealt.add(name);
+                            if (e.effect === '被ダメージ' && e.type2 === 'パラメータ' && e.type1 !== '武装') damageTaken.add(name);
+                            if (e.effect === '敏活' && e.type2 === '練達') swiftRendatsu.add(name);
+                        });
                     });
                 }
-                return names;
-            }, []);
-            const swiftSkillNames = useMemo(() => {
-                const names = new Set();
-                if (typeof SKILL_DB !== 'undefined') {
-                    Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.effect === '戦法速度' && e.type2 === 'パラメータ' && e.type1 !== '武装')) names.add(name);
-                    });
-                }
-                return names;
-            }, []);
-            const antiAnnihilationSkillNames = useMemo(() => {
-                const names = new Set();
-                if (typeof SKILL_DB !== 'undefined') {
-                    Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.type2 === '回避' && e.effect === '即壊滅' && e.type1 !== '武装')) names.add(name);
-                    });
-                }
-                return names;
-            }, []);
-            const damageDealtSkillNames = useMemo(() => {
-                const names = new Set();
-                if (typeof SKILL_DB !== 'undefined') {
-                    Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.type2 === 'パラメータ' && e.effect === '与ダメージ' && e.type1 !== '武装')) names.add(name);
-                    });
-                }
-                return names;
-            }, []);
-            const damageTakenSkillNames = useMemo(() => {
-                const names = new Set();
-                if (typeof SKILL_DB !== 'undefined') {
-                    Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.type2 === 'パラメータ' && e.effect === '被ダメージ' && e.type1 !== '武装')) names.add(name);
-                    });
-                }
-                return names;
-            }, []);
-
-            // 「練達: 敏活」効果を持つスキル名セット（名宝鍛錬フィルタ用）
-            const swiftRendatsuSkillNames = useMemo(() => {
-                const names = new Set();
-                if (typeof SKILL_DB !== 'undefined') {
-                    Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.type2 === '練達' && e.effect === '敏活')) names.add(name);
-                    });
-                }
-                return names;
+                return { range, swift, antiAnnihilation, damageDealt, damageTaken, swiftRendatsu };
             }, []);
 
             // 武将が特定スキルセットを持つか判定
@@ -1437,6 +1402,29 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     return newCollapsed;
                 });
             };
+
+            // 部隊データの入れ替え（同一タブ内）
+            const swapFormations = (keyA, keyB) => {
+                setFormations(prev => {
+                    const dataA = prev[keyA];
+                    const dataB = prev[keyB];
+                    return { ...prev, [keyA]: dataB, [keyB]: dataA };
+                });
+                setCollapsedFormations(prev => {
+                    const newCollapsed = { ...prev };
+                    const collapsedA = prev[keyA];
+                    const collapsedB = prev[keyB];
+                    newCollapsed[keyA] = collapsedB;
+                    newCollapsed[keyB] = collapsedA;
+                    return newCollapsed;
+                });
+                if (recommendTargetFormation === keyA) {
+                    setRecommendTargetFormation(keyB);
+                } else if (recommendTargetFormation === keyB) {
+                    setRecommendTargetFormation(keyA);
+                }
+            };
+
             // 陣形変更
             // フィルター適用
             const filteredGenerals = generals.filter(g => {
@@ -1486,19 +1474,19 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 }
 
                 // 遠射（射程スキル）フィルタ
-                if (showOnlyRangeSkill && !generalHasSkillIn(g, rangeSkillNames)) return false;
+                if (showOnlyRangeSkill && !generalHasSkillIn(g, skillNameSets.range)) return false;
 
                 // 敏活（戦法速度スキル）フィルタ
-                if (showOnlySwiftSkill && !generalHasSkillIn(g, swiftSkillNames)) return false;
+                if (showOnlySwiftSkill && !generalHasSkillIn(g, skillNameSets.swift)) return false;
 
                 // 即壊滅回避フィルタ
-                if (showOnlyAntiAnnihilation && !generalHasSkillIn(g, antiAnnihilationSkillNames)) return false;
+                if (showOnlyAntiAnnihilation && !generalHasSkillIn(g, skillNameSets.antiAnnihilation)) return false;
 
                 // 与ダメージ（パラメータ）フィルタ
-                if (showOnlyDamageDealt && !generalHasSkillIn(g, damageDealtSkillNames)) return false;
+                if (showOnlyDamageDealt && !generalHasSkillIn(g, skillNameSets.damageDealt)) return false;
 
                 // 被ダメージ（パラメータ）フィルタ
-                if (showOnlyDamageTaken && !generalHasSkillIn(g, damageTakenSkillNames)) return false;
+                if (showOnlyDamageTaken && !generalHasSkillIn(g, skillNameSets.damageTaken)) return false;
 
                 return true;
             });
@@ -1587,10 +1575,10 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 }
                 
                 // スキル系フィルタ（名宝専用state）
-                if (showOnlySwiftTreasure && !treasureForgeHasSkillIn(t, swiftRendatsuSkillNames) && !treasureHasSkillIn(t, swiftSkillNames)) return false;
-                if (showOnlyAntiAnnihilationTreasure && !treasureHasSkillIn(t, antiAnnihilationSkillNames)) return false;
-                if (showOnlyDamageDealtTreasure && !treasureHasSkillIn(t, damageDealtSkillNames)) return false;
-                if (showOnlyDamageTakenTreasure && !treasureHasSkillIn(t, damageTakenSkillNames)) return false;
+                if (showOnlySwiftTreasure && !treasureForgeHasSkillIn(t, skillNameSets.swiftRendatsu) && !treasureHasSkillIn(t, skillNameSets.swift)) return false;
+                if (showOnlyAntiAnnihilationTreasure && !treasureHasSkillIn(t, skillNameSets.antiAnnihilation)) return false;
+                if (showOnlyDamageDealtTreasure && !treasureHasSkillIn(t, skillNameSets.damageDealt)) return false;
+                if (showOnlyDamageTakenTreasure && !treasureHasSkillIn(t, skillNameSets.damageTaken)) return false;
 
                 // お気に入りフィルタ
                 if (showOnlyFavoriteTreasures && !isFavoriteTreasure(t)) {
@@ -2647,6 +2635,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             handleRemoveAdvisor={handleRemoveAdvisor}
                             handleRemoveTreasure={handleRemoveTreasure}
                             resetFormation={resetFormation}
+                            swapFormations={swapFormations}
                             toggleFormationCollapse={toggleFormationCollapse}
                             saveFormationTemplate={saveFormationTemplate}
                             loadFormationTemplate={loadFormationTemplate}
