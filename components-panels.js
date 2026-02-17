@@ -733,54 +733,29 @@ function TreasuresPanel({
                                 </button>
                             </>);
                         })()}
-                        <button
-                            className={`filter-chip ${showOnlySwift ? 'active' : ''}`}
-                            onClick={() => setShowOnlySwift(!showOnlySwift)}
-                            style={{
-                                background: showOnlySwift ? 'var(--accent)' : 'var(--bg-elevated)',
-                                borderColor: 'var(--accent)',
-                                color: showOnlySwift ? 'var(--text-primary)' : 'var(--text-muted)'
-                            }}
-                            title="敏活練達スキル持ち名宝のみ表示"
-                        >
-                            敏活
-                        </button>
-                        <button
-                            className={`filter-chip ${showOnlyAntiAnnihilation ? 'active' : ''}`}
-                            onClick={() => setShowOnlyAntiAnnihilation(!showOnlyAntiAnnihilation)}
-                            style={{
-                                background: showOnlyAntiAnnihilation ? 'var(--accent)' : 'var(--bg-elevated)',
-                                borderColor: 'var(--accent)',
-                                color: showOnlyAntiAnnihilation ? 'var(--text-primary)' : 'var(--text-muted)'
-                            }}
-                            title="即壊滅回避スキル持ち名宝のみ表示"
-                        >
-                            即壊滅回避
-                        </button>
-                        <button
-                            className={`filter-chip ${showOnlyDamageDealt ? 'active' : ''}`}
-                            onClick={() => setShowOnlyDamageDealt(!showOnlyDamageDealt)}
-                            style={{
-                                background: showOnlyDamageDealt ? 'var(--accent)' : 'var(--bg-elevated)',
-                                borderColor: 'var(--accent)',
-                                color: showOnlyDamageDealt ? 'var(--text-primary)' : 'var(--text-muted)'
-                            }}
-                            title="与ダメージパラメータ持ち名宝のみ表示"
-                        >
-                            与ダメージ
-                        </button>
-                        <button
-                            className={`filter-chip ${showOnlyDamageTaken ? 'active' : ''}`}
-                            onClick={() => setShowOnlyDamageTaken(!showOnlyDamageTaken)}
-                            style={{
-                                background: showOnlyDamageTaken ? 'var(--accent)' : 'var(--bg-elevated)',
-                                borderColor: 'var(--accent)',
-                                color: showOnlyDamageTaken ? 'var(--text-primary)' : 'var(--text-muted)'
-                            }}
-                            title="被ダメージパラメータ持ち名宝のみ表示"
-                        >
-                            被ダメージ
-                        </button>
+                        {[
+                            { state: showOnlySwift, setter: setShowOnlySwift, label: '敏活', title: '敏活練達スキル持ち名宝のみ表示' },
+                            { state: showOnlyAntiAnnihilation, setter: setShowOnlyAntiAnnihilation, label: '即壊滅回避', title: '即壊滅回避スキル持ち名宝のみ表示' },
+                            { state: showOnlyDamageDealt, setter: setShowOnlyDamageDealt, label: '与ダメージ', title: '与ダメージパラメータ持ち名宝のみ表示' },
+                            { state: showOnlyDamageTaken, setter: setShowOnlyDamageTaken, label: '被ダメージ', title: '被ダメージパラメータ持ち名宝のみ表示' }
+                        ].map(({ state, setter, label, title }) => (
+                            <button
+                                key={label}
+                                className={`filter-chip ${state ? 'active' : ''}`}
+                                onClick={() => {
+                                    setter(!state);
+                                    if (!state) setExpandedTreasureCategories({'武器': true, '防具': true, '文物': true});
+                                }}
+                                style={{
+                                    background: state ? 'var(--accent)' : 'var(--bg-elevated)',
+                                    borderColor: 'var(--accent)',
+                                    color: state ? 'var(--text-primary)' : 'var(--text-muted)'
+                                }}
+                                title={title}
+                            >
+                                {label}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
