@@ -60,6 +60,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
             const [showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation] = useState(false);
             const [showOnlyDamageDealt, setShowOnlyDamageDealt] = useState(false);
             const [showOnlyDamageTaken, setShowOnlyDamageTaken] = useState(false);
+            const [showOnlySwiftTreasure, setShowOnlySwiftTreasure] = useState(false);
             const [showOnlyAntiAnnihilationTreasure, setShowOnlyAntiAnnihilationTreasure] = useState(false);
             const [showOnlyDamageDealtTreasure, setShowOnlyDamageDealtTreasure] = useState(false);
             const [showOnlyDamageTakenTreasure, setShowOnlyDamageTakenTreasure] = useState(false);
@@ -1105,6 +1106,17 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 return treasure.skills.some(name => skillNameSet.has(name));
             };
 
+            // 名宝の鍛錬スキルが特定スキルセットを持つか判定
+            const treasureForgeHasSkillIn = (treasure, skillNameSet) => {
+                if (typeof TREASURE_FORGE === 'undefined') return false;
+                const forgeData = TREASURE_FORGE[treasure.id];
+                if (!forgeData) return false;
+                const stages = [forgeData.normal, forgeData.ur].filter(Boolean);
+                return stages.some(stage =>
+                    stage.some(entry => skillNameSet.has(entry.skill))
+                );
+            };
+
             // お気に入り武将の切り替え
             const toggleFavorite = (general) => {
                 const key = `${general.id}-${general.rarity}-${general.name}`;
@@ -1563,6 +1575,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 }
                 
                 // スキル系フィルタ（名宝専用state）
+                if (showOnlySwiftTreasure && !treasureForgeHasSkillIn(t, swiftSkillNames)) return false;
                 if (showOnlyAntiAnnihilationTreasure && !treasureHasSkillIn(t, antiAnnihilationSkillNames)) return false;
                 if (showOnlyDamageDealtTreasure && !treasureHasSkillIn(t, damageDealtSkillNames)) return false;
                 if (showOnlyDamageTakenTreasure && !treasureHasSkillIn(t, damageTakenSkillNames)) return false;
@@ -2676,6 +2689,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             setShowOnlyRecommendedTreasures={setShowOnlyRecommendedTreasures}
                             showOnlyRendatsuTreasures={showOnlyRendatsuTreasures}
                             setShowOnlyRendatsuTreasures={setShowOnlyRendatsuTreasures}
+                            showOnlySwift={showOnlySwiftTreasure} setShowOnlySwift={setShowOnlySwiftTreasure}
                             showOnlyAntiAnnihilation={showOnlyAntiAnnihilationTreasure} setShowOnlyAntiAnnihilation={setShowOnlyAntiAnnihilationTreasure}
                             showOnlyDamageDealt={showOnlyDamageDealtTreasure} setShowOnlyDamageDealt={setShowOnlyDamageDealtTreasure}
                             showOnlyDamageTaken={showOnlyDamageTakenTreasure} setShowOnlyDamageTaken={setShowOnlyDamageTakenTreasure}

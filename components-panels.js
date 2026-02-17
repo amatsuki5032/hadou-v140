@@ -502,6 +502,7 @@ function TreasuresPanel({
     showOnlyFavoriteTreasures, setShowOnlyFavoriteTreasures,
     showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures,
     showOnlyRendatsuTreasures, setShowOnlyRendatsuTreasures,
+    showOnlySwift, setShowOnlySwift,
     showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation,
     showOnlyDamageDealt, setShowOnlyDamageDealt,
     showOnlyDamageTaken, setShowOnlyDamageTaken,
@@ -732,6 +733,18 @@ function TreasuresPanel({
                                 </button>
                             </>);
                         })()}
+                        <button
+                            className={`filter-chip ${showOnlySwift ? 'active' : ''}`}
+                            onClick={() => setShowOnlySwift(!showOnlySwift)}
+                            style={{
+                                background: showOnlySwift ? 'var(--accent)' : 'var(--bg-elevated)',
+                                borderColor: 'var(--accent)',
+                                color: showOnlySwift ? 'var(--text-primary)' : 'var(--text-muted)'
+                            }}
+                            title="敏活練達スキル持ち名宝のみ表示"
+                        >
+                            敏活
+                        </button>
                         <button
                             className={`filter-chip ${showOnlyAntiAnnihilation ? 'active' : ''}`}
                             onClick={() => setShowOnlyAntiAnnihilation(!showOnlyAntiAnnihilation)}
