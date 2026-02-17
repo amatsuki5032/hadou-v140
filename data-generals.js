@@ -10067,7 +10067,7 @@ var EMBEDDED_GENERALS_DATA = [
   "id": 3001,
   "rarity": "SSR",
   "name": "曹植",
-  "unit_type": "馬",
+  "unit_type": "弓",
   "leadership": 0,
   "attack": 0,
   "intelligence": 0,
