@@ -385,9 +385,22 @@ var FormationsArea = React.memo(function FormationsArea({
                                                     <span style={{color: 'var(--text-body)'}}>
                                                         {e.skillName}
                                                     </span>
-                                                    <span style={{color: 'var(--accent)', marginLeft: '2px'}}>
-                                                        Lv{e.level}
-                                                    </span>
+                                                    {(() => {
+                                                        const maxLv = typeof SKILL_DB !== 'undefined' && SKILL_DB[e.skillName]
+                                                            ? Math.max(...SKILL_DB[e.skillName].effects.map(eff =>
+                                                                eff.levels ? Object.keys(eff.levels).length : 0))
+                                                            : 5;
+                                                        const displayLv = Math.min(e.level, maxLv);
+                                                        const excess = e.level - maxLv;
+                                                        return (<>
+                                                            <span style={{color: 'var(--accent)', marginLeft: '2px'}}>
+                                                                Lv{displayLv}
+                                                            </span>
+                                                            {excess > 0 && <span style={{color: 'var(--text-muted)', fontSize: '10px'}}>
+                                                                (+{excess})
+                                                            </span>}
+                                                        </>);
+                                                    })()}
                                                 </span>
                                             ))}
                                         </div>

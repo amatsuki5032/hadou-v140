@@ -219,10 +219,10 @@ function applyRentatsuEffects(generalEntries, treasureEntries, fmtCtx) {
                 boost = eff.levels[levelKey];
             }
 
-            // 対象技能のレベルを上げる（上限5）
+            // 対象技能のレベルを上げる（上限カットなし、効果値計算側でクランプ）
             for (var k = 0; k < generalEntries.length; k++) {
                 if (generalEntries[k].skillName === targetSkillName) {
-                    generalEntries[k].level = Math.min(generalEntries[k].level + boost, 5);
+                    generalEntries[k].level += boost;
                 }
             }
         }
