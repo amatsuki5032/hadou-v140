@@ -1186,6 +1186,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 draggedGeneral, draggedTreasure,
                 collapsedFormations, recommendTargetFormation,
                 setFormations, setDraggedGeneral, setDraggedTreasure,
+                setRecommendTargetFormation,
                 isGeneralUsed, isTreasureUsed, isURGeneralUsed
             }), [formations, treasures, activeTab, draggedGeneral, draggedTreasure,
                 collapsedFormations, recommendTargetFormation]);

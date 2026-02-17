@@ -9,6 +9,7 @@ function createDndHandlers({
     draggedGeneral, draggedTreasure,
     collapsedFormations, recommendTargetFormation,
     setFormations, setDraggedGeneral, setDraggedTreasure,
+    setRecommendTargetFormation,
     isGeneralUsed, isTreasureUsed, isURGeneralUsed
 }) {
 
@@ -318,6 +319,7 @@ function createDndHandlers({
             }));
         }
 
+        setRecommendTargetFormation(formationKey);
         setDraggedGeneral(null);
     };
 
@@ -456,6 +458,7 @@ function createDndHandlers({
             }));
         }
 
+        setRecommendTargetFormation(formationKey);
         setDraggedGeneral(null);
     };
 
@@ -505,6 +508,7 @@ function createDndHandlers({
             }));
         }
 
+        setRecommendTargetFormation(formationKey);
         setDraggedGeneral(null);
     };
 
@@ -596,6 +600,7 @@ function createDndHandlers({
             }));
         }
 
+        setRecommendTargetFormation(formationKey);
         setDraggedTreasure(null);
     };
 
@@ -900,6 +905,7 @@ function createDndHandlers({
                                 }
                             }
                         }));
+                        setRecommendTargetFormation(formationKey);
                         return;
                     }
                 }
@@ -923,6 +929,7 @@ function createDndHandlers({
                                 }
                             }
                         }));
+                        setRecommendTargetFormation(formationKey);
                         return;
                     }
                 }
@@ -945,6 +952,7 @@ function createDndHandlers({
                                 }
                             }
                         }));
+                        setRecommendTargetFormation(formationKey);
                         return;
                     }
                 }
