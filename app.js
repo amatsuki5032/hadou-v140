@@ -59,6 +59,9 @@ const { useState, useEffect, useMemo, useCallback } = React;
             const [showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation] = useState(false);
             const [showOnlyDamageDealt, setShowOnlyDamageDealt] = useState(false);
             const [showOnlyDamageTaken, setShowOnlyDamageTaken] = useState(false);
+            const [showOnlyAntiAnnihilationTreasure, setShowOnlyAntiAnnihilationTreasure] = useState(false);
+            const [showOnlyDamageDealtTreasure, setShowOnlyDamageDealtTreasure] = useState(false);
+            const [showOnlyDamageTakenTreasure, setShowOnlyDamageTakenTreasure] = useState(false);
 
             // ─── プロファイル ───
             const [currentProfile, setCurrentProfile] = useState(() => {
@@ -1551,10 +1554,10 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     }
                 }
                 
-                // スキル系フィルタ
-                if (showOnlyAntiAnnihilation && !treasureHasSkillIn(t, antiAnnihilationSkillNames)) return false;
-                if (showOnlyDamageDealt && !treasureHasSkillIn(t, damageDealtSkillNames)) return false;
-                if (showOnlyDamageTaken && !treasureHasSkillIn(t, damageTakenSkillNames)) return false;
+                // スキル系フィルタ（名宝専用state）
+                if (showOnlyAntiAnnihilationTreasure && !treasureHasSkillIn(t, antiAnnihilationSkillNames)) return false;
+                if (showOnlyDamageDealtTreasure && !treasureHasSkillIn(t, damageDealtSkillNames)) return false;
+                if (showOnlyDamageTakenTreasure && !treasureHasSkillIn(t, damageTakenSkillNames)) return false;
 
                 // お気に入りフィルタ
                 if (showOnlyFavoriteTreasures && !isFavoriteTreasure(t)) {
@@ -2655,9 +2658,9 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             setShowOnlyFavoriteTreasures={setShowOnlyFavoriteTreasures}
                             showOnlyRecommendedTreasures={showOnlyRecommendedTreasures}
                             setShowOnlyRecommendedTreasures={setShowOnlyRecommendedTreasures}
-                            showOnlyAntiAnnihilation={showOnlyAntiAnnihilation} setShowOnlyAntiAnnihilation={setShowOnlyAntiAnnihilation}
-                            showOnlyDamageDealt={showOnlyDamageDealt} setShowOnlyDamageDealt={setShowOnlyDamageDealt}
-                            showOnlyDamageTaken={showOnlyDamageTaken} setShowOnlyDamageTaken={setShowOnlyDamageTaken}
+                            showOnlyAntiAnnihilation={showOnlyAntiAnnihilationTreasure} setShowOnlyAntiAnnihilation={setShowOnlyAntiAnnihilationTreasure}
+                            showOnlyDamageDealt={showOnlyDamageDealtTreasure} setShowOnlyDamageDealt={setShowOnlyDamageDealtTreasure}
+                            showOnlyDamageTaken={showOnlyDamageTakenTreasure} setShowOnlyDamageTaken={setShowOnlyDamageTakenTreasure}
                             recommendTargetFormation={recommendTargetFormation}
                             handleTreasureDragStart={handleTreasureDragStart}
                             autoAssignTreasure={autoAssignTreasure}
