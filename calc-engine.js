@@ -152,6 +152,9 @@ function resolveGrantedSkills(entries, fmtCtx) {
         for (const eff of skillData.effects) {
             if (eff.type2 !== '付与') continue;
 
+            // 陣形付与はパラメータ計算対象外（陣形スキルとして機能するのみ）
+            if (eff.type1 === '陣形') continue;
+
             // 付与の発動条件チェック
             if (!isConditionActive(eff.condition, entry.slotName, entry.general, fmtCtx)) continue;
 
