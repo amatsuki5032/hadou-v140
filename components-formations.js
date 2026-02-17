@@ -1207,6 +1207,47 @@ var FormationsArea = React.memo(function FormationsArea({
                     </div>
                     )}
 
+                    {/* 簡易モード用パラメータ表示 */}
+                    {compactMode && (() => {
+                        const params = calcCombatParams(key);
+                        if (!params) return null;
+                        const hasAny = params.initialGauge !== 0 || params.tacticSpeed !== 0 ||
+                            params.tacticReduce !== 0 || params.attackSpeed !== 0 ||
+                            params.critical !== 0 || params.lethalResist;
+                        if (!hasAny) return null;
+                        return (
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '1px 12px',
+                                padding: '6px 10px',
+                                fontSize: '11px',
+                                borderTop: '1px solid var(--border-base)',
+                                background: 'var(--bg-card)'
+                            }}>
+                                {[
+                                    {label: '出陣ゲージ', value: `+${params.initialGauge.toFixed(1)}%`},
+                                    {label: '戦法速度', value: `+${params.tacticSpeed.toFixed(1)}%`},
+                                    {label: '致死耐性', value: params.lethalResist ? 'ON' : 'OFF', isOn: params.lethalResist},
+                                    {label: '戦法短縮', value: `+${params.tacticReduce.toFixed(1)}%`},
+                                    {label: '攻撃速度', value: `+${params.attackSpeed.toFixed(1)}%`},
+                                    {label: '会心発生', value: `+${params.critical.toFixed(1)}%`}
+                                ].map(item => (
+                                    <div key={item.label} style={{display: 'flex', justifyContent: 'space-between', padding: '1px 0'}}>
+                                        <span style={{color: 'var(--text-muted)'}}>{item.label}</span>
+                                        <span style={{
+                                            color: item.isOn !== undefined
+                                                ? (item.isOn ? 'var(--success)' : 'var(--text-muted)')
+                                                : 'var(--success)',
+                                            fontFamily: 'monospace',
+                                            fontWeight: 'bold'
+                                        }}>{item.value}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        );
+                    })()}
+
                 </div>
                 )}
             </div>
