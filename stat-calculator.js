@@ -693,7 +693,7 @@ function calcFormationBonuses(formationName, formation) {
  * @param {Object} [advisorConfig] - 参軍設定 { level: 0-10, facilityBonus: 0-0.10 }
  * @param {Object} [profileConfig] - プロファイル設定（研究/調査/軍馬）
  */
-function calculateFormationStats(formation, getProfileFn, advisorConfig, profileConfig) {
+function calculateFormationStats(formation, getProfileFn, advisorConfig, profileConfig, treasureForgeRank, treasureURStatus) {
     const base = calcFormationBaseStats(formation, getProfileFn);
     if (!base) return null;
 
@@ -717,7 +717,7 @@ function calculateFormationStats(formation, getProfileFn, advisorConfig, profile
 
     if (typeof buildAllEntries === 'function') {
         try {
-            const { allEntries, fmtCtx } = buildAllEntries(formation, getProfileFn);
+            const { allEntries, fmtCtx } = buildAllEntries(formation, getProfileFn, treasureForgeRank, treasureURStatus);
             cachedAllEntries = allEntries;
             cachedFmtCtx = fmtCtx;
             const bonuses = collectSkillStatBonuses(allEntries, fmtCtx);

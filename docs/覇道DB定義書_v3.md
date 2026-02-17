@@ -536,7 +536,7 @@ Excel → Python/Claude ETL → JS → GitHub Pages
 | 8 | ~~プロファイルシステム基本実装~~ | ~~高~~ | ✅ v1.50で実装済み（研究/調査/軍馬タブ + localStorage保存） |
 | 9 | ~~旧data-skill-effects.js / data-combat-parameters.js 廃止~~ | ~~低~~ | ✅ 廃止完了。ファイル・scriptタグ・コード参照すべて削除済み |
 | 10 | ~~参軍ステータス計算ロジック~~ | ~~高~~ | ✅ 完了。stat-calculator.js の calcAdvisorContribution() で実装済み（Lv10固定） |
-| 11 | ~~名宝ステータス加算~~ | ~~高~~ | ✅ 完了。calc-engine.js の buildAllEntries() + collectTreasureSkillEntries() で実装。☆0・通常固定 |
+| 11 | ~~名宝ステータス加算~~ | ~~高~~ | ✅ 完了。calc-engine.js の buildAllEntries() + collectTreasureSkillEntries() で実装。鍛錬ランク・UR状態をprofileDataから参照 |
 | 12 | 武将育成プロファイル | 中 | Lv/Grade/☆/五行/参軍Lvの個別管理。設計書作成済み。Lv/Grade/☆のUI実装済み |
 | 13 | ~~stat-calculator統合~~ | ~~中~~ | ✅ 完了。調査・軍馬・研究すべて反映済み。研究はcalcResearchBonuses()で基礎4項目（攻撃/防御/知力/兵力）の%ボーナスを計算 |
 | 14 | ~~練達効果の計算実装~~ | ~~高~~ | ✅ 完了。名宝技能の練達→武将技能Lvアップをcalc-engine.jsで実装。適用タイミングは付与解決後 |

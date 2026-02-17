@@ -252,7 +252,7 @@ function sumValidLevels(entries, fmtCtx, condition) {
  * @param {Function} getStarRankFn - 武将の星ランクを取得する関数 (general) => number
  * @returns {Object|null} パラメータ名→効果値のマップ（decimal値: 0.25 = 25%）
  */
-function calculateSkillEffects(formation, getStarRankFn) {
+function calculateSkillEffects(formation, getStarRankFn, treasureForgeRank, treasureURStatus) {
     if (!formation) return null;
 
     const targetParams = ['攻撃速度', '会心発生', '戦法速度'];
@@ -261,7 +261,7 @@ function calculateSkillEffects(formation, getStarRankFn) {
     targetParams.forEach(param => { results[param] = 0; details[param] = []; });
 
     const entries = collectSkillEntries(formation, getStarRankFn);
-    const treasureEntries = collectTreasureSkillEntries(formation);
+    const treasureEntries = collectTreasureSkillEntries(formation, treasureForgeRank, treasureURStatus);
     const fmtCtx = buildFormationContext(formation);
 
     // 武将技能 + 名宝技能を結合し、付与効果を解決して追加
@@ -324,7 +324,7 @@ function calculateSkillEffects(formation, getStarRankFn) {
  * @param {Function} getStarRankFn - 武将の星ランクを取得する関数 (general) => number
  * @returns {Object|null} 戦闘パラメータ（percentage値: 25 = 25%）
  */
-function calculateCombatParameters(formation, getStarRankFn) {
+function calculateCombatParameters(formation, getStarRankFn, treasureForgeRank, treasureURStatus) {
     if (!formation) return null;
 
     const result = {
@@ -337,7 +337,7 @@ function calculateCombatParameters(formation, getStarRankFn) {
     };
 
     const entries = collectSkillEntries(formation, getStarRankFn);
-    const treasureEntries = collectTreasureSkillEntries(formation);
+    const treasureEntries = collectTreasureSkillEntries(formation, treasureForgeRank, treasureURStatus);
     const fmtCtx = buildFormationContext(formation);
 
     // 武将技能 + 名宝技能を結合し、付与効果を解決して追加
@@ -460,11 +460,13 @@ function buildTreasureIdMapping() {
 }
 
 /**
- * 部隊の名宝から技能エントリを収集する（☆0・通常固定）
+ * 部隊の名宝から技能エントリを収集する
  * @param {Object} formation - 部隊データ
+ * @param {Object} treasureForgeRank - 名宝ID→鍛錬ランク(0-10)のマップ
+ * @param {Object} treasureURStatus - 名宝ID→UR化状態(boolean)のマップ
  * @returns {Array} [{skillName, level, slotName, general}, ...]
  */
-function collectTreasureSkillEntries(formation) {
+function collectTreasureSkillEntries(formation, treasureForgeRank, treasureURStatus) {
     var entries = [];
     var treasures = formation.treasures;
     if (!treasures) return entries;
@@ -490,8 +492,10 @@ function collectTreasureSkillEntries(formation) {
         var forgeKey = idMapping[treasure.id];
         if (!forgeKey) continue;
 
-        // ☆0・通常で技能レベルを取得
-        var skillLevels = getTreasureSkillLevels(forgeKey, 0, false);
+        // 鍛錬ランク・UR状態から技能レベルを取得
+        var forgeRank = (treasureForgeRank && treasureForgeRank[treasure.id]) || 0;
+        var isUR = (treasureURStatus && treasureURStatus[treasure.id]) || false;
+        var skillLevels = getTreasureSkillLevels(forgeKey, forgeRank, isUR);
         for (var j = 0; j < skillLevels.length; j++) {
             var sl = skillLevels[j];
             entries.push({
@@ -511,9 +515,11 @@ function collectTreasureSkillEntries(formation) {
  * stat-calculator.js の calculateFormationStats から呼ばれる
  * @param {Object} formation - 部隊データ
  * @param {Function} getProfileFn - (general) => number|{star,level,grade}
+ * @param {Object} treasureForgeRank - 名宝ID→鍛錬ランク(0-10)のマップ
+ * @param {Object} treasureURStatus - 名宝ID→UR化状態(boolean)のマップ
  * @returns {Object} { allEntries, fmtCtx }
  */
-function buildAllEntries(formation, getProfileFn) {
+function buildAllEntries(formation, getProfileFn, treasureForgeRank, treasureURStatus) {
     // getProfileFn を星ランク関数に変換
     var getStarRankFn = function(general) {
         var profile = getProfileFn(general);
@@ -526,7 +532,7 @@ function buildAllEntries(formation, getProfileFn) {
     var generalEntries = collectSkillEntries(formation, getStarRankFn);
 
     // 名宝技能エントリ
-    var treasureEntries = collectTreasureSkillEntries(formation);
+    var treasureEntries = collectTreasureSkillEntries(formation, treasureForgeRank, treasureURStatus);
 
     // 武将技能 + 名宝技能を結合
     var baseEntries = generalEntries.concat(treasureEntries);

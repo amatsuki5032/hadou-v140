@@ -1347,26 +1347,26 @@ const { useState, useEffect, useMemo, useCallback } = React;
 
             // 部隊の技能効果を集計（calc-engine.js のラッパー）
             const calcSkillEffects = useCallback((formationKey) => {
-                return calculateSkillEffects(formations[formationKey], getGeneralStarRank);
-            }, [formations, generalStarRank]);
+                return calculateSkillEffects(formations[formationKey], getGeneralStarRank, treasureForgeRank, treasureURStatus);
+            }, [formations, generalStarRank, treasureForgeRank, treasureURStatus]);
 
             // 部隊の技能一覧を取得（calc-engine.js のラッパー）
             const calcSkillList = useCallback((formationKey) => {
                 const formation = formations[formationKey];
                 if (!formation || typeof buildAllEntries !== 'function') return null;
                 try {
-                    const { allEntries } = buildAllEntries(formation, getGeneralProfile);
+                    const { allEntries } = buildAllEntries(formation, getGeneralProfile, treasureForgeRank, treasureURStatus);
                     return allEntries;
                 } catch(e) {
                     console.warn('calcSkillList error:', e);
                     return null;
                 }
-            }, [formations, generalStarRank, generalProfiles]);
+            }, [formations, generalStarRank, generalProfiles, treasureForgeRank, treasureURStatus]);
 
             // 部隊の戦闘パラメータを計算（calc-engine.js のラッパー）
             const calcCombatParams = useCallback((formationKey) => {
-                return calculateCombatParameters(formations[formationKey], getGeneralStarRank);
-            }, [formations, generalStarRank]);
+                return calculateCombatParameters(formations[formationKey], getGeneralStarRank, treasureForgeRank, treasureURStatus);
+            }, [formations, generalStarRank, treasureForgeRank, treasureURStatus]);
 
             // 部隊ステータスを計算（stat-calculator.js のラッパー）
             const calcFormationStats = useCallback((formationKey) => {
@@ -1378,12 +1378,12 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     return calculateFormationStats(formations[formationKey], getGeneralProfile, {
                         level: 10,          // TODO: プロファイルから取得
                         facilityBonus: 0    // TODO: プロファイル参軍府設定から取得
-                    }, profileConfig);
+                    }, profileConfig, treasureForgeRank, treasureURStatus);
                 } catch(e) {
                     console.error('calcFormationStats error:', e);
                     return null;
                 }
-            }, [formations, generalStarRank, generalProfiles, profileConfig]);
+            }, [formations, generalStarRank, generalProfiles, profileConfig, treasureForgeRank, treasureURStatus]);
             
             // 部隊をリセット
             const resetFormation = (formationKey) => {
