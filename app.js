@@ -1062,7 +1062,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 const names = new Set();
                 if (typeof SKILL_DB !== 'undefined') {
                     Object.entries(SKILL_DB).forEach(([name, data]) => {
-                        if (data.effects?.some(e => e.effect === '戦法速度' && e.type2 === 'パラメータ')) names.add(name);
+                        if (data.effects?.some(e => e.effect === '戦法速度' && e.type2 === 'パラメータ' && e.type1 !== '武装')) names.add(name);
                     });
                 }
                 return names;

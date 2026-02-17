@@ -617,6 +617,7 @@ function createDndHandlers({
                 }
             }
         }));
+        setRecommendTargetFormation(formationKey);
     };
 
     // 侍従を削除
@@ -631,6 +632,7 @@ function createDndHandlers({
                 }
             }
         }));
+        setRecommendTargetFormation(formationKey);
     };
 
     // 参軍の削除
@@ -645,6 +647,7 @@ function createDndHandlers({
                 }
             }
         }));
+        setRecommendTargetFormation(formationKey);
     };
 
     // 名宝削除
@@ -659,6 +662,7 @@ function createDndHandlers({
                 }
             }
         }));
+        setRecommendTargetFormation(formationKey);
     };
 
     // 名宝のUR化状態を切り替え
