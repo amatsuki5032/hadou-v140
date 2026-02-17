@@ -25,6 +25,8 @@
 - [ ] **「統制」がSKILL_DBに未登録（Excel側）** — LR袁紹のスキルC「統制」がdata-skill-db.jsに存在しない。Excel技能DBシートへの追加→再生成が必要
 - [ ] **SSR袁術がいない（Excel側）** — data-generals.jsに袁術が一切存在しない。Excel武将シートへの追加→再生成が必要
 - [ ] **SSR羊祜が重複（Excel側）** — SSR羊祜がid:4052(ステータス全0)とid:5041の2件存在。id:4052は空データ。Excel側で重複行を削除→再生成が必要
+- [ ] **SSR武将5名のunit_typeがnull（Excel側）** — 丘力居(5046)・強端(5047)・徹里吉(5048,弓)・尤突(5049)・歩度根(5050)のunit_typeがnull。武将リストのグループ分け(槍/弓/馬)から漏れて表示されない。Excel側で兵科を設定→再生成が必要
+- [ ] **名宝スキルレベルに鍛錬ランク・UR状態を反映** — collectTreasureSkillEntries が☆0・通常固定。profileDataのtreasureForgeRank/treasureURStatusを参照してスキルレベルを計算するよう改修。calculateCombatParameters・buildAllEntries両方が影響
 
 ## 待機中（優先度低）
 
