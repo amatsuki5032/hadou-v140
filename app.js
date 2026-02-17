@@ -1587,7 +1587,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 }
                 
                 // スキル系フィルタ（名宝専用state）
-                if (showOnlySwiftTreasure && !treasureForgeHasSkillIn(t, swiftRendatsuSkillNames)) return false;
+                if (showOnlySwiftTreasure && !treasureForgeHasSkillIn(t, swiftRendatsuSkillNames) && !treasureHasSkillIn(t, swiftSkillNames)) return false;
                 if (showOnlyAntiAnnihilationTreasure && !treasureHasSkillIn(t, antiAnnihilationSkillNames)) return false;
                 if (showOnlyDamageDealtTreasure && !treasureHasSkillIn(t, damageDealtSkillNames)) return false;
                 if (showOnlyDamageTakenTreasure && !treasureHasSkillIn(t, damageTakenSkillNames)) return false;
