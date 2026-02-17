@@ -180,8 +180,8 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 }
             }, [formationPatterns]);
             
-            // Undo用: 直前の編制状態を保存
-            const [undoHistory, setUndoHistory] = useState(null);
+            // Undo用: 編制状態の履歴（最大5件）
+            const [undoHistory, setUndoHistory] = useState([]);
             
             const [activePattern, setActivePattern] = useState(() => {
                 const saved = localStorage.getItem('activePattern');
@@ -206,10 +206,15 @@ const { useState, useEffect, useMemo, useCallback } = React;
             // formationsを更新する関数（Undo用に変更前の状態を保存）
             const setFormations = (updater) => {
                 const updateFunction = (prev) => {
-                    // 変更前の状態を保存
-                    setUndoHistory({
+                    // 変更前の状態を履歴に追加（最大5件）
+                    const snapshot = {
                         pattern: activePattern,
                         formations: JSON.parse(JSON.stringify(prev[activePattern].formations))
+                    };
+                    setUndoHistory(hist => {
+                        const newHist = [...hist, snapshot];
+                        if (newHist.length > 5) newHist.shift();
+                        return newHist;
                     });
                     
                     const newFormations = typeof updater === 'function' ? updater(prev[activePattern].formations) : updater;
@@ -287,37 +292,37 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 alert('プロファイル1からコピーしました');
             };
             
-            // Undo: 直前の操作を戻す
+            // Undo: 直前の操作を戻す（最大5回）
             const handleUndo = () => {
-                if (!undoHistory) {
+                if (undoHistory.length === 0) {
                     alert('戻す操作がありません');
                     return;
                 }
-                
+
+                const lastEntry = undoHistory[undoHistory.length - 1];
+
                 const updateFunction = (prev) => {
                     const restored = {
                         ...prev,
-                        [undoHistory.pattern]: {
-                            ...prev[undoHistory.pattern],
-                            formations: undoHistory.formations
+                        [lastEntry.pattern]: {
+                            ...prev[lastEntry.pattern],
+                            formations: lastEntry.formations
                         }
                     };
                     return restored;
                 };
-                
+
                 if (currentProfile === 0) {
-                    // プロファイル1
                     setFormationPatterns(updateFunction);
                 } else {
-                    // プロファイル2〜5
                     setProfileFormations(prev => ({
                         ...prev,
                         [`profile${currentProfile}`]: updateFunction(prev[`profile${currentProfile}`])
                     }));
                 }
-                
-                // 履歴をクリア
-                setUndoHistory(null);
+
+                // 末尾要素を除去
+                setUndoHistory(prev => prev.slice(0, -1));
             };
             
             const [loading, setLoading] = useState(true);
@@ -2481,22 +2486,22 @@ const { useState, useEffect, useMemo, useCallback } = React;
                         {/* 戻すボタン */}
                         <button
                             onClick={handleUndo}
-                            disabled={!undoHistory}
+                            disabled={undoHistory.length === 0}
                             style={{
                                 padding: '8px 16px',
-                                background: undoHistory ? 'var(--accent)' : 'var(--text-muted)',
-                                border: '1px solid ' + (undoHistory ? 'var(--accent)' : 'var(--text-muted)'),
+                                background: undoHistory.length > 0 ? 'var(--accent)' : 'var(--text-muted)',
+                                border: '1px solid ' + (undoHistory.length > 0 ? 'var(--accent)' : 'var(--text-muted)'),
                                 borderRadius: '4px',
                                 color: 'var(--text-primary)',
-                                cursor: undoHistory ? 'pointer' : 'not-allowed',
+                                cursor: undoHistory.length > 0 ? 'pointer' : 'not-allowed',
                                 fontSize: '13px',
                                 fontWeight: 'bold',
                                 marginLeft: '8px',
-                                opacity: undoHistory ? 1 : 0.5
+                                opacity: undoHistory.length > 0 ? 1 : 0.5
                             }}
-                            title={undoHistory ? '直前の操作を戻す' : '戻す操作がありません'}
+                            title={undoHistory.length > 0 ? `直前の操作を戻す（残り${undoHistory.length}回）` : '戻す操作がありません'}
                         >
-                            ⟲ 戻す
+                            ⟲ 戻す{undoHistory.length > 0 ? ` (${undoHistory.length})` : ''}
                         </button>
 
                         {/* 部隊一括折りたたみ/展開 */}
