@@ -190,13 +190,30 @@ function GeneralsPanel({
                                 {faction.name}
                             </button>
                         ))}
+                        {(() => {
+                            const targetFormation = formations[recommendTargetFormation];
+                            const hasMainGeneral = !!targetFormation?.slots?.['主将'];
+                            // 排他的タグON時の共通処理
+                            const activateExclusiveGeneral = (setter) => {
+                                setShowOnlyFavorites(false);
+                                setShowOnlyRecommendedGenerals(false);
+                                setShowOnlyRangeSkill(false);
+                                setShowOnlySwiftSkill(false);
+                                setShowOnlyAntiAnnihilation(false);
+                                setShowOnlyDamageDealt(false);
+                                setShowOnlyDamageTaken(false);
+                                setter(true);
+                                setFactionFilter([]);
+                                setExpandedRarities({LR: true, UR: true, SSR: true, SR: true, R: true});
+                            };
+                            return (<>
                         <button
                             className={`filter-chip ${showOnlyFavorites ? 'active' : ''}`}
                             onClick={() => {
-                                const willActivate = !showOnlyFavorites;
-                                setShowOnlyFavorites(willActivate);
-                                if (willActivate) {
-                                    setFactionFilter([]);
+                                if (showOnlyFavorites) {
+                                    setShowOnlyFavorites(false);
+                                } else {
+                                    activateExclusiveGeneral(setShowOnlyFavorites);
                                 }
                             }}
                             style={{
@@ -210,25 +227,21 @@ function GeneralsPanel({
                         <button
                             className={`filter-chip ${showOnlyRecommendedGenerals ? 'active' : ''}`}
                             onClick={() => {
-                                const targetFormation = formations[recommendTargetFormation];
-                                const mainGeneral = targetFormation?.slots?.['主将'];
-                                if (mainGeneral) {
-                                    const willActivate = !showOnlyRecommendedGenerals;
-                                    setShowOnlyRecommendedGenerals(willActivate);
-                                    if (willActivate) {
-                                        setFactionFilter([]);
-                                    }
+                                if (showOnlyRecommendedGenerals) {
+                                    setShowOnlyRecommendedGenerals(false);
+                                } else if (hasMainGeneral) {
+                                    activateExclusiveGeneral(setShowOnlyRecommendedGenerals);
                                 }
                             }}
-                            disabled={!formations[recommendTargetFormation]?.slots?.['主将']}
+                            disabled={!hasMainGeneral}
                             style={{
                                 background: showOnlyRecommendedGenerals ? 'var(--accent)' : 'var(--bg-elevated)',
                                 borderColor: 'var(--accent)',
                                 color: showOnlyRecommendedGenerals ? 'var(--text-primary)' : 'var(--text-muted)',
-                                opacity: !formations[recommendTargetFormation]?.slots?.['主将'] ? 0.5 : 1,
-                                cursor: !formations[recommendTargetFormation]?.slots?.['主将'] ? 'not-allowed' : 'pointer'
+                                opacity: !hasMainGeneral ? 0.5 : 1,
+                                cursor: !hasMainGeneral ? 'not-allowed' : 'pointer'
                             }}
-                            title={!formations[recommendTargetFormation]?.slots?.['主将'] ? '対象部隊に主将を配置してください' : '好相性の武将のみ表示'}
+                            title={!hasMainGeneral ? '対象部隊に主将を配置してください' : '好相性の武将のみ表示'}
                         >
                             好相性
                         </button>
@@ -243,10 +256,10 @@ function GeneralsPanel({
                                 key={label}
                                 className={`filter-chip ${state ? 'active' : ''}`}
                                 onClick={() => {
-                                    const newState = !state;
-                                    setter(newState);
-                                    if (newState) {
-                                        setExpandedRarities({LR: true, UR: true, SSR: true, SR: true, R: true});
+                                    if (state) {
+                                        setter(false);
+                                    } else {
+                                        activateExclusiveGeneral(setter);
                                     }
                                 }}
                                 style={{
@@ -259,6 +272,8 @@ function GeneralsPanel({
                                 {label}
                             </button>
                         ))}
+                            </>);
+                        })()}
                     </div>
                     <div className="filter-group" style={{marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px'}}>
                         <div style={{display: 'flex', gap: '6px', flexWrap: 'wrap'}}>
@@ -667,6 +682,10 @@ function TreasuresPanel({
                                 setShowOnlyFavoriteTreasures(false);
                                 setShowOnlyRecommendedTreasures(false);
                                 setShowOnlyRendatsuTreasures(false);
+                                setShowOnlySwift(false);
+                                setShowOnlyAntiAnnihilation(false);
+                                setShowOnlyDamageDealt(false);
+                                setShowOnlyDamageTaken(false);
                                 setter(true);
                                 setExpandedTreasureCategories({'武器': true, '防具': true, '文物': true});
                                 setTreasureWeaponFilter([]);
@@ -731,8 +750,6 @@ function TreasuresPanel({
                                 >
                                     練達名宝
                                 </button>
-                            </>);
-                        })()}
                         {[
                             { state: showOnlySwift, setter: setShowOnlySwift, label: '敏活', title: '敏活練達スキル持ち名宝のみ表示' },
                             { state: showOnlyAntiAnnihilation, setter: setShowOnlyAntiAnnihilation, label: '即壊滅回避', title: '即壊滅回避スキル持ち名宝のみ表示' },
@@ -743,8 +760,11 @@ function TreasuresPanel({
                                 key={label}
                                 className={`filter-chip ${state ? 'active' : ''}`}
                                 onClick={() => {
-                                    setter(!state);
-                                    if (!state) setExpandedTreasureCategories({'武器': true, '防具': true, '文物': true});
+                                    if (state) {
+                                        setter(false);
+                                    } else {
+                                        activateExclusive(setter);
+                                    }
                                 }}
                                 style={{
                                     background: state ? 'var(--accent)' : 'var(--bg-elevated)',
@@ -756,6 +776,8 @@ function TreasuresPanel({
                                 {label}
                             </button>
                         ))}
+                            </>);
+                        })()}
                     </div>
                 </div>
             </div>
