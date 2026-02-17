@@ -54,6 +54,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
             });
             const [showOnlyRecommendedGenerals, setShowOnlyRecommendedGenerals] = useState(false);
             const [showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures] = useState(false);
+            const [showOnlyRendatsuTreasures, setShowOnlyRendatsuTreasures] = useState(false);
             const [showOnlyRangeSkill, setShowOnlyRangeSkill] = useState(false);
             const [showOnlySwiftSkill, setShowOnlySwiftSkill] = useState(false);
             const [showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation] = useState(false);
@@ -1565,10 +1566,10 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     return false;
                 }
 
-                // おススメフィルタ（部隊内の武将に関連する名宝）
+                // 関連名宝フィルタ（配置武将と related が合致）
                 if (showOnlyRecommendedTreasures && recommendTargetFormation) {
                     const targetFormation = formations[recommendTargetFormation];
-                    
+
                     // 部隊内の武将オブジェクトを収集（参軍除く）
                     const formationGenerals = [];
                     ['主将', '副将1', '副将2', '補佐1', '補佐2'].forEach(slotName => {
@@ -1580,66 +1581,74 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             if (a) formationGenerals.push(a);
                         });
                     }
-                    
-                    // 武将がいない場合は除外
+
                     if (formationGenerals.length === 0) return false;
-                    
-                    // 武将名リスト（関連武将マッチング用）
+
                     const generalNames = formationGenerals.map(g => g.name);
-                    
+
                     // 1. 関連武将マッチング（名宝のrelatedフィールドと照合）
                     if (generalNames.includes(t.related)) return true;
-                    
-                    // フルデータ付き武将を遅延取得するヘルパー
-                    const getFullGenerals = (() => {
-                        let cache = null;
-                        return () => {
-                            if (!cache) {
-                                cache = formationGenerals.map(fg => 
-                                    generals.find(g => g.id === fg.id && g.rarity === fg.rarity)
-                                ).filter(Boolean);
-                            }
-                            return cache;
-                        };
-                    })();
-                    
+
                     // 2. 異民族名宝のマッチング（武将技能名で判定）
                     if (t.related === '異民族') {
                         const ethnicGroups = ['南蛮', '烏桓', '鮮卑', '五渓', '山越', '羌', '東湖'];
                         const treasureEthnic = ethnicGroups.find(g => t.name.includes(g));
                         if (treasureEthnic) {
-                            const hasMatch = getFullGenerals().some(fg =>
+                            const fullGenerals = formationGenerals.map(fg =>
+                                generals.find(g => g.id === fg.id && g.rarity === fg.rarity)
+                            ).filter(Boolean);
+                            const hasMatch = fullGenerals.some(fg =>
                                 fg.skills && Object.values(fg.skills).some(s => s.name === treasureEthnic)
                             );
                             if (hasMatch) return true;
                         }
                     }
-                    
-                    // 3. 練達マッチング（名宝技能が部隊武将技能をLvアップする場合）
-                    // data-all-treasures.js に skills 配列が追加されると自動で動作
+
+                    return false;
+                }
+
+                // 練達名宝フィルタ（名宝技能が部隊武将技能をLvアップ）
+                if (showOnlyRendatsuTreasures && recommendTargetFormation) {
+                    const targetFormation = formations[recommendTargetFormation];
+
+                    const formationGenerals = [];
+                    ['主将', '副将1', '副将2', '補佐1', '補佐2'].forEach(slotName => {
+                        const g = targetFormation?.slots?.[slotName];
+                        if (g) formationGenerals.push(g);
+                    });
+                    if (targetFormation?.attendants) {
+                        Object.values(targetFormation.attendants).forEach(a => {
+                            if (a) formationGenerals.push(a);
+                        });
+                    }
+
+                    if (formationGenerals.length === 0) return false;
+
                     if (t.skills && t.skills.length > 0 && typeof SKILL_DB !== 'undefined') {
+                        const fullGenerals = formationGenerals.map(fg =>
+                            generals.find(g => g.id === fg.id && g.rarity === fg.rarity)
+                        ).filter(Boolean);
                         const formationSkillNames = new Set();
-                        getFullGenerals().forEach(fg => {
+                        fullGenerals.forEach(fg => {
                             if (fg.skills) {
                                 Object.values(fg.skills).forEach(s => {
                                     if (s.name) formationSkillNames.add(s.name);
                                 });
                             }
                         });
-                        
+
                         if (formationSkillNames.size > 0) {
                             const hasMatch = t.skills.some(treasureSkillName => {
                                 const skillData = SKILL_DB[treasureSkillName];
                                 if (!skillData) return false;
-                                return skillData.effects.some(eff => 
+                                return skillData.effects.some(eff =>
                                     eff.type2 === '練達' && formationSkillNames.has(eff.effect)
                                 );
                             });
                             if (hasMatch) return true;
                         }
                     }
-                    
-                    // いずれにも該当しない場合は除外
+
                     return false;
                 }
                 
@@ -2659,6 +2668,8 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             setShowOnlyFavoriteTreasures={setShowOnlyFavoriteTreasures}
                             showOnlyRecommendedTreasures={showOnlyRecommendedTreasures}
                             setShowOnlyRecommendedTreasures={setShowOnlyRecommendedTreasures}
+                            showOnlyRendatsuTreasures={showOnlyRendatsuTreasures}
+                            setShowOnlyRendatsuTreasures={setShowOnlyRendatsuTreasures}
                             showOnlyAntiAnnihilation={showOnlyAntiAnnihilationTreasure} setShowOnlyAntiAnnihilation={setShowOnlyAntiAnnihilationTreasure}
                             showOnlyDamageDealt={showOnlyDamageDealtTreasure} setShowOnlyDamageDealt={setShowOnlyDamageDealtTreasure}
                             showOnlyDamageTaken={showOnlyDamageTakenTreasure} setShowOnlyDamageTaken={setShowOnlyDamageTakenTreasure}

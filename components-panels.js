@@ -501,6 +501,7 @@ function TreasuresPanel({
     treasureFactionFilter, setTreasureFactionFilter,
     showOnlyFavoriteTreasures, setShowOnlyFavoriteTreasures,
     showOnlyRecommendedTreasures, setShowOnlyRecommendedTreasures,
+    showOnlyRendatsuTreasures, setShowOnlyRendatsuTreasures,
     showOnlyAntiAnnihilation, setShowOnlyAntiAnnihilation,
     showOnlyDamageDealt, setShowOnlyDamageDealt,
     showOnlyDamageTaken, setShowOnlyDamageTaken,
@@ -652,82 +653,85 @@ function TreasuresPanel({
                         ))}
                     </div>
                     <div className="filter-group" style={{marginTop: '8px'}}>
-                        <button
-                            className={`filter-chip ${showOnlyFavoriteTreasures ? 'active' : ''}`}
-                            onClick={() => setShowOnlyFavoriteTreasures(!showOnlyFavoriteTreasures)}
-                            style={{
-                                background: showOnlyFavoriteTreasures ? 'var(--rank-color)' : 'var(--bg-elevated)',
-                                borderColor: 'var(--accent)',
-                                color: showOnlyFavoriteTreasures ? 'var(--bg-base)' : 'var(--text-body)'
-                            }}
-                        >
-                            お気に入り
-                        </button>
-                        <button
-                            className={`filter-chip ${showOnlyRecommendedTreasures ? 'active' : ''}`}
-                            onClick={() => {
-                                const targetFormation = formations[recommendTargetFormation];
-                                const hasGeneral = targetFormation?.slots?.['主将'] ||
-                                    targetFormation?.slots?.['副将1'] ||
-                                    targetFormation?.slots?.['副将2'] ||
-                                    targetFormation?.slots?.['補佐1'] ||
-                                    targetFormation?.slots?.['補佐2'] ||
-                                    (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a));
-                                if (hasGeneral) {
-                                    const newState = !showOnlyRecommendedTreasures;
-                                    setShowOnlyRecommendedTreasures(newState);
-                                    // 関連名宝ON時に武器・防具・文物を全て展開
-                                    if (newState) {
-                                        setExpandedTreasureCategories({'武器': true, '防具': true, '文物': true});
-                                    }
-                                }
-                            }}
-                            disabled={(() => {
-                                const targetFormation = formations[recommendTargetFormation];
-                                return !(targetFormation?.slots?.['主将'] ||
-                                    targetFormation?.slots?.['副将1'] ||
-                                    targetFormation?.slots?.['副将2'] ||
-                                    targetFormation?.slots?.['補佐1'] ||
-                                    targetFormation?.slots?.['補佐2'] ||
-                                    (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a)));
-                            })()}
-                            style={{
-                                background: showOnlyRecommendedTreasures ? 'var(--accent)' : 'var(--bg-elevated)',
-                                borderColor: 'var(--accent)',
-                                color: showOnlyRecommendedTreasures ? 'var(--text-primary)' : 'var(--text-muted)',
-                                opacity: (() => {
-                                    const targetFormation = formations[recommendTargetFormation];
-                                    return (targetFormation?.slots?.['主将'] ||
-                                        targetFormation?.slots?.['副将1'] ||
-                                        targetFormation?.slots?.['副将2'] ||
-                                        targetFormation?.slots?.['補佐1'] ||
-                                        targetFormation?.slots?.['補佐2'] ||
-                                        (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a))) ? 1 : 0.5;
-                                })(),
-                                cursor: (() => {
-                                    const targetFormation = formations[recommendTargetFormation];
-                                    return (targetFormation?.slots?.['主将'] ||
-                                        targetFormation?.slots?.['副将1'] ||
-                                        targetFormation?.slots?.['副将2'] ||
-                                        targetFormation?.slots?.['補佐1'] ||
-                                        targetFormation?.slots?.['補佐2'] ||
-                                        (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a))) ? 'pointer' : 'not-allowed';
-                                })()
-                            }}
-                            title={(() => {
-                                const targetFormation = formations[recommendTargetFormation];
-                                return (targetFormation?.slots?.['主将'] ||
-                                    targetFormation?.slots?.['副将1'] ||
-                                    targetFormation?.slots?.['副将2'] ||
-                                    targetFormation?.slots?.['補佐1'] ||
-                                    targetFormation?.slots?.['補佐2'] ||
-                                    (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a))) 
-                                    ? '関連名宝のみ表示'
-                                    : '対象部隊に武将を配置してください';
-                            })()}
-                        >
-                            関連名宝
-                        </button>
+                        {(() => {
+                            const targetFormation = formations[recommendTargetFormation];
+                            const hasGeneral = targetFormation?.slots?.['主将'] ||
+                                targetFormation?.slots?.['副将1'] ||
+                                targetFormation?.slots?.['副将2'] ||
+                                targetFormation?.slots?.['補佐1'] ||
+                                targetFormation?.slots?.['補佐2'] ||
+                                (targetFormation?.attendants && Object.values(targetFormation.attendants).some(a => a));
+                            // 排他的タグON時の共通処理
+                            const activateExclusive = (setter) => {
+                                setShowOnlyFavoriteTreasures(false);
+                                setShowOnlyRecommendedTreasures(false);
+                                setShowOnlyRendatsuTreasures(false);
+                                setter(true);
+                                setExpandedTreasureCategories({'武器': true, '防具': true, '文物': true});
+                                setTreasureWeaponFilter([]);
+                            };
+                            return (<>
+                                <button
+                                    className={`filter-chip ${showOnlyFavoriteTreasures ? 'active' : ''}`}
+                                    onClick={() => {
+                                        if (showOnlyFavoriteTreasures) {
+                                            setShowOnlyFavoriteTreasures(false);
+                                        } else {
+                                            activateExclusive(setShowOnlyFavoriteTreasures);
+                                        }
+                                    }}
+                                    style={{
+                                        background: showOnlyFavoriteTreasures ? 'var(--rank-color)' : 'var(--bg-elevated)',
+                                        borderColor: 'var(--accent)',
+                                        color: showOnlyFavoriteTreasures ? 'var(--bg-base)' : 'var(--text-body)'
+                                    }}
+                                >
+                                    お気に入り
+                                </button>
+                                <button
+                                    className={`filter-chip ${showOnlyRecommendedTreasures ? 'active' : ''}`}
+                                    onClick={() => {
+                                        if (showOnlyRecommendedTreasures) {
+                                            setShowOnlyRecommendedTreasures(false);
+                                        } else if (hasGeneral) {
+                                            activateExclusive(setShowOnlyRecommendedTreasures);
+                                        }
+                                    }}
+                                    disabled={!hasGeneral}
+                                    style={{
+                                        background: showOnlyRecommendedTreasures ? 'var(--accent)' : 'var(--bg-elevated)',
+                                        borderColor: 'var(--accent)',
+                                        color: showOnlyRecommendedTreasures ? 'var(--text-primary)' : 'var(--text-muted)',
+                                        opacity: hasGeneral ? 1 : 0.5,
+                                        cursor: hasGeneral ? 'pointer' : 'not-allowed'
+                                    }}
+                                    title={hasGeneral ? '関連名宝のみ表示' : '対象部隊に武将を配置してください'}
+                                >
+                                    関連名宝
+                                </button>
+                                <button
+                                    className={`filter-chip ${showOnlyRendatsuTreasures ? 'active' : ''}`}
+                                    onClick={() => {
+                                        if (showOnlyRendatsuTreasures) {
+                                            setShowOnlyRendatsuTreasures(false);
+                                        } else if (hasGeneral) {
+                                            activateExclusive(setShowOnlyRendatsuTreasures);
+                                        }
+                                    }}
+                                    disabled={!hasGeneral}
+                                    style={{
+                                        background: showOnlyRendatsuTreasures ? 'var(--accent)' : 'var(--bg-elevated)',
+                                        borderColor: 'var(--accent)',
+                                        color: showOnlyRendatsuTreasures ? 'var(--text-primary)' : 'var(--text-muted)',
+                                        opacity: hasGeneral ? 1 : 0.5,
+                                        cursor: hasGeneral ? 'pointer' : 'not-allowed'
+                                    }}
+                                    title={hasGeneral ? '練達名宝のみ表示' : '対象部隊に武将を配置してください'}
+                                >
+                                    練達名宝
+                                </button>
+                            </>);
+                        })()}
                         <button
                             className={`filter-chip ${showOnlyAntiAnnihilation ? 'active' : ''}`}
                             onClick={() => setShowOnlyAntiAnnihilation(!showOnlyAntiAnnihilation)}
