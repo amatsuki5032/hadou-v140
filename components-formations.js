@@ -25,7 +25,7 @@ var FormationsArea = React.memo(function FormationsArea({
     isTreasureUR, calcCombatParams, calcFormationStats, calcSkillEffects,
     showSkillList, calcSkillList,
     compactMode,
-    showFormationGrid, showAdvisorSection,
+    showFormationGrid, showAdvisorSection, showCompactParams,
     ItemImage
 }) {
     return (
@@ -1208,7 +1208,7 @@ var FormationsArea = React.memo(function FormationsArea({
                     )}
 
                     {/* 簡易モード用パラメータ表示 */}
-                    {compactMode && (() => {
+                    {compactMode && showCompactParams && (() => {
                         const params = calcCombatParams(key);
                         if (!params) return null;
                         const hasAny = params.initialGauge !== 0 || params.tacticSpeed !== 0 ||

@@ -37,6 +37,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
             const [compactMode, setCompactMode] = useState(() => localStorage.getItem('compactMode') === 'true'); // 簡易モード
             const [showFormationGrid, setShowFormationGrid] = useState(() => localStorage.getItem('showFormationGrid') !== 'false');
             const [showAdvisorSection, setShowAdvisorSection] = useState(() => localStorage.getItem('showAdvisorSection') !== 'false');
+            const [showCompactParams, setShowCompactParams] = useState(() => localStorage.getItem('showCompactParams') !== 'false');
             
             // ─── おススメフィルタ ───
             const [recommendTargetFormation, setRecommendTargetFormation] = useState(() => {
@@ -2004,6 +2005,22 @@ const { useState, useEffect, useMemo, useCallback } = React;
                                     >
                                         参軍
                                     </button>
+                                    <button
+                                        onClick={() => setShowCompactParams(prev => { const next = !prev; localStorage.setItem('showCompactParams', next); return next; })}
+                                        style={{
+                                            padding: '8px 12px',
+                                            background: showCompactParams ? 'var(--accent)' : 'transparent',
+                                            border: `1px solid ${showCompactParams ? 'var(--accent)' : 'var(--border-light)'}`,
+                                            borderRadius: '4px',
+                                            color: showCompactParams ? 'var(--text-primary)' : 'var(--text-muted)',
+                                            cursor: 'pointer',
+                                            fontSize: '11px',
+                                            fontWeight: 'bold'
+                                        }}
+                                        title={showCompactParams ? 'パラメータを非表示' : 'パラメータを表示'}
+                                    >
+                                        効果
+                                    </button>
                                 </>
                             )}
                             <button
@@ -2636,6 +2653,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                             compactMode={compactMode}
                             showFormationGrid={showFormationGrid}
                             showAdvisorSection={showAdvisorSection}
+                            showCompactParams={showCompactParams}
                             ItemImage={ItemImage}
                         />
 
