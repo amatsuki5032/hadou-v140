@@ -1095,6 +1095,17 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 return names;
             }, []);
 
+            // 「練達: 敏活」効果を持つスキル名セット（名宝鍛錬フィルタ用）
+            const swiftRendatsuSkillNames = useMemo(() => {
+                const names = new Set();
+                if (typeof SKILL_DB !== 'undefined') {
+                    Object.entries(SKILL_DB).forEach(([name, data]) => {
+                        if (data.effects?.some(e => e.type2 === '練達' && e.effect === '敏活')) names.add(name);
+                    });
+                }
+                return names;
+            }, []);
+
             // 武将が特定スキルセットを持つか判定
             const generalHasSkillIn = (general, skillNameSet) => {
                 if (!general.skills) return false;
@@ -1576,7 +1587,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 }
                 
                 // スキル系フィルタ（名宝専用state）
-                if (showOnlySwiftTreasure && !treasureForgeHasSkillIn(t, swiftSkillNames)) return false;
+                if (showOnlySwiftTreasure && !treasureForgeHasSkillIn(t, swiftRendatsuSkillNames)) return false;
                 if (showOnlyAntiAnnihilationTreasure && !treasureHasSkillIn(t, antiAnnihilationSkillNames)) return false;
                 if (showOnlyDamageDealtTreasure && !treasureHasSkillIn(t, damageDealtSkillNames)) return false;
                 if (showOnlyDamageTakenTreasure && !treasureHasSkillIn(t, damageTakenSkillNames)) return false;
