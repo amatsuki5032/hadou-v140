@@ -213,7 +213,7 @@ const { useState, useEffect, useMemo, useCallback } = React;
                     };
                     setUndoHistory(hist => {
                         const newHist = [...hist, snapshot];
-                        if (newHist.length > 5) newHist.shift();
+                        if (newHist.length > 10) newHist.shift();
                         return newHist;
                     });
                     
