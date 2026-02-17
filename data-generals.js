@@ -4931,11 +4931,12 @@ var EMBEDDED_GENERALS_DATA = [
   "tactic_order": "普通",
   "skills": {
     "A": {
-      "name": "秘計",
-      "level": 1
+      "name": "策士",
+      "level": 2,
+      "type": "fixed"
     },
     "B": {
-      "name": "策士",
+      "name": "秘計",
       "level": 1,
       "type": "levelup",
       "levelup_rank": 2
