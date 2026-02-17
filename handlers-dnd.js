@@ -10,7 +10,8 @@ function createDndHandlers({
     collapsedFormations, recommendTargetFormation,
     setFormations, setDraggedGeneral, setDraggedTreasure,
     setRecommendTargetFormation,
-    isGeneralUsed, isTreasureUsed, isURGeneralUsed
+    isGeneralUsed, isTreasureUsed, isURGeneralUsed,
+    showAdvisorSection
 }) {
 
     // ドラッグ開始（武将リストから）
@@ -936,24 +937,49 @@ function createDndHandlers({
             }
         }
 
-        // SSR以下：参軍枠を探す
+        // SSR以下：参軍非表示時は侍従枠を優先、表示時は参軍枠を探す
         if (['SSR', 'SR', 'R', 'N'].includes(general.rarity)) {
-            for (const formationKey of formationOrder) {
-                if (collapsedFormations[formationKey]) continue;
-                for (const advisorType of advisorOrder) {
-                    if (!formations[formationKey]?.advisors?.[advisorType]) {
-                        setFormations(prev => ({
-                            ...prev,
-                            [formationKey]: {
-                                ...prev[formationKey],
-                                advisors: {
-                                    ...prev[formationKey].advisors,
-                                    [advisorType]: general
+            if (!showAdvisorSection) {
+                // 参軍非表示時：侍従枠に配置
+                for (const formationKey of formationOrder) {
+                    if (collapsedFormations[formationKey]) continue;
+                    for (const slotName of slotOrder) {
+                        const attendantKey = slotName;
+                        if (!formations[formationKey]?.attendants?.[attendantKey]) {
+                            setFormations(prev => ({
+                                ...prev,
+                                [formationKey]: {
+                                    ...prev[formationKey],
+                                    attendants: {
+                                        ...prev[formationKey].attendants,
+                                        [attendantKey]: general
+                                    }
                                 }
-                            }
-                        }));
-                        setRecommendTargetFormation(formationKey);
-                        return;
+                            }));
+                            setRecommendTargetFormation(formationKey);
+                            return;
+                        }
+                    }
+                }
+            } else {
+                // 参軍表示時：参軍枠に配置
+                for (const formationKey of formationOrder) {
+                    if (collapsedFormations[formationKey]) continue;
+                    for (const advisorType of advisorOrder) {
+                        if (!formations[formationKey]?.advisors?.[advisorType]) {
+                            setFormations(prev => ({
+                                ...prev,
+                                [formationKey]: {
+                                    ...prev[formationKey],
+                                    advisors: {
+                                        ...prev[formationKey].advisors,
+                                        [advisorType]: general
+                                    }
+                                }
+                            }));
+                            setRecommendTargetFormation(formationKey);
+                            return;
+                        }
                     }
                 }
             }

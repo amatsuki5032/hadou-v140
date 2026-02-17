@@ -1193,9 +1193,10 @@ const { useState, useEffect, useMemo, useCallback } = React;
                 collapsedFormations, recommendTargetFormation,
                 setFormations, setDraggedGeneral, setDraggedTreasure,
                 setRecommendTargetFormation,
-                isGeneralUsed, isTreasureUsed, isURGeneralUsed
+                isGeneralUsed, isTreasureUsed, isURGeneralUsed,
+                showAdvisorSection
             }), [formations, treasures, activeTab, draggedGeneral, draggedTreasure,
-                collapsedFormations, recommendTargetFormation]);
+                collapsedFormations, recommendTargetFormation, showAdvisorSection]);
 
             // ─── テンプレート・パターン管理（handlers-template.js） ───
             const {
