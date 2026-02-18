@@ -219,6 +219,11 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     color: var(--text-muted);
     padding: 20px 12px;
 }
+/* 辞書補正されたセル */
+.corrected {
+    border-bottom: 1px dashed #f4d03f;
+    cursor: help;
+}
 
 /* ===== Summary ===== */
 .summary {
@@ -292,9 +297,86 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     <div class="summary" id="summary"></div>
 </div>
 
+<script src="../data-generals.js"></script>
+<script src="../data-skill-db.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 (function() {
+    // ===== 辞書（武将名・技能名） =====
+    var generalNames = [];
+    var skillNames = [];
+    if (typeof EMBEDDED_GENERALS_DATA !== 'undefined') {
+        generalNames = EMBEDDED_GENERALS_DATA.map(function(g) { return g.name; });
+    }
+    if (typeof SKILL_DB !== 'undefined') {
+        skillNames = Object.keys(SKILL_DB);
+    }
+
+    // Levenshtein距離
+    function levenshtein(a, b) {
+        if (a === b) return 0;
+        var la = a.length, lb = b.length;
+        if (la === 0) return lb;
+        if (lb === 0) return la;
+        var prev = [];
+        var curr = [];
+        for (var j = 0; j <= lb; j++) prev[j] = j;
+        for (var i = 1; i <= la; i++) {
+            curr[0] = i;
+            for (var j = 1; j <= lb; j++) {
+                var cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+            }
+            var tmp = prev; prev = curr; curr = tmp;
+        }
+        return prev[lb];
+    }
+
+    // 辞書から最も近い名前を検索（閾値以内なら補正）
+    function findClosest(input, dictionary, maxDist) {
+        if (!input || dictionary.length === 0) return input;
+        var best = null;
+        var bestDist = Infinity;
+        for (var i = 0; i < dictionary.length; i++) {
+            var d = levenshtein(input, dictionary[i]);
+            if (d < bestDist) {
+                bestDist = d;
+                best = dictionary[i];
+            }
+            if (d === 0) return input; // 完全一致
+        }
+        if (bestDist <= maxDist && bestDist > 0) return best;
+        return input;
+    }
+
+    // パース結果の辞書ベース補正（補正前の値を _orig に保持）
+    function correctResults(results) {
+        return results.map(function(r) {
+            var c = { unit: r.unit, troops: r.troops, target: r.target,
+                      damage: r.damage, type: r.type, caster: r.caster, tactic: r.tactic };
+            // 部隊名: 「X隊」のXを武将名辞書で補正
+            if (c.unit && c.unit.endsWith('隊')) {
+                var baseName = c.unit.slice(0, -1);
+                var maxDist = baseName.length <= 2 ? 1 : Math.ceil(baseName.length * 0.4);
+                var fixed = findClosest(baseName, generalNames, maxDist);
+                if (fixed !== baseName) { c._origUnit = c.unit; c.unit = fixed + '隊'; }
+            }
+            // 発動者: 武将名辞書で補正
+            if (c.caster) {
+                var maxDist = c.caster.length <= 2 ? 1 : Math.ceil(c.caster.length * 0.4);
+                var fixed = findClosest(c.caster, generalNames, maxDist);
+                if (fixed !== c.caster) { c._origCaster = c.caster; c.caster = fixed; }
+            }
+            // 戦法名: 技能名辞書で補正
+            if (c.tactic) {
+                var maxDist = c.tactic.length <= 2 ? 1 : Math.ceil(c.tactic.length * 0.3);
+                var fixed = findClosest(c.tactic, skillNames, maxDist);
+                if (fixed !== c.tactic) { c._origTactic = c.tactic; c.tactic = fixed; }
+            }
+            return c;
+        });
+    }
+
     // ===== State =====
     var files = [];
     var parsedResults = [];
@@ -499,7 +581,7 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
             progressStatus.textContent = '完了';
 
             rawText = allText;
-            parsedResults = parseLog(allText);
+            parsedResults = correctResults(parseLog(allText));
             displayResults();
         } catch (err) {
             progressStatus.textContent = 'エラー: ' + err.message;
@@ -647,20 +729,22 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
             parsedResults.forEach(function(r) {
                 var tr = document.createElement('tr');
                 tr.innerHTML =
-                    '<td>' + esc(r.unit) + '</td>' +
+                    '<td>' + correctedCell(r.unit, r._origUnit) + '</td>' +
                     '<td class="num">' + esc(r.troops) + '</td>' +
                     '<td>' + esc(r.target) + '</td>' +
                     '<td class="num">' + Number(r.damage).toLocaleString() + '</td>' +
                     '<td><span class="type-badge type-' + r.type + '">' + r.type + '</span></td>' +
-                    '<td>' + esc(r.caster) + '</td>' +
-                    '<td>' + esc(r.tactic) + '</td>';
+                    '<td>' + correctedCell(r.caster, r._origCaster) + '</td>' +
+                    '<td>' + correctedCell(r.tactic, r._origTactic) + '</td>';
                 resultsBody.appendChild(tr);
             });
 
             var totalDamage = parsedResults.reduce(function(sum, r) { return sum + Number(r.damage); }, 0);
+            var correctedCount = parsedResults.filter(function(r) { return r._origUnit || r._origCaster || r._origTactic; }).length;
             summary.innerHTML =
                 '<div><span class="summary-label">合計損害:</span><span class="summary-value">' + totalDamage.toLocaleString() + '</span></div>' +
-                '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + parsedResults.length + '</span></div>';
+                '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + parsedResults.length + '</span></div>' +
+                (correctedCount > 0 ? '<div><span class="summary-label">辞書補正:</span><span class="summary-value">' + correctedCount + '行</span></div>' : '');
             btnCsv.disabled = false;
         } else {
             resultsBody.innerHTML = '<tr><td colspan="7" class="no-data">城壁ダメージが検出されませんでした</td></tr>';
@@ -674,6 +758,12 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     function esc(str) {
         if (!str) return '';
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // 補正されたセルにツールチップ付きハイライトを表示
+    function correctedCell(value, orig) {
+        if (!orig) return esc(value);
+        return '<span class="corrected" title="OCR: ' + esc(orig) + '">' + esc(value) + '</span>';
     }
 
     // ===== 生テキストトグル =====
