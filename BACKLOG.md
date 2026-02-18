@@ -17,7 +17,7 @@
 
 ## 待機中（優先度高）
 
-- [ ] **戦闘ログOCRツール作成** — SSからダメージ抽出→CSV。damage-log.html（ルート直置き）。詳細は tasks/damage-log-tool/TASK.md 参照
+（なし）
 
 ## 待機中（優先度中）
 
@@ -93,3 +93,4 @@
 | 2026-02-18 | SKILL_DBスキャンを6個のuseMemoから1個に統合（skillNameSets） |
 | 2026-02-18 | 削除ハンドラ4個をhandleRemoveSlot共通関数に統合 |
 | 2026-02-18 | 推奨陣形ファインダー新規作成（formation-finder.html、侍従配置数で陣形比較） |
+| 2026-02-18 | 戦闘ログOCRツール作成（damage-log/index.html、Tesseract.js+画像前処理+パース+CSV出力） |

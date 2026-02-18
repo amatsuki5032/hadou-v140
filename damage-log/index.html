@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>戦闘ログ → CSV</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+    --bg-primary: #09090c;
+    --bg-secondary: #0e0e12;
+    --bg-tertiary: #14141a;
+    --text-primary: #f0f1f5;
+    --text-secondary: #e2e4ec;
+    --text-muted: #9a9eb0;
+    --text-dim: #606478;
+    --border-color: #1c1c24;
+    --accent-blue: #2563eb;
+    --accent-blue-hover: #3b82f6;
+    --accent-bordeaux: #800020;
+    --color-success: #22c55e;
+    --color-warning: #f4d03f;
+    --color-danger: #ef4444;
+}
+[data-theme="light"] {
+    --bg-primary: #f5f5f7;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e8e8ed;
+    --text-primary: #1a1a2e;
+    --text-secondary: #2d2d42;
+    --text-muted: #6b7280;
+    --text-dim: #9ca3af;
+    --border-color: #d1d5db;
+}
+
+/* ===== Base ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, 'Noto Sans JP', sans-serif;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ===== Header ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--accent-bordeaux);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+.header h1 { font-size: 20px; }
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-toggle:hover { border-color: var(--accent-blue); }
+
+/* ===== Drop zone ===== */
+.drop-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 16px;
+}
+.drop-zone:hover,
+.drop-zone.drag-over {
+    border-color: var(--accent-blue);
+    background: rgba(37, 99, 235, 0.05);
+}
+.drop-zone-text { color: var(--text-muted); font-size: 14px; }
+.drop-zone-sub { color: var(--text-dim); font-size: 12px; margin-top: 8px; }
+
+/* ===== File list ===== */
+.file-list { margin-bottom: 16px; }
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+.file-item-name {
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.file-item-remove {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+    flex-shrink: 0;
+}
+.file-item-remove:hover { color: var(--color-danger); }
+
+/* ===== Buttons ===== */
+.button-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+button.primary {
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+}
+button.primary:hover { background: var(--accent-blue-hover); }
+button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+button.secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+}
+button.secondary:hover { border-color: var(--accent-blue); }
+button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ===== Progress ===== */
+.progress-area {
+    margin-bottom: 16px;
+    display: none;
+}
+.progress-area.visible { display: block; }
+.progress-status {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+.progress-bar-bg {
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    background: var(--accent-blue);
+    border-radius: 4px;
+    transition: width 0.3s;
+    width: 0%;
+}
+
+/* ===== Raw text ===== */
+.raw-text-section { margin-bottom: 16px; }
+.raw-text-toggle {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 0;
+    font-family: inherit;
+}
+.raw-text-toggle:hover { color: var(--text-primary); }
+.raw-text-content {
+    display: none;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: monospace;
+}
+.raw-text-content.visible { display: block; }
+
+/* ===== Results table ===== */
+.results-card {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-bordeaux);
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 600px;
+}
+.results-table th {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 12px;
+    white-space: nowrap;
+}
+.results-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+.results-table tr:last-child td { border-bottom: none; }
+.results-table tr:hover td { background: var(--bg-tertiary); }
+.results-table .num {
+    text-align: right;
+    font-family: monospace;
+}
+.type-badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.type-通常 { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+.type-会心 { background: rgba(244, 208, 63, 0.15); color: #f4d03f; }
+.type-撃心 { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.type-戦法 { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+.no-data {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 20px 12px;
+}
+
+/* ===== Summary ===== */
+.summary {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.summary-label { color: var(--text-muted); }
+.summary-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: monospace;
+    margin-left: 6px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>戦闘ログ → CSV</h1>
+    <button class="theme-toggle" id="themeToggle" title="テーマ切替">🌙</button>
+</div>
+
+<div class="drop-zone" id="dropZone">
+    <div class="drop-zone-text">画像をドロップ または クリックで選択</div>
+    <div class="drop-zone-sub">（複数画像対応）</div>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+</div>
+
+<div class="file-list" id="fileList"></div>
+
+<div class="button-row">
+    <button class="primary" id="btnOcr" disabled>OCR実行</button>
+    <button class="secondary" id="btnCsv" disabled>CSVダウンロード</button>
+</div>
+
+<div class="progress-area" id="progressArea">
+    <div class="progress-status" id="progressStatus">準備中...</div>
+    <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+</div>
+
+<div class="raw-text-section" id="rawTextSection" style="display:none">
+    <button class="raw-text-toggle" id="rawTextToggle">▶ OCR生テキスト</button>
+    <div class="raw-text-content" id="rawTextContent"></div>
+</div>
+
+<div id="resultsArea" style="display:none">
+    <div class="results-card">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>部隊名</th>
+                    <th>兵力</th>
+                    <th>対象</th>
+                    <th class="num">損害値</th>
+                    <th>種別</th>
+                    <th>発動者</th>
+                    <th>戦法名</th>
+                </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+        </table>
+    </div>
+    <div class="summary" id="summary"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+(function() {
+    // ===== State =====
+    var files = [];
+    var parsedResults = [];
+    var rawText = '';
+    var isProcessing = false;
+    var currentImageIndex = 0;
+    var totalImages = 0;
+
+    // ===== DOM =====
+    var dropZone = document.getElementById('dropZone');
+    var fileInput = document.getElementById('fileInput');
+    var fileList = document.getElementById('fileList');
+    var btnOcr = document.getElementById('btnOcr');
+    var btnCsv = document.getElementById('btnCsv');
+    var progressArea = document.getElementById('progressArea');
+    var progressStatus = document.getElementById('progressStatus');
+    var progressFill = document.getElementById('progressFill');
+    var rawTextSection = document.getElementById('rawTextSection');
+    var rawTextToggle = document.getElementById('rawTextToggle');
+    var rawTextContent = document.getElementById('rawTextContent');
+    var resultsArea = document.getElementById('resultsArea');
+    var resultsBody = document.getElementById('resultsBody');
+    var summary = document.getElementById('summary');
+    var themeToggle = document.getElementById('themeToggle');
+
+    // ===== Theme =====
+    if (localStorage.getItem('damage-log-theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.textContent = '☀';
+    }
+    themeToggle.addEventListener('click', function() {
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+            document.documentElement.removeAttribute('data-theme');
+            themeToggle.textContent = '🌙';
+            localStorage.setItem('damage-log-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeToggle.textContent = '☀';
+            localStorage.setItem('damage-log-theme', 'light');
+        }
+    });
+
+    // ===== File handling =====
+    dropZone.addEventListener('click', function() { fileInput.click(); });
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', function() {
+        dropZone.classList.remove('drag-over');
+    });
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        addFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', function() {
+        addFiles(fileInput.files);
+        fileInput.value = '';
+    });
+
+    function addFiles(newFiles) {
+        for (var i = 0; i < newFiles.length; i++) {
+            if (newFiles[i].type.startsWith('image/')) {
+                files.push(newFiles[i]);
+            }
+        }
+        renderFileList();
+        btnOcr.disabled = files.length === 0 || isProcessing;
+    }
+
+    function removeFile(index) {
+        files.splice(index, 1);
+        renderFileList();
+        btnOcr.disabled = files.length === 0 || isProcessing;
+    }
+
+    function renderFileList() {
+        fileList.innerHTML = '';
+        files.forEach(function(f, i) {
+            var item = document.createElement('div');
+            item.className = 'file-item';
+            var name = document.createElement('span');
+            name.className = 'file-item-name';
+            name.textContent = f.name;
+            var btn = document.createElement('button');
+            btn.className = 'file-item-remove';
+            btn.textContent = '\u2715';
+            btn.addEventListener('click', function() { removeFile(i); });
+            item.appendChild(name);
+            item.appendChild(btn);
+            fileList.appendChild(item);
+        });
+    }
+
+    // ===== Image preprocessing =====
+    function loadImage(file) {
+        return new Promise(function(resolve, reject) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = new Image();
+                img.onload = function() { resolve(img); };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function preprocessImage(img) {
+        var canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var d = imageData.data;
+        var totalBrightness = 0;
+        var pixelCount = d.length / 4;
+
+        // グレースケール変換
+        for (var i = 0; i < d.length; i += 4) {
+            var gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+            d[i] = d[i + 1] = d[i + 2] = gray;
+            totalBrightness += gray;
+        }
+        var avgBrightness = totalBrightness / pixelCount;
+
+        // コントラスト強調
+        var contrast = 50;
+        var factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+        for (var i = 0; i < d.length; i += 4) {
+            var val = Math.min(255, Math.max(0, factor * (d[i] - 128) + 128));
+            d[i] = d[i + 1] = d[i + 2] = val;
+        }
+
+        // 暗い背景なら白黒反転
+        if (avgBrightness < 128) {
+            for (var i = 0; i < d.length; i += 4) {
+                d[i] = 255 - d[i];
+                d[i + 1] = 255 - d[i + 1];
+                d[i + 2] = 255 - d[i + 2];
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        return canvas;
+    }
+
+    // ===== OCR =====
+    btnOcr.addEventListener('click', runOCR);
+
+    async function runOCR() {
+        if (files.length === 0 || isProcessing) return;
+        isProcessing = true;
+        btnOcr.disabled = true;
+        btnCsv.disabled = true;
+        progressArea.classList.add('visible');
+        progressStatus.textContent = 'OCRエンジン読み込み中...';
+        progressFill.style.width = '0%';
+        totalImages = files.length;
+        currentImageIndex = 0;
+
+        try {
+            var worker = await Tesseract.createWorker('jpn+eng', 1, {
+                logger: function(m) {
+                    if (m.status === 'loading tesseract core') {
+                        progressStatus.textContent = 'OCRエンジン読み込み中...';
+                    } else if (m.status === 'loading language traineddata') {
+                        progressStatus.textContent = '言語データ読み込み中... ' + Math.round(m.progress * 100) + '%';
+                        progressFill.style.width = Math.round(m.progress * 15) + '%';
+                    } else if (m.status === 'initializing api') {
+                        progressStatus.textContent = '初期化中...';
+                        progressFill.style.width = '18%';
+                    } else if (m.status === 'recognizing text') {
+                        var imgPct = Math.round(m.progress * 100);
+                        var overall = 20 + ((currentImageIndex + m.progress) / totalImages) * 80;
+                        progressStatus.textContent = '画像 ' + (currentImageIndex + 1) + '/' + totalImages + ' を認識中... ' + imgPct + '%';
+                        progressFill.style.width = Math.round(overall) + '%';
+                    }
+                }
+            });
+
+            var allText = '';
+            for (currentImageIndex = 0; currentImageIndex < files.length; currentImageIndex++) {
+                progressStatus.textContent = '画像 ' + (currentImageIndex + 1) + '/' + totalImages + ' を前処理中...';
+                var img = await loadImage(files[currentImageIndex]);
+                var processed = preprocessImage(img);
+                var result = await worker.recognize(processed);
+                allText += result.data.text + '\n';
+            }
+
+            await worker.terminate();
+            progressFill.style.width = '100%';
+            progressStatus.textContent = '完了';
+
+            rawText = allText;
+            parsedResults = parseLog(allText);
+            displayResults();
+        } catch (err) {
+            progressStatus.textContent = 'エラー: ' + err.message;
+            console.error(err);
+        }
+
+        isProcessing = false;
+        btnOcr.disabled = files.length === 0;
+    }
+
+    // ===== テキスト後処理 & パース =====
+    function postProcess(text) {
+        // 全角→半角数字
+        text = text.replace(/[０-９]/g, function(c) {
+            return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+        });
+        // 数字間のスペース除去（OCRアーティファクト）
+        text = text.replace(/(\d)\s+(\d)/g, '$1$2');
+        // 数字の誤認識補正
+        text = text.replace(/[oOоО]/g, '0');
+        text = text.replace(/[lIｌＩ]/g, '1');
+        // 括弧の正規化
+        text = text.replace(/[（(]/g, '（');
+        text = text.replace(/[）)]/g, '）');
+        // 「」の正規化
+        text = text.replace(/[「｢﹁]/g, '「');
+        text = text.replace(/[」｣﹂]/g, '」');
+        return text;
+    }
+
+    function parseLog(raw) {
+        var text = postProcess(raw);
+        var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l; });
+
+        // 正規化済みの括弧・引用符を使用
+        var reAttack = /^(.+?隊)(?:（(\d+)）)?\s*が攻撃/;
+        var reDamage = /城壁に(\d+)の損害(?:（(会心|撃心)）)?/;
+        var reTactic = /^(.+?隊)（(\d+)）\s*の(.+?)が戦法「(.+?)」を発動/;
+        var reChain = /^続けて(.+?)が戦法「(.+?)」を発動/;
+        var reOtherPlayer = /の.+?隊の.+?が戦法/;
+
+        var results = [];
+        var currentUnit = '';
+        var currentTroops = '';
+        var currentCaster = '';
+        var currentTactic = '';
+        var isTacticActive = false;
+
+        for (var idx = 0; idx < lines.length; idx++) {
+            var line = lines[idx];
+            var m;
+
+            // 他プレイヤーの行はスキップ
+            if (reOtherPlayer.test(line)) continue;
+
+            // パターン3: 戦法発動（攻撃より先に判定）
+            m = reTactic.exec(line);
+            if (m) {
+                currentUnit = m[1];
+                currentTroops = m[2];
+                currentCaster = m[3];
+                currentTactic = m[4];
+                isTacticActive = true;
+                continue;
+            }
+
+            // パターン4: 連鎖戦法
+            m = reChain.exec(line);
+            if (m) {
+                currentCaster = m[1];
+                currentTactic = m[2];
+                // 部隊名・兵力は直前の戦法行を引き継ぐ
+                continue;
+            }
+
+            // パターン1: 通常攻撃の開始
+            m = reAttack.exec(line);
+            if (m) {
+                // 他プレイヤーの攻撃をスキップ（"○○の○○隊"パターン）
+                if (/の.+隊$/.test(m[1])) continue;
+                currentUnit = m[1];
+                currentTroops = m[2] || '';
+                currentCaster = '';
+                currentTactic = '';
+                isTacticActive = false;
+                continue;
+            }
+
+            // パターン2: ダメージ行（城壁のみ）
+            m = reDamage.exec(line);
+            if (m) {
+                var damageVal = m[1];
+                var modifier = m[2] || '';
+                var type;
+                if (modifier) {
+                    type = modifier; // 会心 or 撃心
+                } else if (isTacticActive) {
+                    type = '戦法';
+                } else {
+                    type = '通常';
+                }
+                results.push({
+                    unit: currentUnit,
+                    troops: currentTroops,
+                    target: '城壁',
+                    damage: damageVal,
+                    type: type,
+                    caster: isTacticActive ? currentCaster : '',
+                    tactic: isTacticActive ? currentTactic : ''
+                });
+                continue;
+            }
+        }
+
+        return results;
+    }
+
+    // ===== 結果表示 =====
+    function displayResults() {
+        // 生テキスト
+        rawTextSection.style.display = 'block';
+        rawTextContent.textContent = rawText;
+
+        // テーブル
+        resultsBody.innerHTML = '';
+        resultsArea.style.display = 'block';
+
+        if (parsedResults.length > 0) {
+            parsedResults.forEach(function(r) {
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + esc(r.unit) + '</td>' +
+                    '<td class="num">' + esc(r.troops) + '</td>' +
+                    '<td>' + esc(r.target) + '</td>' +
+                    '<td class="num">' + Number(r.damage).toLocaleString() + '</td>' +
+                    '<td><span class="type-badge type-' + r.type + '">' + r.type + '</span></td>' +
+                    '<td>' + esc(r.caster) + '</td>' +
+                    '<td>' + esc(r.tactic) + '</td>';
+                resultsBody.appendChild(tr);
+            });
+
+            var totalDamage = parsedResults.reduce(function(sum, r) { return sum + Number(r.damage); }, 0);
+            summary.innerHTML =
+                '<div><span class="summary-label">合計損害:</span><span class="summary-value">' + totalDamage.toLocaleString() + '</span></div>' +
+                '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + parsedResults.length + '</span></div>';
+            btnCsv.disabled = false;
+        } else {
+            resultsBody.innerHTML = '<tr><td colspan="7" class="no-data">城壁ダメージが検出されませんでした</td></tr>';
+            summary.innerHTML = '';
+        }
+
+        // プログレス非表示
+        setTimeout(function() { progressArea.classList.remove('visible'); }, 1000);
+    }
+
+    function esc(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ===== 生テキストトグル =====
+    rawTextToggle.addEventListener('click', function() {
+        var content = rawTextContent;
+        if (content.classList.contains('visible')) {
+            content.classList.remove('visible');
+            rawTextToggle.textContent = '▶ OCR生テキスト';
+        } else {
+            content.classList.add('visible');
+            rawTextToggle.textContent = '▼ OCR生テキスト';
+        }
+    });
+
+    // ===== CSVダウンロード =====
+    btnCsv.addEventListener('click', function() {
+        if (parsedResults.length === 0) return;
+
+        var header = '部隊名,兵力,対象,損害値,種別,発動者,戦法名';
+        var rows = parsedResults.map(function(r) {
+            return [r.unit, r.troops, r.target, r.damage, r.type, r.caster, r.tactic].join(',');
+        });
+        var csv = header + '\n' + rows.join('\n');
+
+        // BOM付きでExcel対応
+        var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+
+        var now = new Date();
+        var pad = function(n) { return String(n).padStart(2, '0'); };
+        var filename = 'damage-log_' +
+            now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '_' +
+            pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds()) + '.csv';
+
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+})();
+</script>
+</body>
+</html>
