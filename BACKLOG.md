@@ -17,7 +17,7 @@
 
 ## 待機中（優先度高）
 
-（なし）
+- [ ] **戦闘ログOCRツール作成** — SSからダメージ抽出→CSV。damage-log.html（ルート直置き）。詳細は tasks/damage-log-tool/TASK.md 参照
 
 ## 待機中（優先度中）
 
