@@ -224,6 +224,33 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     border-bottom: 1px dashed #f4d03f;
     cursor: help;
 }
+/* インライン編集 */
+.results-table td.editable { cursor: text; }
+.results-table td.editable:hover { background: rgba(37, 99, 235, 0.08); }
+.cell-input {
+    background: var(--bg-elevated);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    color: var(--text-body);
+    font-size: 13px;
+    font-family: inherit;
+    padding: 2px 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.cell-input.num { text-align: right; font-family: monospace; }
+/* 行削除 */
+.results-table .col-del { width: 28px; padding: 4px; text-align: center; }
+.row-delete {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+    line-height: 1;
+}
+.row-delete:hover { color: var(--danger); }
 
 /* ===== Summary ===== */
 .summary {
@@ -289,6 +316,7 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
                     <th>種別</th>
                     <th>発動者</th>
                     <th>戦法名</th>
+                    <th class="col-del"></th>
                 </tr>
             </thead>
             <tbody id="resultsBody"></tbody>
@@ -726,28 +754,46 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         resultsArea.style.display = 'block';
 
         if (parsedResults.length > 0) {
-            parsedResults.forEach(function(r) {
+            parsedResults.forEach(function(r, rowIdx) {
                 var tr = document.createElement('tr');
-                tr.innerHTML =
-                    '<td>' + correctedCell(r.unit, r._origUnit) + '</td>' +
-                    '<td class="num">' + esc(r.troops) + '</td>' +
-                    '<td>' + esc(r.target) + '</td>' +
-                    '<td class="num">' + Number(r.damage).toLocaleString() + '</td>' +
-                    '<td><span class="type-badge type-' + r.type + '">' + r.type + '</span></td>' +
-                    '<td>' + correctedCell(r.caster, r._origCaster) + '</td>' +
-                    '<td>' + correctedCell(r.tactic, r._origTactic) + '</td>';
+
+                // 編集可能セル生成
+                var cells = [
+                    { html: correctedCell(r.unit, r._origUnit), cls: 'editable' },
+                    { html: esc(r.troops), cls: 'num editable' },
+                    { html: esc(r.target), cls: 'editable' },
+                    { html: Number(r.damage || 0).toLocaleString(), cls: 'num editable' },
+                    { html: '<span class="type-badge type-' + r.type + '">' + r.type + '</span>', cls: 'editable' },
+                    { html: correctedCell(r.caster, r._origCaster), cls: 'editable' },
+                    { html: correctedCell(r.tactic, r._origTactic), cls: 'editable' }
+                ];
+
+                cells.forEach(function(cell, colIdx) {
+                    var td = document.createElement('td');
+                    td.className = cell.cls;
+                    td.innerHTML = cell.html;
+                    td.addEventListener('dblclick', function() { startEdit(td, rowIdx, colIdx); });
+                    tr.appendChild(td);
+                });
+
+                // 削除ボタン
+                var delTd = document.createElement('td');
+                delTd.className = 'col-del';
+                var delBtn = document.createElement('button');
+                delBtn.className = 'row-delete';
+                delBtn.textContent = '\u2715';
+                delBtn.title = '行を削除';
+                delBtn.addEventListener('click', function() { deleteRow(rowIdx); });
+                delTd.appendChild(delBtn);
+                tr.appendChild(delTd);
+
                 resultsBody.appendChild(tr);
             });
 
-            var totalDamage = parsedResults.reduce(function(sum, r) { return sum + Number(r.damage); }, 0);
-            var correctedCount = parsedResults.filter(function(r) { return r._origUnit || r._origCaster || r._origTactic; }).length;
-            summary.innerHTML =
-                '<div><span class="summary-label">合計損害:</span><span class="summary-value">' + totalDamage.toLocaleString() + '</span></div>' +
-                '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + parsedResults.length + '</span></div>' +
-                (correctedCount > 0 ? '<div><span class="summary-label">辞書補正:</span><span class="summary-value">' + correctedCount + '行</span></div>' : '');
+            updateSummary();
             btnCsv.disabled = false;
         } else {
-            resultsBody.innerHTML = '<tr><td colspan="7" class="no-data">城壁ダメージが検出されませんでした</td></tr>';
+            resultsBody.innerHTML = '<tr><td colspan="8" class="no-data">城壁ダメージが検出されませんでした</td></tr>';
             summary.innerHTML = '';
         }
 
@@ -764,6 +810,56 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     function correctedCell(value, orig) {
         if (!orig) return esc(value);
         return '<span class="corrected" title="OCR: ' + esc(orig) + '">' + esc(value) + '</span>';
+    }
+
+    // ===== インライン編集 =====
+    var FIELD_MAP = ['unit', 'troops', 'target', 'damage', 'type', 'caster', 'tactic'];
+
+    function startEdit(td, rowIdx, colIdx) {
+        if (td.querySelector('.cell-input')) return; // 編集中
+        var field = FIELD_MAP[colIdx];
+        var r = parsedResults[rowIdx];
+        var val = r[field] || '';
+        var isNum = colIdx === 1 || colIdx === 3; // troops, damage
+        var input = document.createElement('input');
+        input.className = 'cell-input' + (isNum ? ' num' : '');
+        input.value = val;
+        td.textContent = '';
+        td.appendChild(input);
+        input.focus();
+        input.select();
+
+        function commit() {
+            var newVal = input.value.trim();
+            r[field] = newVal;
+            // 補正フラグをクリア（手動編集したらもう補正マークは不要）
+            delete r['_orig' + field.charAt(0).toUpperCase() + field.slice(1)];
+            displayResults();
+        }
+        input.addEventListener('blur', commit);
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); commit(); }
+            if (e.key === 'Escape') { e.preventDefault(); displayResults(); }
+        });
+    }
+
+    function deleteRow(rowIdx) {
+        parsedResults.splice(rowIdx, 1);
+        displayResults();
+    }
+
+    function updateSummary() {
+        if (parsedResults.length === 0) {
+            summary.innerHTML = '';
+            btnCsv.disabled = true;
+            return;
+        }
+        var totalDamage = parsedResults.reduce(function(sum, r) { return sum + Number(r.damage || 0); }, 0);
+        var correctedCount = parsedResults.filter(function(r) { return r._origUnit || r._origCaster || r._origTactic; }).length;
+        summary.innerHTML =
+            '<div><span class="summary-label">合計損害:</span><span class="summary-value">' + totalDamage.toLocaleString() + '</span></div>' +
+            '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + parsedResults.length + '</span></div>' +
+            (correctedCount > 0 ? '<div><span class="summary-label">辞書補正:</span><span class="summary-value">' + correctedCount + '行</span></div>' : '');
     }
 
     // ===== 生テキストトグル =====
