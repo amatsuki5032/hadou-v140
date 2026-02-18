@@ -596,9 +596,22 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
             if (m) {
                 var damageVal = m[1];
                 var modifier = m[2] || '';
+
+                // 括弧形式で取れなくても行内に会心/撃心があれば検出
+                if (!modifier) {
+                    if (line.indexOf('会心') !== -1) modifier = '会心';
+                    else if (line.indexOf('撃心') !== -1) modifier = '撃心';
+                }
+                // 次の行が会心/撃心の単独行の場合も検出
+                if (!modifier && idx + 1 < lines.length) {
+                    var nextLine = lines[idx + 1];
+                    if (nextLine.indexOf('会心') !== -1 && nextLine.length < 10) { modifier = '会心'; idx++; }
+                    else if (nextLine.indexOf('撃心') !== -1 && nextLine.length < 10) { modifier = '撃心'; idx++; }
+                }
+
                 var type;
                 if (modifier) {
-                    type = modifier; // 会心 or 撃心
+                    type = modifier;
                 } else if (isTacticActive) {
                     type = '戦法';
                 } else {
