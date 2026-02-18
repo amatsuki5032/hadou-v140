@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>推奨陣形ファインダー</title>
+<style>
+body { background: #09090c; color: #e2e4ec; font-family: -apple-system, 'Noto Sans JP', sans-serif; padding: 20px; }
+h1 { font-size: 20px; border-bottom: 2px solid #800020; padding-bottom: 12px; }
+
+.input-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 20px 0;
+    padding: 16px;
+    background: #0e0e12;
+    border-radius: 8px;
+    align-items: flex-end;
+}
+.slot-selector label {
+    display: block;
+    font-size: 12px;
+    color: #9a9eb0;
+    margin-bottom: 4px;
+}
+.slot-selector select {
+    background: #09090c;
+    color: #e2e4ec;
+    border: 1px solid #1c1c24;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 14px;
+    min-width: 100px;
+}
+.slot-selector select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.results-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.formation-result {
+    padding: 14px;
+    background: #0e0e12;
+    border-radius: 8px;
+    border-left: 3px solid #800020;
+    width: 200px;
+}
+.formation-name {
+    font-size: 15px;
+    font-weight: bold;
+    color: #f0f1f5;
+    margin-bottom: 6px;
+}
+.placement-count {
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.formation-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+    gap: 2px;
+}
+.grid-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    border-radius: 2px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+}
+.grid-cell.general {
+    border: 2px solid #d4af37;
+    background: #0e0e12;
+    color: #f0f1f5;
+}
+.grid-cell.general.has-lr {
+    background: #1a1a0a;
+}
+.grid-cell.general.no-lr {
+    opacity: 0.4;
+}
+.grid-cell.attendant-placed {
+    border: 2px solid #6495ed;
+    background: #0a0e1a;
+    color: #6495ed;
+}
+.grid-cell.empty {
+    border: 1px solid #24242e;
+    background: #09090c;
+    color: #606478;
+}
+
+.slot-details {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+.slot-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+}
+.slot-badge.placed {
+    background: #0a1a0a;
+    color: #4ade80;
+}
+.slot-badge.failed {
+    background: #1a0a0a;
+    color: #f87171;
+}
+
+.empty-message {
+    color: #606478;
+    font-size: 13px;
+}
+</style>
+</head>
+<body>
+<h1>推奨陣形ファインダー</h1>
+<p style="font-size:13px;color:#606478">各スロットの侍従方向を指定すると、侍従を最も多く配置できる陣形を探します。</p>
+
+<div class="input-area" id="inputArea"></div>
+<div class="results-area" id="results"></div>
+
+<script src="config.js"></script>
+<script src="utils.js"></script>
+<script>
+var SLOT_NAMES = ['主将', '副将1', '副将2', '補佐1', '補佐2'];
+var SLOT_IDS = ['captain', 'vice1', 'vice2', 'support1', 'support2'];
+var DIRECTION_OPTIONS = [
+    { value: '', label: '(なし)' },
+    { value: '上', label: '上' },
+    { value: '下', label: '下' },
+    { value: '左', label: '左' },
+    { value: '右', label: '右' },
+    { value: '右上', label: '右上' },
+    { value: '右下', label: '右下' },
+    { value: '左上', label: '左上' },
+    { value: '左下', label: '左下' },
+    { value: '上/下', label: '上/下' },
+    { value: '上/左', label: '上/左' },
+    { value: '左/下', label: '左/下' },
+    { value: '右/下', label: '右/下' }
+];
+
+// 短縮表示名
+var SHORT_NAMES = { '主将': '主', '副将1': '副1', '副将2': '副2', '補佐1': '補1', '補佐2': '補2' };
+
+function initUI() {
+    var inputArea = document.getElementById('inputArea');
+    SLOT_NAMES.forEach(function(name, i) {
+        var div = document.createElement('div');
+        div.className = 'slot-selector';
+
+        var label = document.createElement('label');
+        label.textContent = name;
+        label.setAttribute('for', 'slot-' + SLOT_IDS[i]);
+
+        var select = document.createElement('select');
+        select.id = 'slot-' + SLOT_IDS[i];
+        select.addEventListener('change', updateResults);
+
+        DIRECTION_OPTIONS.forEach(function(opt) {
+            var option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.label;
+            select.appendChild(option);
+        });
+
+        div.appendChild(label);
+        div.appendChild(select);
+        inputArea.appendChild(div);
+    });
+}
+
+function updateResults() {
+    // 各スロットの選択値を取得
+    var slotDirections = {};
+    SLOT_NAMES.forEach(function(name, i) {
+        var select = document.getElementById('slot-' + SLOT_IDS[i]);
+        if (select.value) {
+            slotDirections[name] = select.value;
+        }
+    });
+
+    var totalLR = Object.keys(slotDirections).length;
+    var container = document.getElementById('results');
+
+    if (totalLR === 0) {
+        container.innerHTML = '<p class="empty-message">侍従方向を1つ以上選択してください。</p>';
+        return;
+    }
+
+    // ダミースロット構築
+    var slots = {};
+    for (var slotName in slotDirections) {
+        slots[slotName] = { rarity: 'LR', attendant_position: slotDirections[slotName] };
+    }
+
+    // 全陣形を評価
+    var results = [];
+    for (var formationName in FORMATIONS_TYPES) {
+        var formationData = FORMATIONS_TYPES[formationName];
+        var placements = resolveAttendantConflicts(formationName, slots);
+        var placedCount = Object.keys(placements).length;
+
+        // 各スロットの配置可否
+        var slotDetails = {};
+        SLOT_NAMES.forEach(function(name) {
+            if (!slotDirections[name]) {
+                slotDetails[name] = 'none';
+            } else if (placements[name]) {
+                slotDetails[name] = 'placed';
+            } else {
+                slotDetails[name] = 'failed';
+            }
+        });
+
+        results.push({
+            name: formationName,
+            formationData: formationData,
+            placements: placements,
+            placedCount: placedCount,
+            totalLR: totalLR,
+            slotDetails: slotDetails
+        });
+    }
+
+    // 配置可能数降順ソート
+    results.sort(function(a, b) { return b.placedCount - a.placedCount; });
+
+    renderResults(results, slots);
+}
+
+function renderFormationGrid(formationData, placements, slots) {
+    var gridDiv = document.createElement('div');
+    gridDiv.className = 'formation-mini-grid';
+
+    for (var row = 0; row < 3; row++) {
+        for (var col = 0; col < 3; col++) {
+            var cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            var isGeneralPos = formationData.positions[row][col] === 1;
+
+            if (isGeneralPos) {
+                // 武将マス
+                var slotName = null;
+                for (var slot in formationData.mapping) {
+                    var coords = formationData.mapping[slot];
+                    if (coords[0] === row && coords[1] === col) {
+                        slotName = slot;
+                        break;
+                    }
+                }
+                cell.classList.add('general');
+                if (slotName) {
+                    cell.textContent = SHORT_NAMES[slotName] || slotName;
+                    if (slots[slotName]) {
+                        cell.classList.add('has-lr');
+                    } else {
+                        cell.classList.add('no-lr');
+                    }
+                }
+            } else {
+                // 空きマス: 侍従が配置されているか
+                var attendantSlot = null;
+                for (var s in placements) {
+                    var c = placements[s];
+                    if (c[0] === row && c[1] === col) {
+                        attendantSlot = s;
+                        break;
+                    }
+                }
+                if (attendantSlot) {
+                    cell.classList.add('attendant-placed');
+                    cell.textContent = '侍';
+                } else {
+                    cell.classList.add('empty');
+                }
+            }
+
+            gridDiv.appendChild(cell);
+        }
+    }
+    return gridDiv;
+}
+
+function renderResults(results, slots) {
+    var container = document.getElementById('results');
+    container.innerHTML = '';
+
+    results.forEach(function(result) {
+        var card = document.createElement('div');
+        card.className = 'formation-result';
+
+        // 陣形名
+        var nameDiv = document.createElement('div');
+        nameDiv.className = 'formation-name';
+        nameDiv.textContent = result.name;
+        card.appendChild(nameDiv);
+
+        // 配置数
+        var countDiv = document.createElement('div');
+        countDiv.className = 'placement-count';
+        countDiv.textContent = '配置可能: ' + result.placedCount + ' / ' + result.totalLR;
+        if (result.placedCount === result.totalLR) {
+            countDiv.style.color = '#22c55e';
+        } else if (result.placedCount > 0) {
+            countDiv.style.color = '#f4d03f';
+        } else {
+            countDiv.style.color = '#ef4444';
+        }
+        card.appendChild(countDiv);
+
+        // 3x3グリッド
+        var grid = renderFormationGrid(result.formationData, result.placements, slots);
+        card.appendChild(grid);
+
+        // スロット別バッジ
+        var detailDiv = document.createElement('div');
+        detailDiv.className = 'slot-details';
+        SLOT_NAMES.forEach(function(name) {
+            var status = result.slotDetails[name];
+            if (status === 'none') return;
+            var span = document.createElement('span');
+            span.className = 'slot-badge ' + status;
+            span.textContent = name;
+            detailDiv.appendChild(span);
+        });
+        card.appendChild(detailDiv);
+
+        container.appendChild(card);
+    });
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+    initUI();
+    updateResults();
+});
+</script>
+</body>
+</html>

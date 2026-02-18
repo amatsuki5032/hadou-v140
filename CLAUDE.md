@@ -70,6 +70,7 @@ hadou-v140/
 ├── [その他]
 ├── updateHistory.js         ← 更新履歴表示
 ├── icon-checker.html        ← アイコン不足チェッカー
+├── formation-finder.html    ← 推奨陣形ファインダー（侍従配置数で陣形比較）
 ├── icons/                   ← アイコン画像
 │   ├── generals/
 │   └── treasures/
