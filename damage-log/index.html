@@ -695,6 +695,23 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         var reTactic = /^(.+?隊)（(\d+)）\s*の(.+?)が戦法「(.+?)」を発動/;
         var reChain = /^続けて(.+?)が戦法「(.+?)」を発動/;
         var reOtherPlayer = /の.+?隊の.+?が戦法/;
+        var reKnownStart = /^(.+?隊|続けて|城壁に\d+の損害)/;
+
+        // OCRが1行を複数行に分断した場合のマージ
+        var merged = [];
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            if (merged.length > 0 && !reKnownStart.test(line)) {
+                // 前の行と結合して既知パターンにマッチするか試す
+                var joined = merged[merged.length - 1] + line;
+                if (reDamage.test(joined) || reAttack.test(joined) || reTactic.test(joined) || reChain.test(joined)) {
+                    merged[merged.length - 1] = joined;
+                    continue;
+                }
+            }
+            merged.push(line);
+        }
+        lines = merged;
 
         var results = [];
         var currentUnit = '';
