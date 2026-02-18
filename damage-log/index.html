@@ -405,6 +405,34 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         });
     }
 
+    // 空の部隊名/兵力を前後の行から補完
+    function fillEmptyContext(results) {
+        // forward-fill: 前の行から部隊名・兵力を引き継ぐ
+        var lastUnit = '', lastTroops = '';
+        for (var i = 0; i < results.length; i++) {
+            if (results[i].unit) {
+                lastUnit = results[i].unit;
+                lastTroops = results[i].troops;
+            } else if (lastUnit) {
+                results[i].unit = lastUnit;
+                results[i].troops = lastTroops;
+            }
+        }
+        // backward-fill: 先頭の空行を次の非空行から補完
+        var firstUnit = '', firstTroops = '';
+        for (var i = 0; i < results.length; i++) {
+            if (results[i].unit) { firstUnit = results[i].unit; firstTroops = results[i].troops; break; }
+        }
+        if (firstUnit) {
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].unit) break;
+                results[i].unit = firstUnit;
+                results[i].troops = firstTroops;
+            }
+        }
+        return results;
+    }
+
     // ===== State =====
     var files = [];
     var parsedResults = [];
@@ -517,10 +545,11 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     }
 
     function preprocessImage(img) {
-        // 画像を2倍に拡大（OCR精度向上）
-        var scale = 2;
+        // 解像度に応じた動的スケーリング（OCR精度向上）
+        var w = img.naturalWidth;
+        var scale = w < 1000 ? 3 : w < 2000 ? 2 : 1;
         var canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth * scale;
+        canvas.width = w * scale;
         canvas.height = img.naturalHeight * scale;
         var ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = true;
@@ -596,20 +625,33 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
             });
 
             var allText = '';
+            var failedImages = [];
             for (currentImageIndex = 0; currentImageIndex < files.length; currentImageIndex++) {
-                progressStatus.textContent = '画像 ' + (currentImageIndex + 1) + '/' + totalImages + ' を前処理中...';
-                var img = await loadImage(files[currentImageIndex]);
-                var processed = preprocessImage(img);
-                var result = await worker.recognize(processed);
-                allText += result.data.text + '\n';
+                try {
+                    progressStatus.textContent = '画像 ' + (currentImageIndex + 1) + '/' + totalImages + ' を前処理中...';
+                    var img = await loadImage(files[currentImageIndex]);
+                    var processed = preprocessImage(img);
+                    var result = await worker.recognize(processed);
+                    if (totalImages > 1) {
+                        allText += '--- 画像' + (currentImageIndex + 1) + ': ' + files[currentImageIndex].name + ' ---\n';
+                    }
+                    allText += result.data.text + '\n';
+                } catch (imgErr) {
+                    console.error('画像 ' + (currentImageIndex + 1) + ' の処理に失敗:', imgErr);
+                    failedImages.push(currentImageIndex + 1);
+                }
             }
 
             await worker.terminate();
             progressFill.style.width = '100%';
-            progressStatus.textContent = '完了';
+            var statusMsg = '完了';
+            if (failedImages.length > 0) {
+                statusMsg += '（画像' + failedImages.join(',') + ' は読み込み失敗）';
+            }
+            progressStatus.textContent = statusMsg;
 
             rawText = allText;
-            parsedResults = correctResults(parseLog(allText));
+            parsedResults = fillEmptyContext(correctResults(parseLog(allText)));
             displayResults();
         } catch (err) {
             progressStatus.textContent = 'エラー: ' + err.message;
@@ -645,7 +687,7 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         var lines = text.split('\n').map(function(l) {
             // OCRが日本語テキスト内に挿入するスペースを除去
             return l.trim().replace(/\s/g, '');
-        }).filter(function(l) { return l; });
+        }).filter(function(l) { return l && !l.startsWith('---画像'); });
 
         // 正規化済みの括弧・引用符を使用
         var reAttack = /^(.+?隊)(?:（(\d+)）)?\s*が攻撃/;
