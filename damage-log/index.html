@@ -252,6 +252,19 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .row-delete:hover { color: var(--danger); }
 
+/* ===== Filter toggle ===== */
+.filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    margin-left: auto;
+}
+.filter-toggle input { cursor: pointer; }
+
 /* ===== Summary ===== */
 .summary {
     background: var(--bg-card);
@@ -290,6 +303,9 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 <div class="button-row">
     <button class="primary" id="btnOcr" disabled>OCR実行</button>
     <button class="secondary" id="btnCsv" disabled>CSVダウンロード</button>
+    <label class="filter-toggle">
+        <input type="checkbox" id="chkAllTargets"> 城壁以外も表示
+    </label>
 </div>
 
 <div class="progress-area" id="progressArea">
@@ -457,6 +473,7 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     var resultsBody = document.getElementById('resultsBody');
     var summary = document.getElementById('summary');
     var themeToggle = document.getElementById('themeToggle');
+    var chkAllTargets = document.getElementById('chkAllTargets');
 
     // ===== Theme =====
     if (localStorage.getItem('damage-log-theme') === 'light') {
@@ -474,6 +491,15 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
             themeToggle.textContent = '☀';
             localStorage.setItem('damage-log-theme', 'light');
         }
+    });
+
+    // ===== 城壁以外も表示トグル =====
+    if (localStorage.getItem('damage-log-allTargets') === 'true') {
+        chkAllTargets.checked = true;
+    }
+    chkAllTargets.addEventListener('change', function() {
+        localStorage.setItem('damage-log-allTargets', chkAllTargets.checked ? 'true' : 'false');
+        if (parsedResults.length > 0) displayResults();
     });
 
     // ===== File handling =====
@@ -691,11 +717,11 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 
         // 正規化済みの括弧・引用符を使用
         var reAttack = /^(.+?隊)(?:（(\d+)）)?\s*が攻撃/;
-        var reDamage = /城壁に(\d+)の損害(?:（(会心|撃心)）)?/;
+        var reDamage = /(.+?)に(\d+)の損害(?:（(会心|撃心)）)?/;
         var reTactic = /^(.+?隊)（(\d+)）\s*の(.+?)が戦法「(.+?)」を発動/;
         var reChain = /^続けて(.+?)が戦法「(.+?)」を発動/;
         var reOtherPlayer = /の.+?隊の.+?が戦法/;
-        var reKnownStart = /^(.+?隊|続けて|城壁に\d+の損害)/;
+        var reKnownStart = /^(.+?隊|続けて|.+?に\d+の損害)/;
 
         // OCRが1行を複数行に分断した場合のマージ
         var merged = [];
@@ -760,11 +786,12 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
                 continue;
             }
 
-            // パターン2: ダメージ行（城壁のみ）
+            // パターン2: ダメージ行
             m = reDamage.exec(line);
             if (m) {
-                var damageVal = m[1];
-                var modifier = m[2] || '';
+                var damageTarget = m[1];
+                var damageVal = m[2];
+                var modifier = m[3] || '';
 
                 // 括弧形式で取れなくても行内に会心/撃心があれば検出
                 if (!modifier) {
@@ -789,7 +816,7 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
                 results.push({
                     unit: currentUnit,
                     troops: currentTroops,
-                    target: '城壁',
+                    target: damageTarget,
                     damage: damageVal,
                     type: type,
                     caster: isTacticActive ? currentCaster : '',
@@ -812,8 +839,20 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         resultsBody.innerHTML = '';
         resultsArea.style.display = 'block';
 
-        if (parsedResults.length > 0) {
-            parsedResults.forEach(function(r, rowIdx) {
+        // フィルタリング（城壁以外の表示切替）
+        var showAll = chkAllTargets.checked;
+        var filtered = [];
+        var indexMap = [];
+        for (var i = 0; i < parsedResults.length; i++) {
+            if (showAll || parsedResults[i].target === '城壁') {
+                filtered.push(parsedResults[i]);
+                indexMap.push(i);
+            }
+        }
+
+        if (filtered.length > 0) {
+            filtered.forEach(function(r, filteredIdx) {
+                var rowIdx = indexMap[filteredIdx];
                 var tr = document.createElement('tr');
 
                 // 編集可能セル生成
@@ -849,10 +888,10 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
                 resultsBody.appendChild(tr);
             });
 
-            updateSummary();
+            updateSummary(filtered);
             btnCsv.disabled = false;
         } else {
-            resultsBody.innerHTML = '<tr><td colspan="8" class="no-data">城壁ダメージが検出されませんでした</td></tr>';
+            resultsBody.innerHTML = '<tr><td colspan="8" class="no-data">ダメージが検出されませんでした</td></tr>';
             summary.innerHTML = '';
         }
 
@@ -907,17 +946,21 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         displayResults();
     }
 
-    function updateSummary() {
-        if (parsedResults.length === 0) {
+    function updateSummary(filtered) {
+        if (!filtered) {
+            var showAll = chkAllTargets.checked;
+            filtered = parsedResults.filter(function(r) { return showAll || r.target === '城壁'; });
+        }
+        if (filtered.length === 0) {
             summary.innerHTML = '';
             btnCsv.disabled = true;
             return;
         }
-        var totalDamage = parsedResults.reduce(function(sum, r) { return sum + Number(r.damage || 0); }, 0);
-        var correctedCount = parsedResults.filter(function(r) { return r._origUnit || r._origCaster || r._origTactic; }).length;
+        var totalDamage = filtered.reduce(function(sum, r) { return sum + Number(r.damage || 0); }, 0);
+        var correctedCount = filtered.filter(function(r) { return r._origUnit || r._origCaster || r._origTactic; }).length;
         summary.innerHTML =
             '<div><span class="summary-label">合計損害:</span><span class="summary-value">' + totalDamage.toLocaleString() + '</span></div>' +
-            '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + parsedResults.length + '</span></div>' +
+            '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + filtered.length + '</span></div>' +
             (correctedCount > 0 ? '<div><span class="summary-label">辞書補正:</span><span class="summary-value">' + correctedCount + '行</span></div>' : '');
     }
 
@@ -935,10 +978,12 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 
     // ===== CSVダウンロード =====
     btnCsv.addEventListener('click', function() {
-        if (parsedResults.length === 0) return;
+        var showAll = chkAllTargets.checked;
+        var filtered = parsedResults.filter(function(r) { return showAll || r.target === '城壁'; });
+        if (filtered.length === 0) return;
 
         var header = '部隊名,兵力,対象,損害値,種別,発動者,戦法名';
-        var rows = parsedResults.map(function(r) {
+        var rows = filtered.map(function(r) {
             return [r.unit, r.troops, r.target, r.damage, r.type, r.caster, r.tactic].join(',');
         });
         var csv = header + '\n' + rows.join('\n');
