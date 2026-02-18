@@ -59,19 +59,34 @@ body {
 .file-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 8px 12px;
     background: var(--bg-card);
     border-radius: 4px;
     margin-bottom: 4px;
     font-size: 13px;
+    gap: 8px;
+}
+.file-item-num {
+    color: var(--text-muted);
+    font-size: 12px;
+    flex-shrink: 0;
+    min-width: 20px;
 }
 .file-item-name {
     color: var(--text-body);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1;
 }
+.file-item-status {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.file-item.processing { border-left: 3px solid var(--accent); }
+.file-item.done .file-item-status { color: #22c55e; }
+.file-item.failed .file-item-status { color: var(--danger); }
 .file-item-remove {
     background: none;
     border: none;
@@ -533,26 +548,58 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 
     function removeFile(index) {
         files.splice(index, 1);
+        fileStates.splice(index, 1);
         renderFileList();
         btnOcr.disabled = files.length === 0 || isProcessing;
     }
 
+    var fileStates = []; // 'pending' | 'processing' | 'done' | 'failed'
+
     function renderFileList() {
         fileList.innerHTML = '';
         files.forEach(function(f, i) {
+            var state = fileStates[i] || '';
             var item = document.createElement('div');
-            item.className = 'file-item';
+            item.className = 'file-item' + (state ? ' ' + state : '');
+            item.id = 'file-item-' + i;
+            var num = document.createElement('span');
+            num.className = 'file-item-num';
+            num.textContent = (i + 1);
             var name = document.createElement('span');
             name.className = 'file-item-name';
             name.textContent = f.name;
+            var status = document.createElement('span');
+            status.className = 'file-item-status';
+            if (state === 'processing') status.textContent = '処理中...';
+            else if (state === 'done') status.textContent = '完了';
+            else if (state === 'failed') status.textContent = '失敗';
             var btn = document.createElement('button');
             btn.className = 'file-item-remove';
             btn.textContent = '\u2715';
             btn.addEventListener('click', function() { removeFile(i); });
+            item.appendChild(num);
             item.appendChild(name);
-            item.appendChild(btn);
+            if (state) item.appendChild(status);
+            if (!isProcessing) item.appendChild(btn);
             fileList.appendChild(item);
         });
+    }
+
+    function updateFileState(index, state) {
+        fileStates[index] = state;
+        var item = document.getElementById('file-item-' + index);
+        if (!item) return;
+        item.className = 'file-item ' + state;
+        var statusEl = item.querySelector('.file-item-status');
+        if (!statusEl) {
+            statusEl = document.createElement('span');
+            statusEl.className = 'file-item-status';
+            var removeBtn = item.querySelector('.file-item-remove');
+            item.insertBefore(statusEl, removeBtn);
+        }
+        if (state === 'processing') statusEl.textContent = '処理中...';
+        else if (state === 'done') statusEl.textContent = '完了';
+        else if (state === 'failed') statusEl.textContent = '失敗';
     }
 
     // ===== Image preprocessing =====
@@ -629,6 +676,9 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         progressFill.style.width = '0%';
         totalImages = files.length;
         currentImageIndex = 0;
+        fileStates = [];
+        for (var fi = 0; fi < files.length; fi++) fileStates[fi] = 'pending';
+        renderFileList();
 
         try {
             var worker = await Tesseract.createWorker('jpn+eng', 1, {
@@ -653,6 +703,7 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
             var allText = '';
             var failedImages = [];
             for (currentImageIndex = 0; currentImageIndex < files.length; currentImageIndex++) {
+                updateFileState(currentImageIndex, 'processing');
                 try {
                     progressStatus.textContent = '画像 ' + (currentImageIndex + 1) + '/' + totalImages + ' を前処理中...';
                     var img = await loadImage(files[currentImageIndex]);
@@ -662,9 +713,11 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
                         allText += '--- 画像' + (currentImageIndex + 1) + ': ' + files[currentImageIndex].name + ' ---\n';
                     }
                     allText += result.data.text + '\n';
+                    updateFileState(currentImageIndex, 'done');
                 } catch (imgErr) {
                     console.error('画像 ' + (currentImageIndex + 1) + ' の処理に失敗:', imgErr);
                     failedImages.push(currentImageIndex + 1);
+                    updateFileState(currentImageIndex, 'failed');
                 }
             }
 
@@ -685,6 +738,7 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         }
 
         isProcessing = false;
+        renderFileList();
         btnOcr.disabled = files.length === 0;
     }
 
