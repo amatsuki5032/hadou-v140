@@ -182,6 +182,28 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .raw-text-content.visible { display: block; }
 
+/* ===== Preview images ===== */
+.preview-section { margin-bottom: 16px; }
+.preview-content {
+    display: none;
+    margin-top: 8px;
+    overflow-x: auto;
+}
+.preview-content.visible { display: block; }
+.preview-item {
+    margin-bottom: 12px;
+}
+.preview-item-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+.preview-item canvas, .preview-item img {
+    max-width: 100%;
+    border: 1px solid var(--border-base);
+    border-radius: 4px;
+}
+
 /* ===== Results table ===== */
 .results-card {
     background: var(--bg-card);
@@ -328,6 +350,11 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     <div class="progress-bar-bg">
         <div class="progress-bar-fill" id="progressFill"></div>
     </div>
+</div>
+
+<div class="preview-section" id="previewSection" style="display:none">
+    <button class="raw-text-toggle" id="previewToggle">▶ 前処理画像プレビュー</button>
+    <div class="preview-content" id="previewContent"></div>
 </div>
 
 <div class="raw-text-section" id="rawTextSection" style="display:none">
@@ -481,6 +508,9 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
     var progressArea = document.getElementById('progressArea');
     var progressStatus = document.getElementById('progressStatus');
     var progressFill = document.getElementById('progressFill');
+    var previewSection = document.getElementById('previewSection');
+    var previewToggle = document.getElementById('previewToggle');
+    var previewContent = document.getElementById('previewContent');
     var rawTextSection = document.getElementById('rawTextSection');
     var rawTextToggle = document.getElementById('rawTextToggle');
     var rawTextContent = document.getElementById('rawTextContent');
@@ -617,41 +647,88 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         });
     }
 
+    // シャープニング（3x3カーネル畳み込み）
+    function sharpen(ctx, w, h) {
+        var imageData = ctx.getImageData(0, 0, w, h);
+        var src = new Uint8ClampedArray(imageData.data);
+        var dst = imageData.data;
+        for (var y = 1; y < h - 1; y++) {
+            for (var x = 1; x < w - 1; x++) {
+                var idx = (y * w + x) * 4;
+                for (var c = 0; c < 3; c++) {
+                    var val = 5 * src[idx + c]
+                        - src[((y - 1) * w + x) * 4 + c]
+                        - src[((y + 1) * w + x) * 4 + c]
+                        - src[(y * w + x - 1) * 4 + c]
+                        - src[(y * w + x + 1) * 4 + c];
+                    dst[idx + c] = Math.min(255, Math.max(0, val));
+                }
+            }
+        }
+        ctx.putImageData(imageData, 0, 0);
+    }
+
+    // 大津の二値化閾値を自動計算
+    function calcOtsuThreshold(data, len) {
+        var hist = new Array(256).fill(0);
+        for (var i = 0; i < len; i += 4) hist[data[i]]++;
+        var total = len / 4;
+        var sumAll = 0;
+        for (var i = 0; i < 256; i++) sumAll += i * hist[i];
+        var sumB = 0, wB = 0, maxVar = 0, threshold = 128;
+        for (var t = 0; t < 256; t++) {
+            wB += hist[t];
+            if (wB === 0) continue;
+            var wF = total - wB;
+            if (wF === 0) break;
+            sumB += t * hist[t];
+            var diff = sumB / wB - (sumAll - sumB) / wF;
+            var v = wB * wF * diff * diff;
+            if (v > maxVar) { maxVar = v; threshold = t; }
+        }
+        return threshold;
+    }
+
     function preprocessImage(img) {
-        // 解像度に応じた動的スケーリング（OCR精度向上）
         var w = img.naturalWidth;
+        var h = img.naturalHeight;
         var scale = w < 1000 ? 3 : w < 2000 ? 2 : 1;
+        var cw = Math.round(w * scale);
+        var ch = Math.round(h * scale);
         var canvas = document.createElement('canvas');
-        canvas.width = w * scale;
-        canvas.height = img.naturalHeight * scale;
+        canvas.width = cw;
+        canvas.height = ch;
         var ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, cw, ch);
 
-        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // 1) グレースケール（max channel — 赤・黄色のテキストも明るく保持）
+        var imageData = ctx.getImageData(0, 0, cw, ch);
         var d = imageData.data;
-        var totalBrightness = 0;
+        for (var i = 0; i < d.length; i += 4) {
+            var v = Math.max(d[i], d[i + 1], d[i + 2]);
+            d[i] = d[i + 1] = d[i + 2] = v;
+        }
+        ctx.putImageData(imageData, 0, 0);
+
+        // 2) シャープニング
+        sharpen(ctx, cw, ch);
+
+        // 3) 大津の二値化（画像ごとに最適な閾値を自動決定）
+        imageData = ctx.getImageData(0, 0, cw, ch);
+        d = imageData.data;
+        var threshold = calcOtsuThreshold(d, d.length);
+        var blackCount = 0;
+        for (var i = 0; i < d.length; i += 4) {
+            var bw = d[i] >= threshold ? 255 : 0;
+            d[i] = d[i + 1] = d[i + 2] = bw;
+            if (bw === 0) blackCount++;
+        }
+
+        // 4) 暗い背景なら反転（白背景+黒文字がOCR最適）
         var pixelCount = d.length / 4;
-
-        // グレースケール変換
-        for (var i = 0; i < d.length; i += 4) {
-            var gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
-            d[i] = d[i + 1] = d[i + 2] = gray;
-            totalBrightness += gray;
-        }
-        var avgBrightness = totalBrightness / pixelCount;
-
-        // コントラスト強調（強め）
-        var contrast = 80;
-        var factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-        for (var i = 0; i < d.length; i += 4) {
-            var val = Math.min(255, Math.max(0, factor * (d[i] - 128) + 128));
-            d[i] = d[i + 1] = d[i + 2] = val;
-        }
-
-        // 暗い背景なら白黒反転
-        if (avgBrightness < 128) {
+        if (blackCount > pixelCount / 2) {
             for (var i = 0; i < d.length; i += 4) {
                 d[i] = 255 - d[i];
                 d[i + 1] = 255 - d[i + 1];
@@ -699,15 +776,35 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
                     }
                 }
             });
+            // 単一テキストブロックモード（ゲームログのレイアウトに最適化）
+            await worker.setParameters({ tessedit_pageseg_mode: '6' });
 
             var allText = '';
             var failedImages = [];
+            previewContent.innerHTML = '';
             for (currentImageIndex = 0; currentImageIndex < files.length; currentImageIndex++) {
                 updateFileState(currentImageIndex, 'processing');
                 try {
                     progressStatus.textContent = '画像 ' + (currentImageIndex + 1) + '/' + totalImages + ' を前処理中...';
                     var img = await loadImage(files[currentImageIndex]);
                     var processed = preprocessImage(img);
+
+                    // 前処理画像をプレビューに追加
+                    var previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    var label = document.createElement('div');
+                    label.className = 'preview-item-label';
+                    label.textContent = '画像' + (currentImageIndex + 1) + ': ' + files[currentImageIndex].name;
+                    previewItem.appendChild(label);
+                    var previewCanvas = document.createElement('canvas');
+                    previewCanvas.width = processed.width;
+                    previewCanvas.height = processed.height;
+                    previewCanvas.style.maxWidth = '100%';
+                    previewCanvas.getContext('2d').drawImage(processed, 0, 0);
+                    previewItem.appendChild(previewCanvas);
+                    previewContent.appendChild(previewItem);
+                    previewSection.style.display = 'block';
+
                     var result = await worker.recognize(processed);
                     if (totalImages > 1) {
                         allText += '--- 画像' + (currentImageIndex + 1) + ': ' + files[currentImageIndex].name + ' ---\n';
@@ -762,11 +859,22 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         return text;
     }
 
+    // ゲーム用語のOCR誤認識補正（スペース除去後に適用）
+    function fixGameTerms(text) {
+        text = text.replace(/規害/g, '損害');
+        text = text.replace(/爾害/g, '損害');
+        text = text.replace(/損書/g, '損害');
+        text = text.replace(/摺害/g, '損害');
+        text = text.replace(/会や+/g, '会心');
+        text = text.replace(/撃や+/g, '撃心');
+        return text;
+    }
+
     function parseLog(raw) {
         var text = postProcess(raw);
         var lines = text.split('\n').map(function(l) {
-            // OCRが日本語テキスト内に挿入するスペースを除去
-            return l.trim().replace(/\s/g, '');
+            // OCRが日本語テキスト内に挿入するスペースを除去してからゲーム用語補正
+            return fixGameTerms(l.trim().replace(/\s/g, ''));
         }).filter(function(l) { return l && !l.startsWith('---画像'); });
 
         // 正規化済みの括弧・引用符を使用
@@ -1017,6 +1125,17 @@ button.secondary:disabled { opacity: 0.5; cursor: not-allowed; }
             '<div><span class="summary-label">抽出行数:</span><span class="summary-value">' + filtered.length + '</span></div>' +
             (correctedCount > 0 ? '<div><span class="summary-label">辞書補正:</span><span class="summary-value">' + correctedCount + '行</span></div>' : '');
     }
+
+    // ===== プレビュートグル =====
+    previewToggle.addEventListener('click', function() {
+        if (previewContent.classList.contains('visible')) {
+            previewContent.classList.remove('visible');
+            previewToggle.textContent = '▶ 前処理画像プレビュー';
+        } else {
+            previewContent.classList.add('visible');
+            previewToggle.textContent = '▼ 前処理画像プレビュー';
+        }
+    });
 
     // ===== 生テキストトグル =====
     rawTextToggle.addEventListener('click', function() {
